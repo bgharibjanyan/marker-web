@@ -1,0 +1,91 @@
+@import "../../../../styles/variables";
+
+.page {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+
+  .previewSection {
+    flex: 1;
+    position: relative;
+    margin-right: 5%;
+    height: 100vh;
+    overflow: hidden;
+
+
+    .layer {
+      position: absolute;
+      height: 200vh;
+      width: 100%;
+      border-bottom-right-radius: 50%;
+      border-top-right-radius: 50%;
+      top: -50%;
+      transition: transform 400ms;
+
+      .afterLayerContainer {
+        width: 30px;
+        height: 100%;
+
+        .afterLayer {
+          height: 100%;
+          width: 300px;
+          border-bottom-righ-radius: 50%;
+          border-top-right-radius: 50%;
+        }
+      }
+
+      .content {
+        height: 400px;
+        width: 50%;
+        background-color: white;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      &.prev {
+        transform: translateX(calc(-100% + 200px));
+      }
+
+      &.next {
+        transform: translateX(0);
+      }
+    }
+  }
+
+  .formSectionContainer {
+    width: 400px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+
+    .formSection {
+      max-width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      .logoContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .mainLogo {
+          width: 175px;
+          height: 165px;
+          margin-bottom: 15px;
+        }
+
+        .textLogo {
+          width: 240px;
+          height: 45px;
+          margin-bottom: 50px;
+        }
+      }
+    }
+  }
+}
+
