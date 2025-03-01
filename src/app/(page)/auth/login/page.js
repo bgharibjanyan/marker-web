@@ -38,6 +38,11 @@ export default function Home() {
 
     return (
         <div className={`${styles.page}`}>
+            <div className={`${styles.bottomLogo}`}>
+                <svg>
+                    <use href="/images/sprites.svg#text-logo"></use>
+                </svg>
+            </div>
             <div className={`${styles.previewSection}`}>
                 {previewLayers.map((layer, index) => (
                     <div
@@ -45,28 +50,25 @@ export default function Home() {
                         className={`${styles.layer} ${index === currentIndex ? styles.active : ""} ${index < currentIndex ? styles.prev : ""} ${index > currentIndex ? styles.next : ""}`}
                         style={{
                             backgroundColor: layer.color,
-                            right: `${(previewLayers.length - index) * 50}px`,
+                            left: `${-(currentIndex- index) * 80}px`,
                             zIndex: previewLayers.length - index,
+                            marginTop: `${-(currentIndex- index) * 15}px`,
+                            marginBottom: `${-(currentIndex- index) * 15}px`,
+                            height: `calc(120vh - ${-(currentIndex- index) * 30}px)`,
                         }}
                         onClick={() => handleClick(index)}
                     >
-                        <div className={`${styles.content}`}></div>
+                        <div className={`${styles.content}`}>
+                            <img className={`${styles.mainLogo}`} src='/images/logo/loading.gif'/>
+                        </div>
 
-                        <div className={`${styles.afterLayer}`}
-                             style={{
-                                 backgroundColor: index < previewLayers.length + 1 ? previewLayers[index + 1]?.color : "transparent",
-                                 zIndex: previewLayers.length - index,
-                             }}></div>
                     </div>
 
                 ))}
             </div>
             <div className={`${styles.formSectionContainer}`}>
                 <div className={`${styles.formSection}`}>
-                    <div className={`${styles.logoContainer}`}>
-                        <img className={`${styles.mainLogo}`} src='/images/logo/logo.svg'/>
-                        <img className={`${styles.textLogo}`} src='/images/logo/text_logo.svg'/>
-                    </div>
+
                     <Form inputs={inputs} onSubmit={sendToLogin}/>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import './global.scss';
+import styles from "@/app/(page)/auth/login/page.module.scss";
 
 
 const geistMono = Geist_Mono({
@@ -16,7 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={``}>
-        {children}
+      {children}
       </body>
     </html>
   );

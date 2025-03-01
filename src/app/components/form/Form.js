@@ -3,7 +3,7 @@
 import {useEffect, useState} from 'react';
 import TextInput from "@/app/components/form/TextInput/TextInput";
 import './form.scss';
-import Button from "@/app/components/button/Button";
+import Button from "@/app/components/buttons/MarkerButton/Button";
 
 const Form = ({inputs, onSubmit}) => {
     const [formData, setFormData] = useState(

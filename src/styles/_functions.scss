@@ -1,0 +1,36 @@
+// styles/_functions.scss
+
+@import './variables';
+@import './mixins';
+
+
+@function mediaMin($width) {
+  @return "(min-width: #{$width})";
+}
+
+@function mediaMax($width) {
+  @return "(max-width: #{$width})";
+}
+
+
+@mixin fluid($property, $mobile, $mobileLarge, $tablet, $tabletLarge, $desktop, $desktopLarge) {
+  #{$property}: $mobile;
+
+  @include desktop-large {
+    #{$property}: $desktopLarge;
+  }
+
+  @include desktop {
+    #{$property}: $desktop;
+  }
+  @include tablet-large {
+    #{$property}: $tabletLarge;
+  }
+
+  @include tablet {
+    #{$property}: $tablet;
+  }
+  @include mobile-large {
+    #{$property}: $mobileLarge;
+  }
+}
