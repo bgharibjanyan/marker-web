@@ -1,0 +1,39 @@
+{
+  "Login": {
+    "form": {
+      "title": "Մուտք",
+      "description": "Բարի վերադարձ! Խնդրում ենք մուտք գործել ձեր \nհաշիվը",
+      "mailLabel": "Gmail/օգտանուն",
+      "passwordLabel": "Գաղտնաբառ",
+      "rememberMeCheckbox": "Հիշել ինձ",
+      "forgotPass": "Մոռացել եք գաղտնաբառը՞",
+      "signIn": "Մուտք գործել",
+      "newUser": "Նոր օգտատե՞ր եք",
+      "signUp": "Գրանցվել"
+    }
+  },
+  "AuthLayout": {
+    "infoButtonTitle": "Մեր մասին"
+  },
+  "Registration": {
+    "form": {
+      "title": "Գրանցում",
+      "description": "Եկեք կարգավորենք ձեր հաշիվը",
+      "firstName": "Անուն",
+      "lastName": "Ազգանուն",
+      "email": "Էլ.փոստ",
+      "age": "Ձեր տարիք",
+      "sex": "Ձեր սեռը",
+      "checkboxLabel": "Ես ընդունում եմ MARKER-ի պայմանները և պայմանագրերը",
+      "continue": "շարունակել",
+      "confirm": {
+        "title": "Գաղտնաբառի Հաստատում",
+        "description": "Հաստատեք ձեր գաղտնաբառը՝ գրանցումն ավարտելու համար",
+        "signup": "Գրանցվել",
+        "passwordLabel": "Գաղտնաբառ",
+        "confirmPasswordLabel": "Կրկնել գաղտնաբառը"
+      }
+
+    }
+  }
+}

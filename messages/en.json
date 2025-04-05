@@ -1,7 +1,38 @@
 {
   "Login": {
     "form": {
-      "title": "Login EN"
+      "title": "Login",
+      "description": "Welcome back! Please login to your account",
+      "mailLabel": "Gmail/username",
+      "passwordLabel": "Password",
+      "rememberMeCheckbox": "Remember me",
+      "forgotPass": "Forget password ?",
+      "signIn": "Sign In",
+      "newUser": "New user ?",
+      "signUp": "Signup"
+    }
+  },
+  "AuthLayout": {
+    "infoButtonTitle": "About Us"
+  },
+  "Registration": {
+    "form": {
+      "title": "Registration",
+      "description": "Let’s get you all set up so you can start your first onboarding experience",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "age": "Your Age",
+      "sex": "Your Sex",
+      "checkboxLabel": "I accept MARKER’s Terms & Conditions",
+      "continue": "continue",
+      "confirm": {
+        "title": "Password Confirm",
+        "description": "confirm your password to finish registration",
+        "signup": "sign UP",
+        "passwordLabel": "Password",
+        "confirmPasswordLabel": "Repeat Password"
+      }
     }
   }
 }

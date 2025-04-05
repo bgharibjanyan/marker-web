@@ -6,28 +6,44 @@ export default function Button({
                                    icon,
                                    bgColor,
                                    textColor,
-                                   width,
+                                   width = null,
                                    onClick,
                                    shadowColor,
                                    casual = false,
+                                   maxWidth = null,
+                                   padding = null,
                                }) {
     return (
-        <div className={'buttonContainer'}>
+        <div className={styles.buttonContainer}>
             <button
-                className={`${styles.button} ${styles[type] } ${casual?'casual':''} `}
-                style={{backgroundColor: bgColor, color: textColor, width}}
+                type={"button"}
+                className={`${styles.button} ${styles[type]} ${casual ? styles.casual : ""}`}
+                style={{
+                    backgroundColor: bgColor,
+                    color: textColor,
+                    "--shadow-color": shadowColor || "#9E373E",
+                    ...(width && {width}),
+                    ...(maxWidth && {maxWidth}),
+                    ...(padding && {padding}),
+                }}
                 onClick={onClick}
             >
-                {icon && <span className={styles.icon}>{icon}</span>}
+                {icon &&
+                    <svg className={`${styles.icon}`}>
+                        <use href={`/images/sprites.svg#${icon}`}></use>
+                    </svg>
+                }
                 {text}
             </button>
 
-            { casual &&
+                {casual && (
                 <div
-                    style={{backgroundColor: shadowColor ?shadowColor: '#9E373E'}}
-                className={'shadow'}></div>
-            }
+                    style={{backgroundColor: shadowColor || "#9E373E"}}
+                className={"shadow"}
+            >
         </div>
-
+    )
+}
+        </div>
     );
 }

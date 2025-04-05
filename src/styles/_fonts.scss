@@ -1,0 +1,42 @@
+@import "functions";
+
+.t1 {
+  @include fluid("font-size", 26px, 38px, 38px, 40px, 42px, 46px);
+  font-family: MontserratArm, sans-serif;
+}
+
+.t2 {
+  font-family: MontserratArm, sans-serif;
+}
+
+.t3 {
+  @include fluid("font-size", 16px, 20px, 22px, 22px, 24px, 25px);
+  font-family: MontserratArm, sans-serif;
+}
+
+.t4 {
+  @include fluid("font-size", 14px, 16px, 18px, 18px, 18px, 20px);
+  font-family: MontserratArm, sans-serif;
+
+}
+
+.t5 {
+  @include fluid("font-size", 13px, 14px, 14px, 15px, 15px, 17px);
+  font-weight: 700;
+  font-family: MontserratArm, sans-serif;
+}
+
+.t6 {
+}
+
+.btnL {
+  @include fluid("font-size", 20px, 20px, 22px, 24px, 24px, 26px);
+  font-family: MontserratArm, sans-serif;
+  font-weight: 700;
+}
+
+.btnM {
+  @include fluid("font-size", 16px, 18px, 18px, 20px, 20px, 22px);
+  font-family: MontserratArm, sans-serif;
+  font-weight: 600;
+}

@@ -1,0 +1,19 @@
+@import "../../../../../styles/variables";
+@import "../../../../../styles/fonts";
+
+.linkButton {
+  background: none;
+  border: none;
+  color: $g-color8;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: lighten($g-color8, 15%);
+  }
+}
+
+.underline {
+  text-decoration: underline;
+}

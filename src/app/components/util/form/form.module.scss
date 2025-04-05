@@ -1,0 +1,49 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/functions";
+
+
+.formContainer {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  @include fluid(width, calc(100% + 16px), calc(100% + 24px), calc(100% + 32px), calc(100% + 40px), calc(100% + 40px), calc(100% + 48px));
+
+  @include fluid(margin-left, -8px, -12px, -16px, -20px, -20px, -24px);
+  @include fluid(margin-right, -8px, -12px, -16px, -20px, -20px, -24px);
+
+  .field {
+    display: flex;
+    align-items: end;
+
+    @include fluid(padding-left, 8px, 12px, 16px, 20px, 20px, 24px);
+    @include fluid(padding-right, 8px, 12px, 16px, 20px, 20px, 24px);
+    @include fluid(padding-top, 8px, 8px, 12px, 9px, 9px, 9px);
+    @include fluid(padding-bottom, 8px, 8px, 12px, 9px, 9px, 9px);
+
+    &.halfWidth {
+      @include fluid(width, calc(50% - 16px), calc(50% - 24px), calc(50% - 32px), calc(50% - 40px), calc(50% - 40px), calc(50% - 48px));
+    }
+
+    &.thirdWidth {
+      @include fluid(width, calc(33% - 16px), calc(33% - 24px), calc(33% - 32px), calc(33% - 40px), calc(33% - 40px), calc(33% - 48px));
+    }
+
+    &.fullWidth {
+      @include fluid(width, calc(100% - 16px), calc(100% - 24px), calc(100% - 32px), calc(100% - 40px), calc(100% - 40px), calc(100% - 48px));
+    }
+
+    &.alignLeft {
+      justify-content: end;
+    }
+
+    &.alignRight {
+      justify-content: start;
+    }
+
+    &.submitButton {
+      @include fluid(margin-top, 12px,14px ,16px , 16px, 18px,20px);
+    }
+  }
+}

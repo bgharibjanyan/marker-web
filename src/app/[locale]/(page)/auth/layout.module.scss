@@ -1,5 +1,70 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/functions";
+@import "../../../../styles/fonts";
+
 .header {
   position: absolute;
   top: 10px;
   right:20px;
+
+  @include mobile-large {
+    top: 20px;
+  }
+}
+
+.infoButtonContainer {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  border-radius: 50%;
+  height: 200px;
+  width: 200px;
+  background-color: $g-color5;
+  transform: translate(-50%, -50%);
+  align-items: center;
+  padding: 20px;
+  justify-content: center;
+
+  .infoButtonContent {
+    margin-left: 55%;
+
+    .infoButtonLabel {
+      display: block;
+      color: white;
+      text-align: center;
+      word-break: break-word;
+      border: none;
+      background-color: transparent;
+    }
+  }
+
+  @include tablet-large {
+    display: flex;
+  }
+
+  @include desktop {
+    @include min-height(600) {
+      display: flex;
+    }
+  }
+
+  @include mobile-large {
+    top: unset;
+    bottom: 0;
+    transform: translate(-50%, 65%);
+    left: 50%;
+
+    .infoButtonContent {
+      margin-left: 0;
+      margin-bottom: 65%;
+    }
+  }
+}
+
+.fullHeightPage{
+  position: relative;
+  height: 100vh;
+  max-height:100vh;
+  overflow: hidden;
 }

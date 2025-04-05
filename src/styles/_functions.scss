@@ -33,4 +33,8 @@
   @include mobile-large {
     #{$property}: $mobileLarge;
   }
+
+  @include mobile {
+    #{$property}: $mobile;
+  }
 }

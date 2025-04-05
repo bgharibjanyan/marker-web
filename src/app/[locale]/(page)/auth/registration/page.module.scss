@@ -112,9 +112,13 @@
   .formSectionContainer {
     display: flex;
     align-items: center;
-
-    justify-content: center;
+    justify-content: start;
+    flex-direction: column;
     flex: 1;
+    transition: margin-top 0.5s ease-in-out;
+
+
+
 
     @include desktop-large {
       margin-left: 120px;
@@ -130,18 +134,19 @@
       margin-left: 0;
     }
 
-    .formSection {
+    .formSection,.confirmSection {
       display: flex;
       flex-direction: column;
+      justify-content: center;
+      min-height:100vh;
 
       @include fluid(width, 422px, 422px, 422px, 425px, 425px, 470px);
 
       @include mobile-large {
         width: calc(100% - 80px);
       }
-
-      @include mobile{
-        width: calc(100% - 24px);
+      @include mobile-large {
+        width: calc(100% - 40px);
       }
 
       .formTitle {
@@ -159,6 +164,13 @@
 
         @include fluid(margin-bottom, 8px, 12px, 12px, 16px, 20px, 20px);
       }
+    }
+
+    &.openConfirm{
+      margin-top: -100vh;
+    }
+
+    &.openRegistration{
     }
   }
 

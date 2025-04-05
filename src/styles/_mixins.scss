@@ -25,13 +25,28 @@
 }
 
 @mixin desktop {
-  @media (min-width: #{$desktop}) {
+  @media (max-width: #{$desktop}) {
     @content;
   }
 }
 
 @mixin desktop-large {
-  @media (min-width: #{$desktopLarge}) {
+  @media (max-width: #{$desktopLarge}) {
+    @content;
+  }
+}
+
+//height mixins
+
+@mixin max-height($height) {
+  @media (max-height: #{$height}) {
+    @content;
+  }
+}
+
+
+@mixin min-height($height) {
+  @media (min-height: #{$height}) {
     @content;
   }
 }

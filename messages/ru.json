@@ -1,7 +1,39 @@
 {
   "Login": {
     "form": {
-      "title": "Login RU"
+      "title": "Вход",
+      "description": "С возвращением! Пожалуйста, войдите в свой \nаккаунт",
+      "mailLabel": "Gmail/имя пользователя",
+      "passwordLabel": "Пароль",
+      "rememberMeCheckbox": "Запомнить меня",
+      "forgotPass": "Забыли пароль?",
+      "signIn": "Войти",
+      "newUser": "Новый пользователь?",
+      "signUp": "Зарегистрироваться"
+    }
+  },
+  "AuthLayout": {
+    "infoButtonTitle": "О нас"
+  },
+  "Registration": {
+    "form": {
+      "title": "Регистрация",
+      "description": "Давайте настроим вашу учетную запись",
+      "firstName": "Имя",
+      "lastName": "Фамилия",
+      "email": "Электронная почта",
+      "age": "Ваш возраст",
+      "sex": "Ваш пол",
+      "checkboxLabel": "Я принимаю условия и положения MARKER",
+      "continue": "продолжить",
+      "confirm": {
+        "title": "Подтверждение пароля",
+        "description": "Подтвердите ваш пароль, чтобы завершить регистрацию",
+        "signup": "Зарегистрироваться",
+        "passwordLabel": "Пароль",
+        "confirmPasswordLabel": "Повторите пароль"
+      }
+
     }
   }
 }
