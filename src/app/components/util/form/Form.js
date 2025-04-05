@@ -20,10 +20,11 @@ const Form = ({fields, onSubmit}) => {
         }, {})
     );
 
-    const handleChange = (e) => {
+    const handleChange = (name,value) => {
+        console.log(name,value);
         setFormData((prevData) => ({
             ...prevData,
-            [e.target.name]: e.target.value,
+            [name]: value,
         }));
     };
 

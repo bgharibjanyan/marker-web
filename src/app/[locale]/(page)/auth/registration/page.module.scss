@@ -117,9 +117,6 @@
     flex: 1;
     transition: margin-top 0.5s ease-in-out;
 
-
-
-
     @include desktop-large {
       margin-left: 120px;
     }
@@ -163,6 +160,10 @@
         color: $g-color5;
 
         @include fluid(margin-bottom, 8px, 12px, 12px, 16px, 20px, 20px);
+      }
+
+      .goBack{
+        margin-left: -30px;
       }
     }
 

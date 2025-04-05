@@ -29,7 +29,8 @@
       "confirm": {
         "title": "Password Confirm",
         "description": "confirm your password to finish registration",
-        "signup": "sign UP",
+        "signup": "Sign Up",
+        "goBack": "Go Back",
         "passwordLabel": "Password",
         "confirmPasswordLabel": "Repeat Password"
       }

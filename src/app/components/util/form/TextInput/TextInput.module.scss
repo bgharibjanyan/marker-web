@@ -7,10 +7,10 @@
   .fieldLabel {
     color: $g-color8;
     display: block;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
 
     @include mobile-large {
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
   }
 

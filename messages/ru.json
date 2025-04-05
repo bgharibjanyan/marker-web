@@ -30,7 +30,8 @@
         "title": "Подтверждение пароля",
         "description": "Подтвердите ваш пароль, чтобы завершить регистрацию",
         "signup": "Зарегистрироваться",
-        "passwordLabel": "Пароль",
+        "goBack": "Go Back",
+                "passwordLabel": "Пароль",
         "confirmPasswordLabel": "Повторите пароль"
       }
 

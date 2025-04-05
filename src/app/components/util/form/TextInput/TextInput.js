@@ -30,7 +30,9 @@ const TextInput = ({
                     name={name}
                     placeholder={placeholder}
                     value={value}
-                    onChange={onChange}
+                    onChange={(e) => {
+                        onChange(name, e.target.value)
+                    }}
                     className={styles.input}
                     style={{
                         color: textColor,

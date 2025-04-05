@@ -7,7 +7,9 @@ export default function Button({
                                    bgColor,
                                    textColor,
                                    width = null,
+                                   size = "L",
                                    onClick,
+                                   horizontalAlign = null,
                                    shadowColor,
                                    casual = false,
                                    maxWidth = null,
@@ -17,11 +19,12 @@ export default function Button({
         <div className={styles.buttonContainer}>
             <button
                 type={"button"}
-                className={`${styles.button} ${styles[type]} ${casual ? styles.casual : ""}`}
+                className={`${styles.button} ${styles[type]} ${styles["btn"+size]} ${casual ? styles.casual : ""}`}
                 style={{
                     backgroundColor: bgColor,
                     color: textColor,
                     "--shadow-color": shadowColor || "#9E373E",
+                    ...(horizontalAlign && {justifyContent: horizontalAlign,}),
                     ...(width && {width}),
                     ...(maxWidth && {maxWidth}),
                     ...(padding && {padding}),
@@ -36,14 +39,9 @@ export default function Button({
                 {text}
             </button>
 
-                {casual && (
-                <div
-                    style={{backgroundColor: shadowColor || "#9E373E"}}
-                className={"shadow"}
-            >
-        </div>
-    )
-}
+            {casual && (<div style={{backgroundColor: shadowColor || "#9E373E"}}
+                             className={"shadow"}>
+            </div>)}
         </div>
     );
 }

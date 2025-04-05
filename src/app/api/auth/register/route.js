@@ -1,6 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 import { hash } from "bcryptjs";
-import User from "../../../../models/user/User"; // ✅ Import the model
+import User from "../../../../models/user/User";
 
 export async function POST(request) {
     try {
@@ -8,7 +8,10 @@ export async function POST(request) {
         const usersCollection = client.db("marker").collection("user");
 
         const body = await request.json();
-        const { firstname, login, password, age, sex, lastname, address, number } = body;
+        const { firstname, login,email, password, age, sex, lastname, address } = body;
+        console.log([firstname, login,email, password, age, sex, lastname, address])
+
+        console.log(body);
 
         if (!firstname || !login || !password || !age || !sex) {
             return Response.json({ error: "Missing required fields" }, { status: 400 });
@@ -24,12 +27,12 @@ export async function POST(request) {
         const newUser = new User({
             firstname,
             login,
+            email,
             password: hashedPassword,
             age,
             sex,
             lastname,
             address,
-            phone,
         });
 
         const result = await usersCollection.insertOne(newUser);

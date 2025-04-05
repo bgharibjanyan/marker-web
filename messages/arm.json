@@ -30,6 +30,7 @@
         "title": "Գաղտնաբառի Հաստատում",
         "description": "Հաստատեք ձեր գաղտնաբառը՝ գրանցումն ավարտելու համար",
         "signup": "Գրանցվել",
+        "goBack": "Go Back",
         "passwordLabel": "Գաղտնաբառ",
         "confirmPasswordLabel": "Կրկնել գաղտնաբառը"
       }

@@ -5,12 +5,13 @@ import styles from "./page.module.scss";
 import {useTranslations} from 'next-intl';
 import {previewLayers, useRegistrationLogic} from "./scripts";
 import Button from "@/app/components/util/buttons/MarkerButton/Button";
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
 export default function Registration() {
     const t = useTranslations('Registration');
     const {form, currentIndex, changeLayer, sendToRegister, goToConfirm, backToRegistration} = useRegistrationLogic();
 
-    const registrationFormFields = [
+    const formFields = [
         {
             field: "text",
             type: "text",
@@ -66,11 +67,11 @@ export default function Registration() {
             type: "button",
             name: 'submit',
             label: t('form.continue'),
-            onClick: () => goToConfirm()
+            onClick: (formData) => goToConfirm(formData)
         },
     ];
 
-    const registrationConfirmFormFields = [
+    const confirmFormFields = [
         {
             field: "text",
             type: "password",
@@ -82,7 +83,7 @@ export default function Registration() {
         }, {
             field: "text",
             type: "password",
-            name: "password",
+            name: "confirm_password",
             placeholder: "*********",
             value: "",
             label: t('form.confirm.confirmPasswordLabel'),
@@ -100,7 +101,7 @@ export default function Registration() {
             field: "button",
             type: "button",
             label: t('form.confirm.signup'),
-            onClick: (formData) => console.log("Submit", formData)
+            onClick: (formData) => sendToRegister(formData)
         },
     ];
 
@@ -160,22 +161,32 @@ export default function Registration() {
                 <div className={`${styles.formSection}`}>
                     <h1 className={`${styles.t1} ${styles.formTitle}`}>{t('form.title')}</h1>
                     <span className={`${styles.t3} ${styles.formDescription}`}>{t('form.description')}</span>
-                    <Form fields={registrationFormFields} onSubmit={(formData) => sendToRegister(formData)}/>
+                    <Form fields={formFields}/>
                 </div>
 
                 <div className={`${styles.confirmSection}`}>
-                    <Button
-                        type="seconder"
-                        bgColor="#FF5D66"
-                        textColor="white"
-                        width="auto"
-                        onClick={() => field.onClick(formData)}
-                        casual={true}
-                        shadowColor="#9E373E"
-                    />
+                    <div className={`${styles.goBack}`}>
+                        <Button
+                            icon="icon-arrow-left"
+                            type="secondery"
+                            text={t('form.confirm.goBack')}
+                            size="M"
+                            horizontalAlign="start"
+                            bgColor={ColorSelector("--g-color1")}
+                            textColor={ColorSelector("--g-color2")}
+                            width="auto"
+                            onClick={() => {
+                                backToRegistration()
+                            }}
+                            casual={false}
+                            shadowColor="#9E373E"
+                        />
+                    </div>
+
                     <h1 className={`${styles.t1} ${styles.formTitle}`}>{t('form.confirm.title')}</h1>
                     <span className={`${styles.t3} ${styles.formDescription}`}>{t('form.confirm.description')}</span>
-                    <Form fields={registrationConfirmFormFields} onSubmit={(formData) => sendToRegister(formData)}/>
+
+                    <Form fields={confirmFormFields}/>
                 </div>
             </div>
         </div>

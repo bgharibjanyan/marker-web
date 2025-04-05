@@ -3,8 +3,7 @@
 
 .buttonContainer {
   .button {
-    @extend .btnL;
-    display: flex;
+     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
@@ -17,6 +16,19 @@
 
     @include fluid(min-width, 200px, 200px, 250px, 250px, 270px, 270px);
 
+    &.btnL{
+      svg{
+        height: 32px;
+        width: 32px;
+      }
+    }
+
+    &.btnM{
+      svg{
+        height: 25px;
+        width: 25px;
+      }
+    }
 
     &.primary {
       background-color: $g-color2;

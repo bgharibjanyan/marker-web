@@ -1,6 +1,7 @@
 'use client';
 
 import styles from "./SelectField.module.scss";
+import {useEffect} from 'react';
 
 const SelectField = ({
                          name,
@@ -13,14 +14,20 @@ const SelectField = ({
                          width,
                          casual = false,
                      }) => {
+    useEffect(() => {
+        if (!value && options.length > 0) {
+            onChange(name, options[0].value);
+        }
+    }, [value, options, name, onChange]);
+
     return (
         <div className={styles.selectField}>
             {label && <span className={`${styles.t5} ${styles.fieldLabel}`}>{label}</span>}
             <div className={`${styles.selectContainer} ${casual ? styles.casual : ''}`}>
                 <select
                     name={name}
-                    value={value}
-                    onChange={onChange}
+                    value={value ?? options[0]?.value}
+                    onChange={(e) => onChange(name, e.target.value)}
                     className={styles.select}
                     style={{
                         color: textColor,
