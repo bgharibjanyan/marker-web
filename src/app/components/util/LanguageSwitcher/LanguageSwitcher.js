@@ -25,7 +25,6 @@ export default function LanguageSwitcher({
     }, [pathname]);
 
     const switchLanguage = (locale) => {
-        console.log("Switching language to:", locale);
         startTransition(() => {
             const newPathname = pathname.replace(`/${currentLocale}`, `/${locale}`);
             router.push(newPathname);

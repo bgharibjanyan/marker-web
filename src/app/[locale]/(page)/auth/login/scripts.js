@@ -1,6 +1,7 @@
 "use client";
+import {useState} from "react";
+import {apiCall} from "@/app/lib/api/call";
 
-import { useState } from "react";
 
 export const previewLayers = [
     { color: "#FF5964", content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry." },
@@ -8,21 +9,32 @@ export const previewLayers = [
     { color: "#231F20", content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry." }
 ];
 
-export const useLoginLogic = () => {
+export const useLoginLogic = (locale) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const sendToLogin = (formData) => {
+    const sendToLogin = async (formData) => {
         if (!formData || typeof formData !== "object") {
-            console.error("sendToLogin: formData is undefined or not an object", formData);
+            console.error("Invalid formData", formData);
             return;
         }
 
-        console.log("sendToLogin Form Data:", formData);
+        const { success, data, error } = await apiCall("post", "/auth/login", {
+            login: formData.username,
+            password: formData.password,
+            saveConnection: formData.rememberMe,
+        });
+
+        if (success) {
+            console.log("Logged in:", data);
+            if (data.token) {
+                localStorage.setItem("token", data.token);
+            }
+        } else {
+            console.error("Login failed:", error.message);
+        }
     };
 
     const changeLayer = (index) => {
-
-        console.log("changeLayer", index);
         if (index >= 0 && index < previewLayers.length) {
             setCurrentIndex(index);
         }

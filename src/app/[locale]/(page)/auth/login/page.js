@@ -11,7 +11,7 @@ import LinkButton from "@/app/components/util/form/LinkButton/LinkButton";
 export default function Login() {
     const locale = useLocale();
     const t = useTranslations('Login');
-    const {currentIndex, changeLayer, sendToLogin} = useLoginLogic();
+    const {currentIndex, changeLayer, sendToLogin} = useLoginLogic(locale);
 
     const loginFormFields = [
         {
@@ -32,7 +32,13 @@ export default function Login() {
             label: t('form.passwordLabel'),
             size: "full"
         },
-        {field: "checkbox", name: "rememberMe", label: t('form.rememberMeCheckbox'), checked: false, size: "half"},
+        {
+            field: "checkbox",
+            name: "rememberMe",
+            label: t('form.rememberMeCheckbox'),
+            value: false,
+            size: "half"
+        },
         {
             field: "link",
             label: t('form.forgotPass'),
@@ -46,7 +52,7 @@ export default function Login() {
             field: "button",
             type: "button",
             label: t('form.signIn'),
-            onClick: (formData) => console.log("Submit", formData)
+            onClick: (formData) => sendToLogin(formData)
         },
     ];
 

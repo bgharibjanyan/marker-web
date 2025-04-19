@@ -1,7 +1,7 @@
 "use client";
 
 import {useState} from "react";
-import api from "@/app/lib/axios";
+import api from "@/app/lib/api/axios";
 
 export const previewLayers = [
     { color: "#FF5964", content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry." },

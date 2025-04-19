@@ -21,7 +21,6 @@ const Form = ({fields, onSubmit}) => {
     );
 
     const handleChange = (name,value) => {
-        console.log(name,value);
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
@@ -88,8 +87,8 @@ const Form = ({fields, onSubmit}) => {
                         <Checkbox
                             name={field.name}
                             label={field.label}
-                            checked={formData[field.name] || false}
-                            onChange={(e) => setFormData({...formData, [field.name]: e.target.checked})}
+                            value={formData[field.name] || false}
+                            onChange={handleChange}
                         />
                     )}
 
@@ -102,8 +101,6 @@ const Form = ({fields, onSubmit}) => {
                     )}
                 </div>
             ))}
-
-
         </form>
     );
 };

@@ -1,7 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 import { compare } from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../../../../models/user/User";
 import Session from "../../../../models/session/Session";
 
 const SECRET_KEY = process.env.JWT_SECRET || "gagooooooo";
@@ -21,6 +20,7 @@ export async function POST(request) {
         }
 
         const user = await usersCollection.findOne({ login: login.toLowerCase() });
+
         if (!user) {
             return Response.json({ error: "Invalid login or password" }, { status: 401 });
         }
