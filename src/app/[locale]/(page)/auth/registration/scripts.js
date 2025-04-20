@@ -1,7 +1,7 @@
 "use client";
 
 import {useState} from "react";
-import api from "@/app/lib/api/axios";
+import useApiCall from "@/app/lib/api/call";
 
 export const previewLayers = [
     { color: "#FF5964", content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry." },
@@ -14,8 +14,10 @@ export const useRegistrationLogic = () => {
     const [form, setForm] = useState("registration");
     const [formDataState, setFormDataState] = useState({});
 
+    const apiCall = useApiCall();
 
-    const sendToRegister = (formData) => {
+
+    const sendToRegister = async (formData) => {
         const mergedData = {
             ...formDataState,
             ...formData
@@ -28,7 +30,7 @@ export const useRegistrationLogic = () => {
             return;
         }
 
-        api.post("/auth/register", {
+        await apiCall("post", "/auth/register", {
             login: mergedData.firstName,
             firstname: mergedData.firstName,
             lastname: mergedData.lastName,
@@ -39,7 +41,6 @@ export const useRegistrationLogic = () => {
             sex: mergedData.sex,
         });
     };
-
 
     const changeLayer = (index) => {
         if (index >= 0 && index < previewLayers.length) {
@@ -53,7 +54,6 @@ export const useRegistrationLogic = () => {
             ...data
         };
 
-        // Optionally keep your formDataState updated
         setFormDataState(mergedData);
     }
 

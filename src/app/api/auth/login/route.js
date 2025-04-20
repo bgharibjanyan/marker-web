@@ -22,12 +22,12 @@ export async function POST(request) {
         const user = await usersCollection.findOne({ login: login.toLowerCase() });
 
         if (!user) {
-            return Response.json({ error: "Invalid login or password" }, { status: 401 });
+            return Response.json({ error: "Invalid login or password" }, { status: 400 });
         }
 
         const isMatch = await compare(password, user.password);
         if (!isMatch) {
-            return Response.json({ error: "Invalid login or password" }, { status: 401 });
+            return Response.json({ error: "Invalid login or password" }, { status: 400 });
         }
 
         const token = jwt.sign({ userId: user._id, login: user.login }, SECRET_KEY, {

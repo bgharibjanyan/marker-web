@@ -1,6 +1,7 @@
 "use client";
 import {useState} from "react";
-import {apiCall} from "@/app/lib/api/call";
+import useApiCall from "@/app/lib/api/call";
+import {useRouter} from "next/navigation";
 
 
 export const previewLayers = [
@@ -11,10 +12,13 @@ export const previewLayers = [
 
 export const useLoginLogic = (locale) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const apiCall = useApiCall();
+    const router = useRouter();
+
 
     const sendToLogin = async (formData) => {
         if (!formData || typeof formData !== "object") {
-            console.error("Invalid formData", formData);
+            console.warn("Invalid formData", formData);
             return;
         }
 
@@ -25,12 +29,13 @@ export const useLoginLogic = (locale) => {
         });
 
         if (success) {
-            console.log("Logged in:", data);
             if (data.token) {
-                localStorage.setItem("token", data.token);
+                localStorage.setItem("marker_im_token", data.token);
+                router.replace(`/`);
             }
         } else {
-            console.error("Login failed:", error.message);
+
+            console.warn("Login failed:", error);
         }
     };
 

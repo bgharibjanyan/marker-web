@@ -14,6 +14,10 @@ export default async function MarkerLayout({ children, params }) {
 
     return (
         <html lang={locale}>
+        <head>
+            <link rel="icon" type="image/png" href="/images/logo/logo.svg" />
+            <title>Marker</title>
+        </head>
         <body>
         <NextIntlClientProvider messages={messages}>
 

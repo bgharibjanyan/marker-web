@@ -12,10 +12,7 @@ export default function AuthRedirect({ locale }) {
         setIsClient(true);
 
         if (typeof window !== "undefined") {
-            const token = document.cookie
-                .split("; ")
-                .find((row) => row.startsWith("auth_token="))
-                ?.split("=")[1];
+            const token = window.localStorage.getItem("marker_im_token");
 
             if (!token && !pathname.startsWith(`/${locale}/auth`)) {
                 router.replace(`/${locale}/auth/login`);
