@@ -3,9 +3,10 @@ import {NextIntlClientProvider} from "next-intl";
 import {getMessages, getTranslations, setRequestLocale} from "next-intl/server";
 import {notFound} from "next/navigation";
 import {routing} from "@/i18n/routing";
-import AuthRedirect from "@/app/components/AuthRedirect/AuthRedirect";
+import AuthRedirect from "@/app/components/util/AuthRedirect/AuthRedirect";
 import LanguageSwitcher from "@/app/components/util/LanguageSwitcher/LanguageSwitcher";
 import styles from "./layout.module.scss";
+import "../../../global.scss";
 
 export default async function AuthLayout({ children, params }) {
     const {locale} = await params;
@@ -16,14 +17,23 @@ export default async function AuthLayout({ children, params }) {
 
     setRequestLocale(locale);
     const messages = await getMessages();
-
     const t = await getTranslations({locale});
 
-    return (<div className={styles.fullHeightPage}>
-            <NextIntlClientProvider locale={locale} messages={messages}>
-                <div className={styles.header}>
-                    <LanguageSwitcher currentLocale={locale} />
-                </div>
+    return (
+        <html lang={locale}>
+        <head>
+            <link rel="icon" type="image/png" href="/images/logo/logo.svg"/>
+            <title>Marker</title>
+        </head>
+        <body>
+        <NextIntlClientProvider messages={messages}>
+            <AuthRedirect locale={locale}/>
+            <div className={styles.main}></div>
+            <div className={styles.fullHeightPage}>
+                <NextIntlClientProvider locale={locale} messages={messages}>
+                    <div className={styles.header}>
+                        <LanguageSwitcher currentLocale={locale}/>
+                    </div>
 
                     <div className={styles.infoButtonContainer}>
                         <div className={styles.infoButtonContent}>
@@ -32,9 +42,15 @@ export default async function AuthLayout({ children, params }) {
                         </span>
                         </div>
                     </div>
-                <AuthRedirect locale={locale} />
-                {children}
-            </NextIntlClientProvider>
-        </div>
+                    <AuthRedirect locale={locale}/>
+                    {children}
+                </NextIntlClientProvider>
+            </div>
+        </NextIntlClientProvider>
+        </body>
+        </html>
     );
 }
+
+
+

@@ -1,0 +1,7 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/functions";
+@import "../../../../styles/fonts";
+
+.main {
+  @include fluid(margin-top, 75px, 75px, 75px, 70px, 75px, 75px);
+}

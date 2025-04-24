@@ -1,4 +1,3 @@
-// lib/hooks/useApiCall.js
 import {usePathname, useRouter} from "next/navigation";
 import api from "@/app/lib/api/axios";
 

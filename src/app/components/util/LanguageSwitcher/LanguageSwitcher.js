@@ -18,7 +18,7 @@ export default function LanguageSwitcher({
     const [currentLocale, setCurrentLocale] = useState("");
 
     useEffect(() => {
-        const detectedLocale = pathname.split("/")[1]; // Extract locale from "/en/auth/login"
+        const detectedLocale = pathname.split("/")[1];
         if (locales.includes(detectedLocale)) {
             setCurrentLocale(detectedLocale);
         }

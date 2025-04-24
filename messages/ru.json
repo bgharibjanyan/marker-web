@@ -34,7 +34,13 @@
                 "passwordLabel": "Пароль",
         "confirmPasswordLabel": "Повторите пароль"
       }
-
+    }
+  },
+  "Global": {
+    "header": {
+      "Schedule": "Schedule",
+      "Events": "Events",
+      "Home": "Home"
     }
   }
 }

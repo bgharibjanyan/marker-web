@@ -34,7 +34,13 @@
         "passwordLabel": "Գաղտնաբառ",
         "confirmPasswordLabel": "Կրկնել գաղտնաբառը"
       }
-
+    }
+  },
+  "Global": {
+    "header": {
+      "Schedule": "Schedule",
+      "Events": "Events",
+      "Home": "Home"
     }
   }
 }

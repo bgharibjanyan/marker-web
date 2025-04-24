@@ -1,0 +1,49 @@
+@import 'swiper/css';
+@import 'swiper/css/navigation'; // if you're using navigation
+@import 'swiper/css/pagination';
+@import "@/styles/variables";
+@import "@/styles/fonts";
+
+
+.sliderContainer{
+  position: relative;
+
+  &::after{
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 100%);
+    right: 0;
+
+  }
+
+  &::before{
+    background: linear-gradient(90deg,  #FFFFFF  0%, rgba(255, 255, 255, 0) 100%);
+    left: 0;
+
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    height: 100%;
+    z-index: 10;
+
+    @include fluid(width, 12px, 20px, 40px, 50px, 70px, 80px);
+  }
+
+  .slide{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    .eventWrapper{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+
+      @include fluid(aspect-ratio, 2, 2, 2, 2, 2, 2);
+
+    }
+  }
+
+}

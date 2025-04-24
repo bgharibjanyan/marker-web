@@ -35,5 +35,12 @@
         "confirmPasswordLabel": "Repeat Password"
       }
     }
+  },
+  "Global": {
+    "header": {
+      "Schedule": "Schedule",
+      "Events": "Events",
+      "Home": "Home"
+    }
   }
 }

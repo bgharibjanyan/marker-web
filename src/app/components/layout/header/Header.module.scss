@@ -1,0 +1,62 @@
+@import "../../../../styles/functions";
+@import "../../../../styles/fonts";
+
+.headerContainer {
+  padding: 15px;
+  width: calc(100vw - 30px);
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  .logoContainer {
+    display: flex;
+
+    img{
+      @include fluid(width, 40px, 40px, 175px, 175px, 200px, 200px);
+      @include fluid(height, 40px, 40px, 35px, 35px, 40px, 40px);
+    }
+
+    .logoMaximal {
+      @include mobile-large {
+        display: none;
+      }
+    }
+
+    .logoMinimal {
+      display: none;
+
+      @include mobile-large {
+        display: block;
+      }
+    }
+
+    @include tablet-large{
+      margin-right: auto;
+    }
+  }
+
+  .navList{
+    color: black;
+    display: flex;
+    margin-right: auto;
+
+    @include fluid(margin-left, 0, 0, 0, 32px, 40px, 90px);
+    @include fluid(gap, 0, 0, 0, 20px, 25px, 32px);
+
+    @include tablet-large {
+      display: none;
+    }
+
+    .navItem{
+      color: black;
+      text-decoration: none;
+
+      &:hover{
+        text-decoration: underline 2px;
+        text-underline-offset: 4px;
+      }
+    }
+  }
+}
