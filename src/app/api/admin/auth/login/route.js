@@ -1,4 +1,3 @@
-
 export async function POST(request) {
     try {
         const body = await request.json();
@@ -18,8 +17,6 @@ export async function POST(request) {
         }else {
             return Response.json({error: "Invalid login or password"}, {status: 400});
         }
-
-
     } catch (error) {
         console.error("Error logging in:", error);
         return Response.json({error: "Failed to login"}, {status: 500});

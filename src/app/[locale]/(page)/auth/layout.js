@@ -6,7 +6,7 @@ import {routing} from "@/i18n/routing";
 import AuthRedirect from "@/app/components/util/AuthRedirect/AuthRedirect";
 import LanguageSwitcher from "@/app/components/util/LanguageSwitcher/LanguageSwitcher";
 import styles from "./layout.module.scss";
-import "../../../global.scss";
+import "@/global.scss";
 
 export default async function AuthLayout({ children, params }) {
     const {locale} = await params;
@@ -37,9 +37,9 @@ export default async function AuthLayout({ children, params }) {
 
                     <div className={styles.infoButtonContainer}>
                         <div className={styles.infoButtonContent}>
-                        <span className={`${styles.infoButtonLabel} ${styles.t3}`}>
-                            {t('AuthLayout.infoButtonTitle')}
-                        </span>
+                                <span className={`${styles.infoButtonLabel} ${styles.t3}`}>
+                                    {t('AuthLayout.infoButtonTitle')}
+                                </span>
                         </div>
                     </div>
                     <AuthRedirect locale={locale}/>

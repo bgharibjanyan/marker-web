@@ -1,0 +1,30 @@
+@import "../../../../styles/functions";
+@import "../../../../styles/fonts";
+
+
+.sidebar {
+  background-color: $g-color7;
+  width: 220px;
+  height: 100vh;
+  padding: 10px;
+
+  &.opened {
+
+  }
+
+  .navList {
+    margin-top: 25px;
+    max-height: 100vh;
+
+    .navItem {
+      padding: 4px 8px;
+
+    }
+  }
+
+  .headline{
+    margin-top: 12px;
+    color: $g-color6;
+    font-weight: 700;
+  }
+}
