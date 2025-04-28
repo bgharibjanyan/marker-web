@@ -1,4 +1,5 @@
-import clientPromise from "../../../lib/mongodb";
+import clientPromise from "@/app/lib/mongodb";
+
 import { compare } from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Session from "../../../../models/session/Session";

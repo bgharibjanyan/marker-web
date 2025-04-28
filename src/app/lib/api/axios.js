@@ -9,9 +9,10 @@ const api = axios.create({
 
 api.interceptors.request.use(
     (config) => {
-        const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+        const token = typeof window !== "undefined" ? localStorage.getItem("marker_im_token") : null;
+        console.log(token);
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization = token;
         }
         return config;
     },
@@ -22,5 +23,7 @@ api.interceptors.request.use(
         Promise.reject(error)
     }
 );
+
+
 
 export default api;

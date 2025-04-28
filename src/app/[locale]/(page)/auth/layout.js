@@ -6,7 +6,8 @@ import {routing} from "@/i18n/routing";
 import AuthRedirect from "@/app/components/util/AuthRedirect/AuthRedirect";
 import LanguageSwitcher from "@/app/components/util/LanguageSwitcher/LanguageSwitcher";
 import styles from "./layout.module.scss";
-import "@/global.scss";
+import "../../../global.scss";
+
 
 export default async function AuthLayout({ children, params }) {
     const {locale} = await params;

@@ -1,4 +1,5 @@
-import clientPromise from "../../../lib/mongodb";
+import clientPromise from "@/app/lib/mongodb";
+
 import { hash } from "bcryptjs";
 import User from "../../../../models/user/User";
 
