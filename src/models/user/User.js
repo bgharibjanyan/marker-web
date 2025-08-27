@@ -1,5 +1,5 @@
 export default class User {
-    constructor({firstname, login, email, password, age, sex, lastname = null, address = null}) {
+    constructor({firstname, login, email, password, age, sex, lastname = null, address = null, connections = []}) {
         this.firstname = firstname;
         this.login = login;
         this.password = password;
@@ -8,6 +8,7 @@ export default class User {
         this.email = email;
         this.lastname = lastname;
         this.address = address;
+        this.connections = connections;
         this.createdAt = new Date();
     }
 }

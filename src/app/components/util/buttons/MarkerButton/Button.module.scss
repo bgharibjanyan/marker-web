@@ -14,9 +14,10 @@
     transition: 0.3s;
     width: auto;
 
-    @include fluid(min-width, 200px, 200px, 250px, 250px, 270px, 270px);
 
     &.btnL{
+      @include fluid(min-width, 200px, 200px, 250px, 250px, 270px, 270px);
+
       svg{
         height: 32px;
         width: 32px;
@@ -24,6 +25,17 @@
     }
 
     &.btnM{
+      @include fluid(min-width, 120px, 140px, 150px, 150px, 170px, 200px);
+
+      svg{
+        height: 25px;
+        width: 25px;
+      }
+    }
+
+    &.btnM{
+
+      min-width: unset;
       svg{
         height: 25px;
         width: 25px;

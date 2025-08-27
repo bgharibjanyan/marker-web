@@ -1,10 +1,45 @@
 import clientPromise from "@/app/lib/mongodb";
-
 import { compare } from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Session from "../../../../models/session/Session";
 
 const SECRET_KEY = process.env.JWT_SECRET || "gagooooooo";
+
+const validateRequestBody = ({ login, password }) => {
+    if (!login || !password) {
+        return { isValid: false, error: "Missing required fields" };
+    }
+    return { isValid: true };
+};
+
+const createToken = (user) => {
+    return jwt.sign(
+        { userId: user._id, login: user.login }, 
+        SECRET_KEY, 
+        { expiresIn: "7d" }
+    );
+};
+
+const createSession = async (sessionsCollection, userId, token) => {
+    const newSession = new Session({ userId });
+    newSession.token = token;
+    return await sessionsCollection.insertOne(newSession);
+};
+
+const authenticateUser = async (usersCollection, login, password) => {
+    const user = await usersCollection.findOne({ login: login.toLowerCase() });
+    
+    if (!user) {
+        return { isAuthenticated: false, error: "Invalid login or password" };
+    }
+
+    const isMatch = await compare(password, user.password);
+    if (!isMatch) {
+        return { isAuthenticated: false, error: "Invalid login or password" };
+    }
+
+    return { isAuthenticated: true, user };
+};
 
 export async function POST(request) {
     try {
@@ -15,35 +50,27 @@ export async function POST(request) {
 
         const body = await request.json();
         const { login, password } = body;
-
-        if (!login || !password) {
-            return Response.json({ error: "Missing required fields" }, { status: 400 });
+        
+        const validation = validateRequestBody({ login, password });
+        if (!validation.isValid) {
+            return Response.json({ error: validation.error }, { status: 400 });
         }
 
-        const user = await usersCollection.findOne({ login: login.toLowerCase() });
-
-        if (!user) {
-            return Response.json({ error: "Invalid login or password" }, { status: 400 });
+        const authResult = await authenticateUser(usersCollection, login, password);
+        if (!authResult.isAuthenticated) {
+            return Response.json({ error: authResult.error }, { status: 400 });
         }
 
-        const isMatch = await compare(password, user.password);
-        if (!isMatch) {
-            return Response.json({ error: "Invalid login or password" }, { status: 400 });
-        }
+        const token = createToken(authResult.user);
 
-        const token = jwt.sign({ userId: user._id, login: user.login }, SECRET_KEY, {
-            expiresIn: "7d",
-        });
-
-        const newSession = new Session({
-            userId: user._id,
-        });
-        newSession.token = token;
-
-        const result = await sessionsCollection.insertOne(newSession);
+        const sessionResult = await createSession(sessionsCollection, authResult.user._id, token);
 
         return Response.json(
-            { message: "Login successful", token, sessionId: result.insertedId },
+            { 
+                message: "Login successful", 
+                token, 
+                sessionId: sessionResult.insertedId 
+            },
             { status: 200 }
         );
     } catch (error) {

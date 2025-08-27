@@ -1,0 +1,63 @@
+@import "../../../../../styles/variables";
+@import "../../../../../styles/fonts";
+
+
+.contentContainer, .homePageHeading {
+  padding: 20px 15px;
+}
+
+.homePageHeading {
+  padding-bottom: 0;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+
+  .headline {
+    margin: 0;
+    color: $g-color8;
+  }
+
+  .subHeadline {
+    color: $g-color7;
+  }
+}
+
+.contentContainer {
+  display: flex;
+  gap: 20px;
+
+  .leftSidebar, .rightSidebar, .mainContent {
+    border-radius: 12px;
+
+    @include fluid(border-radius, 8px, 8px, 10px, 10px, 12px, 12px);
+  }
+
+  .leftSidebar, .rightSidebar {
+     min-height: 200px;
+    border: 1px solid;
+
+    @include fluid(width, 0, 0, 0, 200px, 250px, 350px);
+    @include tablet {
+      display: none;
+    }
+  }
+
+
+  .leftSidebar {
+    border-color: $g-color5;
+
+    @include tablet-large {
+      display: none;
+    }
+  }
+
+  .rightSidebar {
+    border-color: $g-color4;
+  }
+
+  .mainContent {
+    background-color: aquamarine;
+    min-height: 200px;
+    flex: 1;
+  }
+}

@@ -27,6 +27,8 @@
 }
 
 .t6 {
+  @include fluid("font-size", 10px, 11px, 12px, 13px, 14px, 14px);
+
 }
 
 .btnL {
