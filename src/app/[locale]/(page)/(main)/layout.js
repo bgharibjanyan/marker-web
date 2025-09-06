@@ -7,7 +7,6 @@ import AuthRedirect from "@/app/components/util/AuthRedirect/AuthRedirect";
 import Header from "@/app/components/layout/header/Header";
 import styles from "./layout.module.scss";
 
-
 export default async function MarkerLayout({ children, params }) {
     const { locale } = await params;
     if (!routing.locales.includes(locale)) notFound()
@@ -15,6 +14,7 @@ export default async function MarkerLayout({ children, params }) {
     setRequestLocale(locale);
     const messages = await getMessages();
 
+    console.log('layout')
     return (
         <html lang={locale}>
         <head>

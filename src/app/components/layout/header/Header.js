@@ -8,6 +8,8 @@ import LinkButton from "@/app/components/util/form/LinkButton/LinkButton";
 import { ColorSelector } from "@/app/scripts/HelperFunctions/colorSelector";
 import { useEffect, useState } from "react";
 
+import UserManager from "@/app/lib/user/UserManager";
+
 export default function Header() {
     const locale = useLocale();
     const router = useRouter();
@@ -20,23 +22,38 @@ export default function Header() {
     const [userProfilePicture, setUserProfilePicture] = useState("/uploads/profiles/default/image.png");
     const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
+    const [user, setUser] = useState(null);
+
     useEffect(() => {
         setActiveColor(ColorSelector('--g-color5'));
         setDefaultColor(ColorSelector('--g-color2'));
+
+        const loadUser = async () => {
+            const u = await UserManager.getUser();
+            setUser(u);
+
+            if (u && (u.id || u._id)) {
+                setUserProfilePicture(`/uploads/profiles/${u.id || u._id}.png`);
+                setIsUserLoggedIn(true);
+            } else {
+                setUserProfilePicture("/uploads/profiles/default/image.png");
+                setIsUserLoggedIn(false);
+            }
+        };
+
+        loadUser();
+
     }, []);
 
-  
     useEffect(() => {
         const checkUserAuthAndLoadProfile = async () => {
             try {
-                // Check if user has a valid session token
                 const token = localStorage.getItem('authToken');
                 if (!token) {
                     setIsUserLoggedIn(false);
                     return;
                 }
 
-                // Verify token and get user info
                 const authResponse = await fetch('/api/auth/check', {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -47,11 +64,9 @@ export default function Header() {
                     const { user } = await authResponse.json();
                     setIsUserLoggedIn(true);
                     
-                    // Fetch user profile to get profile picture path
                     const profileResponse = await fetch(`/api/user/profile?userId=${user._id}`);
                     if (profileResponse.ok) {
                         const { user: userProfile } = await profileResponse.json();
-                        // Set profile picture path, fallback to default if none exists
                         setUserProfilePicture(userProfile.profilePicture || "/uploads/profiles/default/image.png");
                     }
                 } else {
