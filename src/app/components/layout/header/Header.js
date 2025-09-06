@@ -16,10 +16,55 @@ export default function Header() {
 
     const [activeColor, setActiveColor] = useState("#FF5964");
     const [defaultColor, setDefaultColor] = useState("#000");
+    
+    const [userProfilePicture, setUserProfilePicture] = useState("/uploads/profiles/default/image.png");
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
     useEffect(() => {
         setActiveColor(ColorSelector('--g-color5'));
         setDefaultColor(ColorSelector('--g-color2'));
+    }, []);
+
+  
+    useEffect(() => {
+        const checkUserAuthAndLoadProfile = async () => {
+            try {
+                // Check if user has a valid session token
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    setIsUserLoggedIn(false);
+                    return;
+                }
+
+                // Verify token and get user info
+                const authResponse = await fetch('/api/auth/check', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (authResponse.ok) {
+                    const { user } = await authResponse.json();
+                    setIsUserLoggedIn(true);
+                    
+                    // Fetch user profile to get profile picture path
+                    const profileResponse = await fetch(`/api/user/profile?userId=${user._id}`);
+                    if (profileResponse.ok) {
+                        const { user: userProfile } = await profileResponse.json();
+                        // Set profile picture path, fallback to default if none exists
+                        setUserProfilePicture(userProfile.profilePicture || "/uploads/profiles/default/image.png");
+                    }
+                } else {
+                    setIsUserLoggedIn(false);
+                    localStorage.removeItem('authToken');
+                }
+            } catch (error) {
+                console.error('Error checking user auth:', error);
+                setIsUserLoggedIn(false);
+            }
+        };
+
+        checkUserAuthAndLoadProfile();
     }, []);
 
     const navList = [
@@ -65,6 +110,22 @@ export default function Header() {
             </div>
 
             <LanguageSwitcher currentLocale={locale}/>
+            {isUserLoggedIn ? (
+                <img 
+                    className={styles.userAvatar} 
+                    src={userProfilePicture} 
+                    alt="user avatar"
+                    onError={(e) => {
+                        e.target.src = "/uploads/profiles/default/image.png";
+                    }}
+                />
+            ) : (
+                <img 
+                    className={styles.userAvatar} 
+                    src="/uploads/profiles/default/image.png" 
+                    alt="default avatar"
+                />
+            )}
         </div>
     );
 }

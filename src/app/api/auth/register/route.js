@@ -9,7 +9,7 @@ export async function POST(request) {
         const usersCollection = client.db("marker").collection("user");
 
         const body = await request.json();
-        const { firstname, login,email, password, age, sex, lastname, address } = body;
+        const { firstname, login,email, password, age, sex, lastname, address, profilePicture } = body;
 
         if (!firstname || !login || !password || !age || !sex) {
             return Response.json({ error: "Missing required fields" }, { status: 400 });
@@ -22,6 +22,9 @@ export async function POST(request) {
 
         const hashedPassword = await hash(password, 10);
 
+        // Set default profile picture based on sex if none provided
+        const defaultProfilePicture = profilePicture || `/uploads/profiles/default/${sex === 'male' ? 'male.png' : 'female.png'}`;
+
         const newUser = new User({
             firstname,
             login,
@@ -31,6 +34,7 @@ export async function POST(request) {
             sex,
             lastname,
             address,
+            profilePicture: defaultProfilePicture,
         });
 
         const result = await usersCollection.insertOne(newUser);

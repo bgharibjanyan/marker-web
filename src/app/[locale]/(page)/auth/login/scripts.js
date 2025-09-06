@@ -34,7 +34,6 @@ export const useLoginLogic = (locale) => {
                 router.replace(`/`);
             }
         } else {
-
             console.warn("Login failed:", error);
         }
     };

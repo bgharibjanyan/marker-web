@@ -27,8 +27,10 @@ const createSession = async (sessionsCollection, userId, token) => {
 };
 
 const authenticateUser = async (usersCollection, login, password) => {
+    console.log(usersCollection, password,'login, password');
     const user = await usersCollection.findOne({ login: login.toLowerCase() });
     
+    console.log(user,'user');
     if (!user) {
         return { isAuthenticated: false, error: "Invalid login or password" };
     }
@@ -52,11 +54,13 @@ export async function POST(request) {
         const { login, password } = body;
         
         const validation = validateRequestBody({ login, password });
+        console.log(validation,'validation');
         if (!validation.isValid) {
             return Response.json({ error: validation.error }, { status: 400 });
         }
 
         const authResult = await authenticateUser(usersCollection, login, password);
+        console.log(authResult,'authResult');
         if (!authResult.isAuthenticated) {
             return Response.json({ error: authResult.error }, { status: 400 });
         }
