@@ -1,5 +1,6 @@
 @import "../../../../styles/functions";
 @import "../../../../styles/fonts";
+@import "../../../../styles/variables";
 
 .userListContainer {
   @include fluid(padding-top, 6px, 8px, 10px, 12px, 12px, 12px);
@@ -9,5 +10,20 @@
 
   .headline {
     margin: 0
+  }
+
+  .userList {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 75px);
+    gap: 4px;
+    margin-top: 12px;
+    padding: 8px 0px;
+
+    .emptyMessage{
+      width:100%;
+      text-align: center;
+      color: $g-color3;
+    }
   }
 }

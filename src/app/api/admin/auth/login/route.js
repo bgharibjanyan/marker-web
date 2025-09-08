@@ -8,7 +8,6 @@ export async function POST(request) {
             return Response.json({error: "Missing required fields"}, {status: 400});
         }
 
-        console.log(login, password);
         if (login === "LIP" && password === "093536389bB@"){
             return Response.json(
                 {message: "Login successful"},

@@ -14,7 +14,6 @@ export default async function MarkerLayout({ children, params }) {
     setRequestLocale(locale);
     const messages = await getMessages();
 
-    console.log('layout')
     return (
         <html lang={locale}>
         <head>

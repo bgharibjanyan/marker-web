@@ -10,7 +10,6 @@ if (!process.env.MONGODB_URI) {
 }
 
 if (process.env.NODE_ENV === "development") {
-    console.log(process.env.NODE_ENV,'development');
     if (!global._mongoClientPromise) {
         client = new MongoClient(uri, options);
         global._mongoClientPromise = client.connect();

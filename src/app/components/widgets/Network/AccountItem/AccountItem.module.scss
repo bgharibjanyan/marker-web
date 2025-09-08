@@ -1,0 +1,63 @@
+@import "../../../../../styles/functions";
+@import "../../../../../styles/fonts";
+@import "../../../../../styles/variables";
+
+
+.userItemContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid $g-color5;
+  cursor: pointer;
+
+  .userInfo {
+    display: flex;
+    gap: 8px;
+    pointer-events: none;
+
+    .userAvatar {
+      height: 38px;
+      width: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .textInfo {
+      .userName {
+        font-weight: 300;
+      }
+
+      .userMail {
+        color: $g-color9;
+      }
+    }
+  }
+
+  .messageAction {
+    height: 45px;
+    width: 45px;
+    margin-left: 12px;
+    padding:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: unset;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+
+    &:hover{
+      background-color:$bg-color10;
+    }
+
+    svg {
+      height: 25px;
+      width: 25px;
+      padding-top: 5px;
+      color: $g-color6;
+      margin:auto;
+    }
+  }
+}

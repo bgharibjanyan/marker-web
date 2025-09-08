@@ -4,9 +4,7 @@ const UserManager = {
     user: null,
 
     async getUser() {
-        console.log(this.user, "on init");
 
-        // return cached user if already loaded
         if (this.user) return this.user;
 
         const token = localStorage.getItem("marker_im_token");
@@ -14,11 +12,10 @@ const UserManager = {
 
         try {
             const response = await api.get("/user/get-user", {
-                headers: { imtoken: token },
+                headers: { imtoken: token},
             });
 
             this.user = response.data.user || null;
-            console.log(this.user, "fetched user");
 
             return this.user;
         } catch (error) {
