@@ -3,6 +3,8 @@ import NetworkWidget from "@/app/components/widgets/Network/Network";
 import Button from "@/app/components/util/buttons/MarkerButton/Button";
 
 import styles from "./page.module.scss";
+import InTimeTasks from "@/app/components/widgets/tasks/InTimeTasks/InTimeTasks";
+import InTimeTasksWidget from "@/app/components/widgets/tasks/InTimeTasks/InTimeTasks";
 
 export default function Dashboard() {
 
@@ -53,7 +55,9 @@ export default function Dashboard() {
                     <NetworkWidget></NetworkWidget>
                 </div>
                 <div className={styles.mainContent}></div>
-                <div className={styles.rightSidebar}></div>
+                <div className={styles.rightSidebar}>
+                    <InTimeTasksWidget></InTimeTasksWidget>
+                </div>
             </div>
         </div>
     );

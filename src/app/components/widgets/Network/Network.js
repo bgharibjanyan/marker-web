@@ -8,7 +8,6 @@ import UserManager from "@/app/lib/user/UserManager";
 import AccountItem from "@/app/components/widgets/Network/AccountItem/AccountItem";
 
 const NetworkWidget = ({}) => {
-
     const [network, setNetwork] = useState([]);
     const apiCall = useApiCall();
 
@@ -39,12 +38,10 @@ const NetworkWidget = ({}) => {
             <div className={styles.userList}>
                 {network[0]?.name}
                 {network.length ? (
-                    network.map((user,index) => (
-
+                    network.map((user, index) => (
                         <React.Fragment key={index}>
-                            <AccountItem  user={user}></AccountItem>
+                            <AccountItem user={user}></AccountItem>
                         </React.Fragment>
-
                     ))
                 ) : (
                     <p className={`${styles.t4} ${styles.emptyMessage}`}>No connections yet</p>
