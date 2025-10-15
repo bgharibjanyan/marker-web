@@ -1,0 +1,18 @@
+@import "../../../../../styles/functions";
+
+.contentContainer{
+  @include fluid("width", 100%, 100%, 560px, 600px, 680px, 780px);
+  @include fluid("padding-top", 8px, 8px, 12px, 16px, 20px, 20px);
+
+
+  .title{
+
+  }
+
+  .description{
+
+  }
+  .formContainer{
+
+  }
+}

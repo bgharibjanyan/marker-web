@@ -1,29 +1,32 @@
+"use client"
+
 import RecEventsSlider from "@/app/components/RecEventsSlider/RecEventsSlider";
 import NetworkWidget from "@/app/components/widgets/Network/Network";
 import Button from "@/app/components/util/buttons/MarkerButton/Button";
+import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvider";
 
 import styles from "./page.module.scss";
-import InTimeTasks from "@/app/components/widgets/tasks/InTimeTasks/InTimeTasks";
 import InTimeTasksWidget from "@/app/components/widgets/tasks/InTimeTasks/InTimeTasks";
+import CreateEvent from "@/app/components/overlays/popup/CreateEvent/CreateEvent";
 
 export default function Dashboard() {
-
-    const slides=[
+    const {openPopup} = usePopup();
+    const slides = [
         {
-            url:"#",
-            imgSrc:'/uploads/slider/1.png'
+            url: "#",
+            imgSrc: '/uploads/slider/1.png'
         }, {
-            url:"#",
-            imgSrc:'/uploads/slider/2.png'
+            url: "#",
+            imgSrc: '/uploads/slider/2.png'
         }, {
-            url:"#",
-            imgSrc:'/uploads/slider/3.png'
+            url: "#",
+            imgSrc: '/uploads/slider/3.png'
         }, {
-            url:"#",
-            imgSrc:'/uploads/slider/4.png'
+            url: "#",
+            imgSrc: '/uploads/slider/4.png'
         }, {
-            url:"#",
-            imgSrc:'/uploads/slider/5.png'
+            url: "#",
+            imgSrc: '/uploads/slider/5.png'
         }
     ]
 
@@ -44,8 +47,12 @@ export default function Dashboard() {
                     bgColor="#FF5D66"
                     textColor="white"
                     maxWidth="120px"
-                    // onClick={() => console.log('my Tasks')}
                     casual={true}
+                    onClick={() => {
+                        openPopup(
+                            <CreateEvent></CreateEvent>,
+                        )
+                    }}
                     shadowColor="#9E373E"
                 />
             </div>
