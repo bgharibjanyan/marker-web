@@ -2,7 +2,6 @@ import styles from "./AccountItem.module.scss";
 
 const NetworkWidget = ({user = null}) => {
 
-    console.log(user.firstName);
     return (
         <div className={styles.userItemContainer}>
             <div className={styles.userInfo}>

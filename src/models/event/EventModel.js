@@ -1,14 +1,11 @@
-export default class EventData {
+export default class EventModel {
     constructor({
-                    title,
+                    title='',
                     description,
                     start,
                     end,
                     location,
                     tags,
-                    perWeak,
-                    perMonth,
-                    once,
                     isPrivate,
                     media,
                     userId
@@ -19,9 +16,6 @@ export default class EventData {
         this.end = end ? end : null;
         this.location = location ? location : null;
         this.tags = tags ? tags : null;
-        this.perWeak = perWeak ? perWeak : null;
-        this.perMonth = perMonth ? perMonth : null;
-        this.once = once ? once : null;
         this.isPrivate = isPrivate ? isPrivate : false;
         this.media = media ? media : [];
         this.userId = userId;

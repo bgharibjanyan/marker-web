@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import {useState} from "react";
 import styles from "./TextInput.module.scss";
 
 const TextInput = ({
@@ -15,6 +15,7 @@ const TextInput = ({
                        width,
                        casual = false,
                    }) => {
+
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const togglePasswordVisibility = () => {
@@ -44,7 +45,8 @@ const TextInput = ({
                     <div className={styles.visibilityAction}>
                         <button type="button" className={styles.iconButton} onClick={togglePasswordVisibility}>
                             <svg className={`${styles.icon} ${isPasswordVisible ? styles.shown : styles.hidden}`}>
-                                <use href={`/images/sprites.svg#${isPasswordVisible ? "hide-password-icon" : "show-password-icon"}`}></use>
+                                <use
+                                    href={`/images/sprites.svg#${isPasswordVisible ? "hide-password-icon" : "show-password-icon"}`}></use>
                             </svg>
                         </button>
                     </div>

@@ -15,7 +15,6 @@ const Form = ({fields, onSubmit}) => {
             if (input.value) {
                 formData[input.name] = input.value || "";
             }
-
             return formData;
         }, {})
     );
