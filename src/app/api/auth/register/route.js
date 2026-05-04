@@ -1,7 +1,10 @@
 import clientPromise from "@/app/lib/mongodb";
-
 import { hash } from "bcryptjs";
+import jwt from "jsonwebtoken";
 import User from "../../../../models/user/User";
+import Session from "../../../../models/session/Session";
+
+const SECRET_KEY = process.env.JWT_SECRET || "gagooooooo";
 
 export async function POST(request) {
     try {
@@ -39,8 +42,24 @@ export async function POST(request) {
 
         const result = await usersCollection.insertOne(newUser);
 
+        // Create a session and token for automatic login after registration
+        const sessionsCollection = client.db("marker").collection("session");
+        const token = jwt.sign(
+            { userId: result.insertedId, login: newUser.login },
+            SECRET_KEY,
+            { expiresIn: "7d" }
+        );
+        const newSession = new Session({ userId: result.insertedId });
+        newSession.token = token;
+        const sessionResult = await sessionsCollection.insertOne(newSession);
+
         return Response.json(
-            { message: "User registered successfully", userId: result.insertedId },
+            { 
+                message: "User registered successfully", 
+                userId: result.insertedId,
+                token,
+                sessionId: sessionResult.insertedId 
+            },
             { status: 201 }
         );
     } catch (error) {

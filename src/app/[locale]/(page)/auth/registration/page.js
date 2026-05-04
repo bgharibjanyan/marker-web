@@ -2,12 +2,14 @@
 
 import Form from "@/app/components/util/form/Form";
 import styles from "./page.module.scss";
-import {useTranslations} from 'next-intl';
+import {useTranslations, useLocale} from 'next-intl';
 import {previewLayers, useRegistrationLogic} from "./scripts";
 import Button from "@/app/components/util/buttons/MarkerButton/Button";
 import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
+import LinkButton from "@/app/components/util/form/LinkButton/LinkButton";
 
 export default function Registration() {
+    const locale = useLocale();
     const t = useTranslations('Registration');
     const {form, currentIndex, changeLayer, sendToRegister, goToConfirm, backToRegistration} = useRegistrationLogic();
 
@@ -162,6 +164,15 @@ export default function Registration() {
                     <h1 className={`${styles.t1} ${styles.formTitle}`}>{t('form.title')}</h1>
                     <span className={`${styles.t3} ${styles.formDescription}`}>{t('form.description')}</span>
                     <Form fields={formFields}/>
+
+                    <div className={`${styles.t5} ${styles.afterForm}`}>
+                        <span className={`${styles.t5} ${styles.signUpLabel}`}>{t('form.haveAccount')}</span>
+                        <LinkButton
+                            text={t('form.signIn')}
+                            url={`/${locale}/auth/login`}
+                            color={ColorSelector("--g-color8")}
+                        />
+                    </div>
                 </div>
 
                 <div className={`${styles.confirmSection}`}>

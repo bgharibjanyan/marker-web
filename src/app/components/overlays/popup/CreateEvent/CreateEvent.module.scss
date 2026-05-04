@@ -5,18 +5,17 @@
 .contentContainer {
   @include fluid("width", 100%, 100%, 560px, 600px, 680px, 780px);
 
-
   .title {
     color: $g-color6;
     margin: 0 0 4px;
   }
+
 
   .eventDescription {
     display: block;
     color: $g-color10;
     font-weight: 400;
     width: 100%;
-
   }
 
   .formContainer {
@@ -25,6 +24,7 @@
     display: flex;
     flex-wrap: wrap;
 
+    @include fluid("margin-top", 12px, 14px, 18px, 20px, 24px, 32px);
     @include fluid("gap", 6px, 6px, 8px, 10px, 10px, 12px);
 
     .input {
@@ -41,20 +41,108 @@
         @include fluid("margin-top", 6px, 6px, 8px, 10px, 10px, 25px);
         @include fluid("padding-left", 6px, 6px, 8px, 10px, 10px, 25px);
       }
+
     }
 
 
-    .durationPanel {
+    .repeatCard {
       width: 100%;
+      border: 1px solid $g-color7;
+      border-radius: 6px;
+      padding: 12px;
+      background-color: rgba($g-color8, 0.02);
+
+      .repeatHeader {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .repeatOptions {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+
+        @include fluid("gap", 12px, 12px, 14px, 16px, 18px, 20px);
+      }
+
+      .weekdayPickerContainer {
+        padding-top: 12px;
+        border-top: 1px solid $g-color7;
+      }
+
+    }
+
+    .scheduleCard {
       display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      width: 100%;
+      border: 1px solid $g-color7;
+      border-radius: 6px;
+      padding: 12px;
+      background-color: rgba($g-color8, 0.02);
 
+      @include mobile-large {
+        flex-direction: column;
+      }
+
+      .scheduleTime {
+        flex: 1;
+        min-width: 0;
+
+        .timeGroup {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+      }
+
+      .calendarContainer {
+        display: flex;
+        justify-content: flex-end;
+        flex: 0 0 auto;
+
+        @include mobile-large {
+          justify-content: flex-start;
+          width: 100%;
+        }
+      }
+    }
+
+    .actionBar {
+      display: flex;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      margin-top: 4px;
 
-      @include fluid("gap", 8px, 12px, 12px, 15px, 20px, 20px);
+      @include mobile-large {
+        align-items: stretch;
+        flex-direction: column;
+      }
 
-      .repeat {
-        margin-top: 0;
-        padding-left: 0;
+      .formError {
+        color: $g-color6;
+        width: 100%;
+        text-align: center;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+
+        @include mobile-large {
+          align-items: center;
+          flex-direction: column;
+        }
       }
     }
   }

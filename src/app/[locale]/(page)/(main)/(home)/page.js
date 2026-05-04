@@ -42,7 +42,7 @@ export default function Dashboard() {
 
                 <Button
                     type="primary"
-                    text="My Yasks"
+                    text="My Tasks"
                     size="s"
                     bgColor="#FF5D66"
                     textColor="white"

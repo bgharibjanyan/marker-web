@@ -2,6 +2,7 @@
 
 import {useState} from "react";
 import useApiCall from "@/app/lib/api/call";
+import {useRouter} from "next/navigation";
 
 export const previewLayers = [
     { color: "#FF5964", content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry." },
@@ -15,6 +16,7 @@ export const useRegistrationLogic = () => {
     const [formDataState, setFormDataState] = useState({});
 
     const apiCall = useApiCall();
+    const router = useRouter();
 
 
     const sendToRegister = async (formData) => {
@@ -30,7 +32,7 @@ export const useRegistrationLogic = () => {
             return;
         }
 
-        await apiCall("post", "/auth/register", {
+        const { success, data, error } = await apiCall("post", "/auth/register", {
             login: mergedData.firstName,
             firstname: mergedData.firstName,
             lastname: mergedData.lastName,
@@ -40,6 +42,15 @@ export const useRegistrationLogic = () => {
             age: mergedData.age,
             sex: mergedData.sex,
         });
+
+        if (success) {
+            if (data.token) {
+                localStorage.setItem("marker_im_token", data.token);
+                router.replace("/");
+            }
+        } else {
+            console.warn("Registration failed:", error);
+        }
     };
 
     const changeLayer = (index) => {

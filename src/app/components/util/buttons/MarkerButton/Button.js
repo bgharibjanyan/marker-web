@@ -14,6 +14,7 @@ export default function Button({
                                    casual = false,
                                    maxWidth = null,
                                    padding = null,
+                                   disabled = false,
                                }) {
     return (
         <div className={styles.buttonContainer}>
@@ -30,6 +31,7 @@ export default function Button({
                     ...(padding && {padding}),
                 }}
                 onClick={onClick}
+                disabled={disabled}
             >
                 {icon &&
                     <svg className={`${styles.icon}`}>

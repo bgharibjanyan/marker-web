@@ -30,10 +30,10 @@
     position: relative;
     transition: background-color 0.3s;
     cursor: pointer;
-    border: none; // removed border
+    border: none;
 
     &:focus {
-      outline: none; // removed outline
+      outline: none;
     }
 
     .thumb {

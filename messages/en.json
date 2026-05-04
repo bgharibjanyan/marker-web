@@ -26,6 +26,8 @@
       "sex": "Your Sex",
       "checkboxLabel": "I accept MARKER’s Terms & Conditions",
       "continue": "continue",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign In",
       "confirm": {
         "title": "Password Confirm",
         "description": "confirm your password to finish registration",

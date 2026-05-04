@@ -7,8 +7,9 @@ export default class TaskModel {
                     location,
                     tags,
                     repeat,
-                    perWeak,
-                    perMonth,
+                    repeatType,
+                    weekdays,
+                    monthday,
                     isPrivate,
                     media,
                     userId,
@@ -21,8 +22,9 @@ export default class TaskModel {
         this.location = location ? location : null;
         this.tags = tags ? tags : null;
         this.repeat = repeat ? repeat : null;
-        this.perWeak = perWeak ? perWeak : null;
-        this.perMonth = perMonth ? perMonth : null;
+        this.repeatType = repeatType ? repeatType : null;
+        this.weekdays = weekdays ? weekdays : [];
+        this.monthday = monthday ? monthday : null;
         this.date = date ? date : null;
         this.isPrivate = isPrivate ? isPrivate : false;
         this.media = media ? media : [];

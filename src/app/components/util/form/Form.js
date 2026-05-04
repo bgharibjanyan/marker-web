@@ -7,6 +7,7 @@ import Button from "@/app/components/util/buttons/MarkerButton/Button";
 import Checkbox from "@/app/components/util/form/Checkbox/Checkbox";
 import LinkButton from "@/app/components/util/form/LinkButton/LinkButton";
 import SelectField from "@/app/components/util/form/Select/SelectField";
+import TimeInput from "@/app/components/util/form/TimeInput/TimeInput";
 
 const Form = ({fields, onSubmit}) => {
     const [formData, setFormData] = useState(() =>
@@ -96,6 +97,18 @@ const Form = ({fields, onSubmit}) => {
                             text={field.label}
                             url={field.url}
                             color={field.color}
+                        />
+                    )}
+
+                    {field.field === "time" && (
+                        <TimeInput
+                            name={field.name}
+                            casual={true}
+                            shadowColor="#9E373E"
+                            placeholder={field.placeholder}
+                            label={field.label}
+                            value={formData[field.name] || ""}
+                            onChange={handleChange}
                         />
                     )}
                 </div>
