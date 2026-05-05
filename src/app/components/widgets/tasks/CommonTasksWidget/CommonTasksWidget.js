@@ -1,6 +1,7 @@
 "use client";
 
 import {useEffect, useMemo, useState} from "react";
+import {useTranslations} from "next-intl";
 import TaskCard from "./TaskCard/TaskCard";
 import styles from "./CommonTasksWidget.module.scss";
 
@@ -147,6 +148,7 @@ const formatCountdown = (milliseconds) => {
 };
 
 const CommonTasksWidget = () => {
+    const t = useTranslations('TasksWidget');
     const [tasks, setTasks] = useState([]);
     const [now, setNow] = useState(() => new Date());
     const [error, setError] = useState('');
@@ -164,20 +166,20 @@ const CommonTasksWidget = () => {
                 const data = await response.json();
 
                 if (!response.ok) {
-                    setError(data.error || 'Failed to load tasks.');
+                    setError(t('errors.loadFailed'));
                     return;
                 }
 
                 setTasks(Array.isArray(data.tasks) ? data.tasks : []);
             } catch (error) {
-                setError('Failed to load tasks.');
+                setError(t('errors.loadFailed'));
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchTasks();
-    }, []);
+    }, [t]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -229,12 +231,12 @@ const CommonTasksWidget = () => {
     return (
         <div className={styles.commonTasks}>
             <div className={styles.nextTaskCard}>
-                <span className={`${styles.sectionLabel} ${styles.t6}`}>Next task</span>
+                <span className={`${styles.sectionLabel} ${styles.t6}`}>{t('nextTask')}</span>
 
-                {isLoading && <span className={`${styles.emptyMessage} ${styles.t6}`}>Loading...</span>}
+                {isLoading && <span className={`${styles.emptyMessage} ${styles.t6}`}>{t('loading')}</span>}
                 {!isLoading && error && <span className={`${styles.errorMessage} ${styles.t6}`}>{error}</span>}
                 {!isLoading && !error && !nextTask && (
-                    <span className={`${styles.emptyMessage} ${styles.t6}`}>No upcoming tasks</span>
+                    <span className={`${styles.emptyMessage} ${styles.t6}`}>{t('noUpcomingTasks')}</span>
                 )}
 
                 {nextTask && (
@@ -246,17 +248,19 @@ const CommonTasksWidget = () => {
 
                         <div className={styles.timer}>
                             <span className={`${styles.timerValue} ${styles.t3}`}>{countdown}</span>
-                            <span className={`${styles.timerLabel} ${styles.t7}`}>until {formatTaskTimeLabel(nextTaskTime)}</span>
+                            <span className={`${styles.timerLabel} ${styles.t7}`}>
+                                {t('until', {time: formatTaskTimeLabel(nextTaskTime)})}
+                            </span>
                         </div>
                     </>
                 )}
             </div>
 
             <div className={styles.taskList}>
-                <span className={`${styles.sectionLabel} ${styles.t6}`}>Today</span>
+                <span className={`${styles.sectionLabel} ${styles.t6}`}>{t('today')}</span>
 
                 {!isLoading && !error && todayTasks.length === 0 && (
-                    <span className={`${styles.emptyMessage} ${styles.t6}`}>No tasks for today</span>
+                    <span className={`${styles.emptyMessage} ${styles.t6}`}>{t('noTasksToday')}</span>
                 )}
 
                 {todayTasks.map((task) => (

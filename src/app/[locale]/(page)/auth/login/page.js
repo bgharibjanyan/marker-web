@@ -18,7 +18,7 @@ export default function Login() {
             field: "text",
             type: "text",
             name: "username",
-            placeholder: "Gmail/username",
+            placeholder: t('form.mailLabel'),
             value: "",
             label: t('form.mailLabel'),
             size: "full"
@@ -27,7 +27,7 @@ export default function Login() {
             field: "text",
             type: "password",
             name: "password",
-            placeholder: "Password",
+            placeholder: t('form.passwordLabel'),
             value: "",
             label: t('form.passwordLabel'),
             size: "full"
@@ -78,7 +78,7 @@ export default function Login() {
                         }}
                     >
                         <div className={styles.content}>
-                            <img className={styles.mainLogo} src='/images/logo/loading.gif' alt="Logo"/>
+                            <img className={styles.mainLogo} src='/images/logo/loading.gif' alt={t('alt.logo')}/>
                         </div>
 
                         {previewLayers[index + 1]&& index===currentIndex &&

@@ -1,6 +1,7 @@
 'use client';
 
 import {useState, useRef, useEffect} from "react";
+import {useTranslations} from "next-intl";
 import styles from "./TimeInput.module.scss";
 
 const TimeInput = ({
@@ -14,6 +15,7 @@ const TimeInput = ({
                        width,
                        casual = false,
                    }) => {
+    const t = useTranslations('Form.timeInput');
     const [isOpen, setIsOpen] = useState(false);
     const [selectedHour, setSelectedHour] = useState('');
     const [selectedMinute, setSelectedMinute] = useState('');
@@ -108,7 +110,7 @@ const TimeInput = ({
                     <div className={styles.timePicker}>
                         <div className={styles.timePickerBody}>
                             <div className={styles.timeColumn}>
-                                <div className={styles.columnLabel}>Hr</div>
+                                <div className={styles.columnLabel}>{t('hours')}</div>
                                 <div className={styles.timeList}>
                                     {hours.map(hour => (
                                         <div
@@ -122,7 +124,7 @@ const TimeInput = ({
                                 </div>
                             </div>
                             <div className={styles.timeColumn}>
-                                <div className={styles.columnLabel}>Min</div>
+                                <div className={styles.columnLabel}>{t('minutes')}</div>
                                 <div className={styles.timeList}>
                                     {minutes.map(minute => (
                                         <div

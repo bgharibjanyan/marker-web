@@ -1,6 +1,10 @@
+"use client";
+
 import styles from "./AccountItem.module.scss";
+import {useTranslations} from "next-intl";
 
 const NetworkWidget = ({user = null}) => {
+    const t = useTranslations('Global');
 
     return (
         <div className={styles.userItemContainer}>
@@ -8,7 +12,7 @@ const NetworkWidget = ({user = null}) => {
                 <img
                     className={styles.userAvatar}
                     src={`/uploads/profiles/${user.id || user._id}.png`}
-                    alt="user avatar"
+                    alt={t('alt.userAvatar')}
                     onError={(e) => {
                         e.target.src = "/uploads/profiles/default/image.png";
                     }}

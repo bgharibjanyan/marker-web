@@ -1,5 +1,9 @@
-export default function Home() {
+import {getTranslations} from "next-intl/server";
+
+export default async function Home() {
+    const t = await getTranslations('Pages');
+
     return (
-        <div>Schedule Page</div>
+        <div>{t('schedule')}</div>
     );
 }

@@ -6,11 +6,13 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import styles from "./styles.module.scss";
+import {useTranslations} from "next-intl";
 
 export default ({
                     slides = [],
 
                 }) => {
+    const t = useTranslations('Global');
 
 
     if (!slides.length<= 5) {
@@ -54,7 +56,7 @@ export default ({
                     <SwiperSlide key={index}>
                         <a href={slide.url}>
                             <div className={styles.slide} >
-                                <img className={styles.eventWrapper} src={slide.imgSrc} alt="logo"/>
+                                <img className={styles.eventWrapper} src={slide.imgSrc} alt={t('alt.eventSlide')}/>
                             </div>
                         </a>
                     </SwiperSlide>
@@ -63,4 +65,3 @@ export default ({
         </div>
     );
 };
-

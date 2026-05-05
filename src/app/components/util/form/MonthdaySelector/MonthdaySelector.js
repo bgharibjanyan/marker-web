@@ -2,8 +2,17 @@
 
 import styles from "./MonthdaySelector.module.scss";
 import { useState, useMemo } from "react";
+import {useLocale, useTranslations} from "next-intl";
+
+const LOCALE_MAP = {
+    arm: 'hy-AM',
+    en: 'en-US',
+    ru: 'ru-RU',
+};
 
 const MonthdaySelector = ({ value = null, onChange }) => {
+    const t = useTranslations('Form.datePicker');
+    const locale = useLocale();
     const now = new Date();
     const [month, setMonth] = useState(now.getMonth());
     const [year, setYear] = useState(now.getFullYear());
@@ -30,7 +39,8 @@ const MonthdaySelector = ({ value = null, onChange }) => {
         return days;
     }, [daysInMonth, firstDayOfMonth]);
 
-    const monthName = new Date(year, month).toLocaleString('en-US', { month: 'long' });
+    const monthName = new Date(year, month).toLocaleString(LOCALE_MAP[locale] || locale, { month: 'long' });
+    const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
     const handlePrevMonth = () => {
         if (month === 0) {
@@ -73,9 +83,9 @@ const MonthdaySelector = ({ value = null, onChange }) => {
             </div>
 
             <div className={styles.weekdays}>
-                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+                {weekdays.map(day => (
                     <div key={day} className={`${styles.weekday} ${styles.t7}`}>
-                        {day}
+                        {t(`weekdays.${day}`)}
                     </div>
                 ))}
             </div>

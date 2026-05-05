@@ -22,15 +22,15 @@ export default async function MarkerLayout({children, params}) {
             <title>Marker</title>
         </head>
         <body>
-        <PopupProvider> {/* ✅ wrap everything once */}
-            <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={messages}>
+            <PopupProvider>
                 <AuthRedirect locale={locale}/>
                 <Header />
                 <div className={styles.main}>
                     {children}
                 </div>
-            </NextIntlClientProvider>
-        </PopupProvider>
+            </PopupProvider>
+        </NextIntlClientProvider>
         </body>
         </html>
     );

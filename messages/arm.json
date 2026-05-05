@@ -10,6 +10,9 @@
       "signIn": "Մուտք գործել",
       "newUser": "Նոր օգտատե՞ր եք",
       "signUp": "Գրանցվել"
+    },
+    "alt": {
+      "logo": "Marker լոգո"
     }
   },
   "AuthLayout": {
@@ -24,6 +27,15 @@
       "email": "Էլ.փոստ",
       "age": "Ձեր տարիք",
       "sex": "Ձեր սեռը",
+      "placeholders": {
+        "firstName": "անուն",
+        "lastName": "ազգանուն"
+      },
+      "sexOptions": {
+        "male": "արական",
+        "female": "իգական",
+        "other": "այլ"
+      },
       "checkboxLabel": "Ես ընդունում եմ MARKER-ի պայմանները և պայմանագրերը",
       "continue": "շարունակել",
       "haveAccount": "Արդեն ունե՞ք հաշիվ",
@@ -36,13 +48,125 @@
         "passwordLabel": "Գաղտնաբառ",
         "confirmPasswordLabel": "Կրկնել գաղտնաբառը"
       }
+    },
+    "alt": {
+      "logo": "Marker լոգո"
     }
   },
   "Global": {
     "header": {
-      "Schedule": "Schedule",
-      "Events": "Events",
-      "Home": "Home"
+      "Schedule": "Ժամանակացույց",
+      "Events": "Իրադարձություններ",
+      "Home": "Գլխավոր"
+    },
+    "alt": {
+      "logo": "Marker լոգո",
+      "userAvatar": "Օգտատիրոջ նկար",
+      "defaultAvatar": "Լռելյայն նկար",
+      "eventSlide": "Իրադարձության սլայդ"
+    }
+  },
+  "Dashboard": {
+    "greeting": "Բարև, օգտատեր",
+    "welcome": "Բարի գալուստ Marker դեմո",
+    "createTask": "Ստեղծել առաջադրանք"
+  },
+  "NetworkWidget": {
+    "title": "Իմ ցանցը",
+    "empty": "Կապեր դեռ չկան"
+  },
+  "Pages": {
+    "events": "Իրադարձությունների էջ",
+    "schedule": "Ժամանակացույցի էջ"
+  },
+  "CreateTask": {
+    "title": "Ավելացնել առաջադրանք",
+    "description": "Լրացրեք ձևը՝ նոր առաջադրանք ավելացնելու համար։",
+    "form": {
+      "titleLabel": "Իրադարձության անուն",
+      "titlePlaceholder": "Օր.՝ լողավազանի երեկույթ",
+      "privateLabel": "Գաղտնի",
+      "descriptionLabel": "Նկարագրություն",
+      "descriptionPlaceholder": "Օր.՝ ինչ-որ բան իրադարձության մասին",
+      "colorLabel": "Առաջադրանքի գույն",
+      "repeatLabel": "Կրկնել",
+      "timePlaceholder": "ԺԺ:ՐՐ",
+      "startTimeLabel": "Սկսելու ժամ",
+      "endTimeLabel": "Ավարտի ժամ"
+    },
+    "repeat": {
+      "daily": "Ամեն օր",
+      "weekly": "Ամեն շաբաթ",
+      "monthly": "Ամեն ամիս"
+    },
+    "actions": {
+      "cancel": "Չեղարկել",
+      "submit": "Ուղարկել",
+      "saving": "Պահպանվում է..."
+    },
+    "validation": {
+      "titleRequired": "Իրադարձության անունը պարտադիր է։",
+      "startRequired": "Սկսելու ժամը պարտադիր է։",
+      "dayRequired": "Օրը պարտադիր է։",
+      "repeatTypeRequired": "Կրկնության տեսակը պարտադիր է։",
+      "weekdayRequired": "Ընտրեք առնվազն մեկ շաբաթվա օր։",
+      "monthdayRequired": "Ընտրեք օր ամսական կրկնության համար։",
+      "createFailed": "Չհաջողվեց ստեղծել առաջադրանքը։"
+    }
+  },
+  "TasksWidget": {
+    "nextTask": "Հաջորդ առաջադրանք",
+    "loading": "Բեռնվում է...",
+    "noUpcomingTasks": "Առաջիկա առաջադրանքներ չկան",
+    "today": "Այսօր",
+    "noTasksToday": "Այսօրվա համար առաջադրանքներ չկան",
+    "until": "մինչև {time}",
+    "errors": {
+      "loadFailed": "Չհաջողվեց բեռնել առաջադրանքները։"
+    }
+  },
+  "TaskCard": {
+    "start": "Սկիզբ",
+    "noDescription": "Նկարագրություն չկա"
+  },
+  "Form": {
+    "datePicker": {
+      "weekdays": {
+        "monday": "Երկ",
+        "tuesday": "Երք",
+        "wednesday": "Չրք",
+        "thursday": "Հնգ",
+        "friday": "Ուրբ",
+        "saturday": "Շբթ",
+        "sunday": "Կիր"
+      }
+    },
+    "weekdaySelector": {
+      "label": "Ընտրեք օրերը",
+      "days": {
+        "monday": "Երկ",
+        "tuesday": "Երք",
+        "wednesday": "Չրք",
+        "thursday": "Հնգ",
+        "friday": "Ուրբ",
+        "saturday": "Շբթ",
+        "sunday": "Կիր"
+      }
+    },
+    "timeInput": {
+      "hours": "Ժ",
+      "minutes": "Ր"
+    },
+    "colorPicker": {
+      "selectColor": "Ընտրել {color}"
+    }
+  },
+  "Admin": {
+    "sidebar": {
+      "title": "Marker ադմին",
+      "personalization": "Անհատականացում",
+      "accounts": "Հաշիվներ",
+      "ads": "Գովազդ"
     }
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "./ColorPicker.module.scss";
+import {useTranslations} from "next-intl";
 
 const DEFAULT_COLORS = [
     '#FF5D66',
@@ -20,6 +21,7 @@ const ColorPicker = ({
                          shadowColor,
                          casual = false,
                      }) => {
+    const t = useTranslations('Form.colorPicker');
     const selectedColor = value || colors[0];
 
     const handleChange = (color) => {
@@ -40,7 +42,7 @@ const ColorPicker = ({
                             type="button"
                             className={`${styles.swatch} ${selectedColor === color ? styles.selected : ''}`}
                             style={{"--task-color": color}}
-                            aria-label={`Select ${color}`}
+                            aria-label={t('selectColor', {color})}
                             onClick={() => handleChange(color)}
                         />
                     ))}

@@ -18,7 +18,7 @@ export default function Registration() {
             field: "text",
             type: "text",
             name: "firstName",
-            placeholder: "name",
+            placeholder: t('form.placeholders.firstName'),
             value: "",
             label: t('form.firstName'),
             size: "half"
@@ -27,7 +27,7 @@ export default function Registration() {
             field: "text",
             type: "text",
             name: "lastName",
-            placeholder: "surname",
+            placeholder: t('form.placeholders.lastName'),
             value: "",
             label: t('form.lastName'),
             size: "half"
@@ -55,9 +55,9 @@ export default function Registration() {
             name: "sex",
             value: null,
             options: [
-                {value: "male", label: "male"},
-                {value: "female", label: "female"},
-                {value: "other", label: "other"},
+                {value: "male", label: t('form.sexOptions.male')},
+                {value: "female", label: t('form.sexOptions.female')},
+                {value: "other", label: t('form.sexOptions.other')},
             ],
             label: t('form.sex'),
             size: "third",
@@ -129,7 +129,7 @@ export default function Registration() {
                         }}
                     >
                         <div className={styles.content}>
-                            <img className={styles.mainLogo} src='/images/logo/loading.gif' alt="Logo"/>
+                            <img className={styles.mainLogo} src='/images/logo/loading.gif' alt={t('alt.logo')}/>
                         </div>
 
                         {previewLayers[index + 1] && index === currentIndex &&

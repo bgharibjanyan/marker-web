@@ -10,6 +10,9 @@
       "signIn": "Sign In",
       "newUser": "New user ?",
       "signUp": "Signup"
+    },
+    "alt": {
+      "logo": "Marker logo"
     }
   },
   "AuthLayout": {
@@ -24,6 +27,15 @@
       "email": "Email",
       "age": "Your Age",
       "sex": "Your Sex",
+      "placeholders": {
+        "firstName": "name",
+        "lastName": "surname"
+      },
+      "sexOptions": {
+        "male": "male",
+        "female": "female",
+        "other": "other"
+      },
       "checkboxLabel": "I accept MARKER’s Terms & Conditions",
       "continue": "continue",
       "haveAccount": "Already have an account?",
@@ -36,6 +48,9 @@
         "passwordLabel": "Password",
         "confirmPasswordLabel": "Repeat Password"
       }
+    },
+    "alt": {
+      "logo": "Marker logo"
     }
   },
   "Global": {
@@ -43,6 +58,115 @@
       "Schedule": "Schedule",
       "Events": "Events",
       "Home": "Home"
+    },
+    "alt": {
+      "logo": "Marker logo",
+      "userAvatar": "User avatar",
+      "defaultAvatar": "Default avatar",
+      "eventSlide": "Event slide"
+    }
+  },
+  "Dashboard": {
+    "greeting": "Hi User",
+    "welcome": "Welcome to marker demo",
+    "createTask": "Create Task"
+  },
+  "NetworkWidget": {
+    "title": "My Network",
+    "empty": "No connections yet"
+  },
+  "Pages": {
+    "events": "Events Page",
+    "schedule": "Schedule Page"
+  },
+  "CreateTask": {
+    "title": "Add Task",
+    "description": "Fill form to add new task to your schedule.",
+    "form": {
+      "titleLabel": "Event Name",
+      "titlePlaceholder": "Eg. pool party",
+      "privateLabel": "Private",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Eg. something about event",
+      "colorLabel": "Task Color",
+      "repeatLabel": "Repeat",
+      "timePlaceholder": "HH:MM",
+      "startTimeLabel": "Start Time",
+      "endTimeLabel": "End Time"
+    },
+    "repeat": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "saving": "Saving..."
+    },
+    "validation": {
+      "titleRequired": "Event name is required.",
+      "startRequired": "Start time is required.",
+      "dayRequired": "Day is required.",
+      "repeatTypeRequired": "Repeat type is required.",
+      "weekdayRequired": "Select at least one weekday.",
+      "monthdayRequired": "Select a day for monthly repeat.",
+      "createFailed": "Failed to create task."
+    }
+  },
+  "TasksWidget": {
+    "nextTask": "Next task",
+    "loading": "Loading...",
+    "noUpcomingTasks": "No upcoming tasks",
+    "today": "Today",
+    "noTasksToday": "No tasks for today",
+    "until": "until {time}",
+    "errors": {
+      "loadFailed": "Failed to load tasks."
+    }
+  },
+  "TaskCard": {
+    "start": "Start",
+    "noDescription": "No description"
+  },
+  "Form": {
+    "datePicker": {
+      "weekdays": {
+        "monday": "Mon",
+        "tuesday": "Tue",
+        "wednesday": "Wed",
+        "thursday": "Thu",
+        "friday": "Fri",
+        "saturday": "Sat",
+        "sunday": "Sun"
+      }
+    },
+    "weekdaySelector": {
+      "label": "Select Days",
+      "days": {
+        "monday": "Mon",
+        "tuesday": "Tue",
+        "wednesday": "Wed",
+        "thursday": "Thu",
+        "friday": "Fri",
+        "saturday": "Sat",
+        "sunday": "Sun"
+      }
+    },
+    "timeInput": {
+      "hours": "Hr",
+      "minutes": "Min"
+    },
+    "colorPicker": {
+      "selectColor": "Select {color}"
+    }
+  },
+  "Admin": {
+    "sidebar": {
+      "title": "Marker Admin",
+      "personalization": "Personalization",
+      "accounts": "Accounts",
+      "ads": "Ads"
     }
   }
 }

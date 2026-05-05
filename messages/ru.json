@@ -10,6 +10,9 @@
       "signIn": "Войти",
       "newUser": "Новый пользователь?",
       "signUp": "Зарегистрироваться"
+    },
+    "alt": {
+      "logo": "Логотип Marker"
     }
   },
   "AuthLayout": {
@@ -24,6 +27,15 @@
       "email": "Электронная почта",
       "age": "Ваш возраст",
       "sex": "Ваш пол",
+      "placeholders": {
+        "firstName": "имя",
+        "lastName": "фамилия"
+      },
+      "sexOptions": {
+        "male": "мужской",
+        "female": "женский",
+        "other": "другое"
+      },
       "checkboxLabel": "Я принимаю условия и положения MARKER",
       "continue": "продолжить",
       "haveAccount": "Уже есть аккаунт?",
@@ -33,16 +45,128 @@
         "description": "Подтвердите ваш пароль, чтобы завершить регистрацию",
         "signup": "Зарегистрироваться",
         "goBack": "Go Back",
-                "passwordLabel": "Пароль",
+        "passwordLabel": "Пароль",
         "confirmPasswordLabel": "Повторите пароль"
       }
+    },
+    "alt": {
+      "logo": "Логотип Marker"
     }
   },
   "Global": {
     "header": {
-      "Schedule": "Schedule",
-      "Events": "Events",
-      "Home": "Home"
+      "Schedule": "Расписание",
+      "Events": "События",
+      "Home": "Главная"
+    },
+    "alt": {
+      "logo": "Логотип Marker",
+      "userAvatar": "Аватар пользователя",
+      "defaultAvatar": "Аватар по умолчанию",
+      "eventSlide": "Слайд события"
+    }
+  },
+  "Dashboard": {
+    "greeting": "Привет, пользователь",
+    "welcome": "Добро пожаловать в демо Marker",
+    "createTask": "Создать задачу"
+  },
+  "NetworkWidget": {
+    "title": "Моя сеть",
+    "empty": "Пока нет связей"
+  },
+  "Pages": {
+    "events": "Страница событий",
+    "schedule": "Страница расписания"
+  },
+  "CreateTask": {
+    "title": "Добавить задачу",
+    "description": "Заполните форму, чтобы добавить новую задачу в расписание.",
+    "form": {
+      "titleLabel": "Название события",
+      "titlePlaceholder": "Например, вечеринка у бассейна",
+      "privateLabel": "Приватно",
+      "descriptionLabel": "Описание",
+      "descriptionPlaceholder": "Например, что-то о событии",
+      "colorLabel": "Цвет задачи",
+      "repeatLabel": "Повтор",
+      "timePlaceholder": "ЧЧ:ММ",
+      "startTimeLabel": "Время начала",
+      "endTimeLabel": "Время окончания"
+    },
+    "repeat": {
+      "daily": "Ежедневно",
+      "weekly": "Еженедельно",
+      "monthly": "Ежемесячно"
+    },
+    "actions": {
+      "cancel": "Отмена",
+      "submit": "Отправить",
+      "saving": "Сохранение..."
+    },
+    "validation": {
+      "titleRequired": "Название события обязательно.",
+      "startRequired": "Время начала обязательно.",
+      "dayRequired": "День обязателен.",
+      "repeatTypeRequired": "Тип повтора обязателен.",
+      "weekdayRequired": "Выберите хотя бы один день недели.",
+      "monthdayRequired": "Выберите день для ежемесячного повтора.",
+      "createFailed": "Не удалось создать задачу."
+    }
+  },
+  "TasksWidget": {
+    "nextTask": "Следующая задача",
+    "loading": "Загрузка...",
+    "noUpcomingTasks": "Нет предстоящих задач",
+    "today": "Сегодня",
+    "noTasksToday": "На сегодня задач нет",
+    "until": "до {time}",
+    "errors": {
+      "loadFailed": "Не удалось загрузить задачи."
+    }
+  },
+  "TaskCard": {
+    "start": "Начало",
+    "noDescription": "Нет описания"
+  },
+  "Form": {
+    "datePicker": {
+      "weekdays": {
+        "monday": "Пн",
+        "tuesday": "Вт",
+        "wednesday": "Ср",
+        "thursday": "Чт",
+        "friday": "Пт",
+        "saturday": "Сб",
+        "sunday": "Вс"
+      }
+    },
+    "weekdaySelector": {
+      "label": "Выберите дни",
+      "days": {
+        "monday": "Пн",
+        "tuesday": "Вт",
+        "wednesday": "Ср",
+        "thursday": "Чт",
+        "friday": "Пт",
+        "saturday": "Сб",
+        "sunday": "Вс"
+      }
+    },
+    "timeInput": {
+      "hours": "Ч",
+      "minutes": "Мин"
+    },
+    "colorPicker": {
+      "selectColor": "Выбрать {color}"
+    }
+  },
+  "Admin": {
+    "sidebar": {
+      "title": "Marker Админ",
+      "personalization": "Персонализация",
+      "accounts": "Аккаунты",
+      "ads": "Реклама"
     }
   }
 }

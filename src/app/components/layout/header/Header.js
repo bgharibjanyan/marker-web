@@ -104,8 +104,8 @@ export default function Header() {
     return (
         <div className={styles.headerContainer}>
             <a href="/" className={styles.logoContainer}>
-                <img className={styles.logoMaximal} src="/images/logo/text_logo.svg" alt="logo"/>
-                <img className={styles.logoMinimal} src="/images/logo/logo.svg" alt="logo"/>
+                <img className={styles.logoMaximal} src="/images/logo/text_logo.svg" alt={t('alt.logo')}/>
+                <img className={styles.logoMinimal} src="/images/logo/logo.svg" alt={t('alt.logo')}/>
             </a>
 
             <div className={styles.navList}>
@@ -129,7 +129,7 @@ export default function Header() {
                 <img 
                     className={styles.userAvatar} 
                     src={userProfilePicture} 
-                    alt="user avatar"
+                    alt={t('alt.userAvatar')}
                     onError={(e) => {
                         e.target.src = "/uploads/profiles/default/image.png";
                     }}
@@ -138,7 +138,7 @@ export default function Header() {
                 <img 
                     className={styles.userAvatar} 
                     src="/uploads/profiles/default/image.png" 
-                    alt="default avatar"
+                    alt={t('alt.defaultAvatar')}
                 />
             )}
         </div>

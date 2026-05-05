@@ -4,6 +4,7 @@ import styles from "./CreateEvent.module.scss";
 import TextInput from "@/app/components/util/form/TextInput/TextInput";
 import TimeInput from "@/app/components/util/form/TimeInput/TimeInput";
 import {useState} from "react";
+import {useTranslations} from "next-intl";
 import TaskModel from "@/models/event/TaskModel";
 import Switch from "@/app/components/util/form/switch/Switch";
 import Radio from "@/app/components/util/form/Radio/Radio";
@@ -15,6 +16,7 @@ import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvi
 
 export default function CreateEvent(eventState) {
     const {closePopup} = usePopup();
+    const t = useTranslations('CreateTask');
 
     const getTodaySelection = () => {
         const now = new Date();
@@ -80,27 +82,27 @@ export default function CreateEvent(eventState) {
         const isCalendarDisabledRepeat = isDailyRepeat || isWeeklyRepeat;
 
         if (!formData.title?.trim()) {
-            return 'Event name is required.';
+            return t('validation.titleRequired');
         }
 
         if (!formData.start) {
-            return 'Start time is required.';
+            return t('validation.startRequired');
         }
 
         if (!isCalendarDisabledRepeat && (!formData.date || !formData.monthday)) {
-            return 'Day is required.';
+            return t('validation.dayRequired');
         }
 
         if (formData.repeat && !formData.repeatType) {
-            return 'Repeat type is required.';
+            return t('validation.repeatTypeRequired');
         }
 
         if (isWeeklyRepeat && (!Array.isArray(formData.weekdays) || formData.weekdays.length === 0)) {
-            return 'Select at least one weekday.';
+            return t('validation.weekdayRequired');
         }
 
         if (formData.repeat && formData.repeatType === 'monthly' && !formData.monthday) {
-            return 'Select a day for monthly repeat.';
+            return t('validation.monthdayRequired');
         }
 
         return '';
@@ -128,10 +130,8 @@ export default function CreateEvent(eventState) {
                 body: JSON.stringify(formData),
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
-                setFormError(data.error || 'Failed to create task.');
+                setFormError(t('validation.createFailed'));
                 return;
             }
 
@@ -140,7 +140,7 @@ export default function CreateEvent(eventState) {
             setFormKey((key) => key + 1);
             closePopup();
         } catch (error) {
-            setFormError('Failed to create task.');
+            setFormError(t('validation.createFailed'));
         } finally {
             setIsSubmitting(false);
         }
@@ -160,9 +160,9 @@ export default function CreateEvent(eventState) {
 
     return (
         <div className={styles.contentContainer}>
-            <h5 className={`${styles.title} ${styles.t3}`}>Add Task</h5>
+            <h5 className={`${styles.title} ${styles.t3}`}>{t('title')}</h5>
             <span className={`${styles.description} ${styles.t6}`}>
-                fill form to add new task to your schedule.
+                {t('description')}
             </span>
 
             <div key={formKey} className={styles.formContainer}>
@@ -171,8 +171,8 @@ export default function CreateEvent(eventState) {
                         name={'title'}
                         casual={true}
                         shadowColor="#9E373E"
-                        placeholder={"Eg. pool party"}
-                        label={"Event Name"}
+                        placeholder={t('form.titlePlaceholder')}
+                        label={t('form.titleLabel')}
                         value={formData.title}
                         onChange={handleChange}
                     />
@@ -181,7 +181,7 @@ export default function CreateEvent(eventState) {
                 <div className={`${styles.input} ${styles.privacy}`}>
                     <Switch
                         name="isPrivate"
-                        label="Private"
+                        label={t('form.privateLabel')}
                         checked={formData.isPrivate}
                         onChange={handleChange}
                         casual
@@ -196,8 +196,8 @@ export default function CreateEvent(eventState) {
                         name={'description'}
                         casual={true}
                         shadowColor="#9E373E"
-                        placeholder={"Eg. something about event "}
-                        label={"Description"}
+                        placeholder={t('form.descriptionPlaceholder')}
+                        label={t('form.descriptionLabel')}
                         value={formData.description}
                         onChange={handleChange}
                     />
@@ -208,7 +208,7 @@ export default function CreateEvent(eventState) {
                         name={'color'}
                         casual={true}
                         shadowColor="#9E373E"
-                        label={"Task Color"}
+                        label={t('form.colorLabel')}
                         value={formData.color}
                         onChange={handleChange}
                     />
@@ -218,7 +218,7 @@ export default function CreateEvent(eventState) {
                     <div className={styles.repeatHeader}>
                         <Switch
                             name="repeat"
-                            label="Repeat"
+                            label={t('form.repeatLabel')}
                             checked={formData.repeat}
                             onChange={handleChange}
                             casual
@@ -231,7 +231,7 @@ export default function CreateEvent(eventState) {
                     <div className={styles.repeatOptions}>
                         <Radio
                             name={'repeatType'}
-                            label={'Daily'}
+                            label={t('repeat.daily')}
                             value={'daily'}
                             checked={formData.repeatType === 'daily'}
                             onChange={handleChange}
@@ -239,7 +239,7 @@ export default function CreateEvent(eventState) {
                         />
                         <Radio
                             name={'repeatType'}
-                            label={'Weekly'}
+                            label={t('repeat.weekly')}
                             value={'weekly'}
                             checked={formData.repeatType === 'weekly'}
                             onChange={handleChange}
@@ -247,7 +247,7 @@ export default function CreateEvent(eventState) {
                         />
                         <Radio
                             name={'repeatType'}
-                            label={'Monthly'}
+                            label={t('repeat.monthly')}
                             value={'monthly'}
                             checked={formData.repeatType === 'monthly'}
                             onChange={handleChange}
@@ -273,8 +273,8 @@ export default function CreateEvent(eventState) {
                                 name={'start'}
                                 casual={true}
                                 shadowColor="#9E373E"
-                                placeholder={"HH:MM"}
-                                label={"Start Time"}
+                                placeholder={t('form.timePlaceholder')}
+                                label={t('form.startTimeLabel')}
                                 value={formData.start || ""}
                                 onChange={handleChange}
                             />
@@ -282,8 +282,8 @@ export default function CreateEvent(eventState) {
                                 name={'end'}
                                 casual={true}
                                 shadowColor="#9E373E"
-                                placeholder={"HH:MM"}
-                                label={"End Time"}
+                                placeholder={t('form.timePlaceholder')}
+                                label={t('form.endTimeLabel')}
                                 value={formData.end || ""}
                                 onChange={handleChange}
                             />
@@ -302,7 +302,7 @@ export default function CreateEvent(eventState) {
                 <div className={`${styles.actionBar}`}>
                     <div className={styles.actions}>
                         <Button
-                            text="Cancel"
+                            text={t('actions.cancel')}
                             bgColor="#fff"
                             textColor="#000"
                             width="auto"
@@ -314,7 +314,7 @@ export default function CreateEvent(eventState) {
                         />
                         <Button
                             type="primary"
-                            text={isSubmitting ? 'Saving...' : 'Submit'}
+                            text={isSubmitting ? t('actions.saving') : t('actions.submit')}
                             bgColor="#FF5D66"
                             textColor="white"
                             width="auto"

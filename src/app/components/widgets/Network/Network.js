@@ -3,11 +3,13 @@ import styles from "./Network.module.scss";
 
 import React from "react";
 import {useState, useEffect} from "react";
+import {useTranslations} from "next-intl";
 import useApiCall from "@/app/lib/api/call";
 import UserManager from "@/app/lib/user/UserManager";
 import AccountItem from "@/app/components/widgets/Network/AccountItem/AccountItem";
 
 const NetworkWidget = ({}) => {
+    const t = useTranslations('NetworkWidget');
     const [network, setNetwork] = useState([]);
     const apiCall = useApiCall();
 
@@ -33,7 +35,7 @@ const NetworkWidget = ({}) => {
     }, []);
     return (
         <div className={styles.userListContainer}>
-            <h6 className={`${styles.t5} ${styles.headline}`}>My Network</h6>
+            <h6 className={`${styles.t5} ${styles.headline}`}>{t('title')}</h6>
 
             <div className={styles.userList}>
                 {network[0]?.name}
@@ -44,7 +46,7 @@ const NetworkWidget = ({}) => {
                         </React.Fragment>
                     ))
                 ) : (
-                    <p className={`${styles.t4} ${styles.emptyMessage}`}>No connections yet</p>
+                    <p className={`${styles.t4} ${styles.emptyMessage}`}>{t('empty')}</p>
                 )}
             </div>
         </div>

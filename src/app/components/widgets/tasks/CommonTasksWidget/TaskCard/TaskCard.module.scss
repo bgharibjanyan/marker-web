@@ -8,7 +8,7 @@
   gap: 10px;
   align-items: stretch;
   padding: 10px;
-  border: 1px solid rgba($g-color7, 0.55);
+  border: 1px solid var(--task-color, #FF5D66);
   border-left: 4px solid var(--task-color, #FF5D66);
   border-radius: 6px;
   background-color: $g-color1;
@@ -23,8 +23,8 @@
   gap: 2px;
   padding: 8px 6px;
   border-radius: 5px;
-  background-color: rgba($g-color5, 0.1);
-  color: $g-color8;
+  background-color: color-mix(in srgb, var(--task-color, #FF5D66) 10%, transparent);
+  color: var(--task-color, #FF5D66);
   text-align: center;
 }
 
@@ -35,8 +35,7 @@
 }
 
 .timeValue {
-  color: $g-color8;
-  font-weight: 800;
+  color: var(--task-color, #FF5D66);
 }
 
 .taskContent {
@@ -64,11 +63,10 @@
 .colorDot {
   position: absolute;
   top: 50%;
-  right: 10px;
-  width: 10px;
-  height: 10px;
+  right: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background-color: var(--task-color, #FF5D66);
-  box-shadow: 0 0 0 3px rgba($g-color7, 0.22);
   transform: translateY(-50%);
 }

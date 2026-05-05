@@ -1,35 +1,37 @@
 import styles from "./styles.module.scss";
 import LinkButton from "@/app/components/util/form/LinkButton/LinkButton";
+import {getTranslations} from "next-intl/server";
 
-export default () => {
+export default async () => {
+    const t = await getTranslations('Admin.sidebar');
 
     const navigationList = [
         {
-            label: "personalization",
+            label: t('personalization'),
             url: "personalization"
         }, {
-            label: "accounts",
+            label: t('accounts'),
             url: "accounts"
         }, {
-            label: "adds",
+            label: t('ads'),
             url: "adds"
         }, {
-            label: "personalization",
+            label: t('personalization'),
             url: "personalization"
         }, {
-            label: "accounts",
+            label: t('accounts'),
             url: "accounts"
         }, {
-            label: "adds",
+            label: t('ads'),
             url: "adds"
         }, {
-            label: "personalization",
+            label: t('personalization'),
             url: "personalization"
         }, {
-            label: "accounts",
+            label: t('accounts'),
             url: "accounts"
         }, {
-            label: "adds",
+            label: t('ads'),
             url: "adds"
         },
     ]
@@ -37,7 +39,7 @@ export default () => {
     return (
         <div className={styles.sidebar}>
             <div className={styles.headline}>
-                <span className={styles.t3}>Marker Admin</span>
+                <span className={styles.t3}>{t('title')}</span>
             </div>
 
             {/*<button className={styles.toggleButton}>*/}

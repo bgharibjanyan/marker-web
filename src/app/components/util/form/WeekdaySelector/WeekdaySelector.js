@@ -1,16 +1,18 @@
 "use client";
 
 import styles from "./WeekdaySelector.module.scss";
+import {useTranslations} from "next-intl";
 
 const WeekdaySelector = ({ value = [], onChange }) => {
+    const t = useTranslations('Form.weekdaySelector');
     const weekdays = [
-        { label: 'Mon', value: 'monday' },
-        { label: 'Tue', value: 'tuesday' },
-        { label: 'Wed', value: 'wednesday' },
-        { label: 'Thu', value: 'thursday' },
-        { label: 'Fri', value: 'friday' },
-        { label: 'Sat', value: 'saturday' },
-        { label: 'Sun', value: 'sunday' },
+        { label: t('days.monday'), value: 'monday' },
+        { label: t('days.tuesday'), value: 'tuesday' },
+        { label: t('days.wednesday'), value: 'wednesday' },
+        { label: t('days.thursday'), value: 'thursday' },
+        { label: t('days.friday'), value: 'friday' },
+        { label: t('days.saturday'), value: 'saturday' },
+        { label: t('days.sunday'), value: 'sunday' },
     ];
 
     const toggleWeekday = (dayValue) => {
@@ -25,7 +27,7 @@ const WeekdaySelector = ({ value = [], onChange }) => {
 
     return (
         <div className={styles.weekdaySelector}>
-            <span className={`${styles.label} ${styles.t5}`}>Select Days</span>
+            <span className={`${styles.label} ${styles.t5}`}>{t('label')}</span>
             <div className={styles.daysContainer}>
                 {weekdays.map(day => (
                     <button
