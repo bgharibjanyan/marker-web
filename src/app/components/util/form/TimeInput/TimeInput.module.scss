@@ -1,0 +1,179 @@
+@import "../../../../../styles/variables";
+@import "../../../../../styles/fonts";
+@import "../../../../../styles/functions";
+
+.timeField {
+  width: 100%;
+
+  .fieldLabel {
+    color: $g-color8;
+    display: block;
+    margin-bottom: 8px;
+
+    @include mobile-large {
+      margin-bottom: 6px;
+    }
+  }
+
+  .timeContainer {
+    width: 100%;
+    border-radius: 6px;
+    color: $g-color2;
+    outline: none;
+    box-shadow: none;
+    position: relative;
+
+    &.casual {
+      border: 1px solid $g-color2;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 4px;
+        left: 3px;
+        width: 100%;
+        height: 100%;
+        background-color: var(--shadow-color, #9E373E);
+        border-radius: 10px;
+        z-index: -1;
+        transition: top 0.2s, left 0.2s;
+      }
+    }
+
+    &.open {
+      &::after {
+        top: 7px;
+        left: 6px;
+      }
+    }
+
+    .timeInput {
+      border-radius: 6px;
+      border: 1px solid $g-color7;
+      padding: 20px 40px 20px 12px;
+      width: calc(100% - 54px);
+      font-size: 18px;
+      background-color: $g-color1;
+      cursor: pointer;
+      transition: border-color 0.3s, box-shadow 0.3s;
+
+      @include mobile-large {
+        font-size: 16px;
+        padding: 14px 35px 14px 10px;
+        width: calc(100% - 47px);
+      }
+
+      &::placeholder {
+        color: $g-color7;
+      }
+
+      &:hover, &:focus, &:active {
+        border-color: $g-color2;
+        box-shadow: 0 0 5px rgba($g-color2, 0.5);
+        outline: none;
+      }
+    }
+
+    &.casual .timeInput {
+      &:hover, &:focus, &:active {
+        border-color: $g-color8;
+      }
+    }
+
+    &.casual:hover::after,
+    &.casual:focus-within::after {
+      top: 7px;
+      left: 6px;
+    }
+
+    .timeIcon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+
+      .icon {
+        width: 20px;
+        height: 20px;
+        color: $g-color2;
+        fill: currentColor;
+      }
+    }
+
+    .timePicker {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background-color: $g-color1;
+      border: 1px solid $g-color7;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      max-height: 220px;
+      width: 120px;
+      overflow: hidden;
+
+      .timePickerBody {
+        display: flex;
+        max-height: 140px;
+
+        .timeColumn {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+
+          .columnLabel {
+            padding: 6px 8px;
+            background-color: $g-color1;
+            font-size: 11px;
+            font-weight: 600;
+            color: $g-color8;
+            text-align: center;
+            border-bottom: 1px solid $g-color7;
+          }
+
+          .timeList {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 110px;
+
+            &::-webkit-scrollbar {
+              width: 0px;
+            }
+
+            &::-webkit-scrollbar-track {
+              background: $g-color1;
+            }
+
+            &::-webkit-scrollbar-thumb {
+              background: $g-color10;
+              border-radius: 2px;
+            }
+
+            .timeOption {
+              padding: 4px 8px;
+              text-align: center;
+              cursor: pointer;
+              font-size: 13px;
+              color: $g-color2;
+              transition: background-color 0.2s, color 0.2s;
+              user-select: none;
+
+              &:hover {
+                background-color: $g-color10;
+              }
+
+              &.selected {
+                color: $g-color6;
+                font-weight: 600;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

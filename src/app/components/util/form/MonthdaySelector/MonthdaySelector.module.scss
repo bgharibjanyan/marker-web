@@ -1,0 +1,91 @@
+@import "../../../../../styles/variables";
+@import "../../../../../styles/fonts";
+
+.monthdaySelector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  background-color: $g-color1;
+  border: 1px solid $g-color7;
+  border-radius: 6px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+
+    .navButton {
+      border: 1px solid $g-color7;
+      background-color: $g-color1;
+      border-radius: 4px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 16px;
+      color: $g-color2;
+      transition: all 0.2s;
+
+      &:hover {
+        border-color: $g-color8;
+        background-color: rgba($g-color8, 0.05);
+      }
+    }
+
+    .monthYear {
+      color: $g-color2;
+      font-weight: 600;
+      flex: 1;
+      text-align: center;
+    }
+  }
+
+  .weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 8px;
+
+    .weekday {
+      text-align: center;
+      color: $g-color8;
+      font-weight: 600;
+      padding: 4px 0;
+    }
+  }
+
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+
+    .day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      cursor: default;
+      font-size: 13px;
+      color: $g-color7;
+      user-select: none;
+
+      &.active {
+        color: $g-color2;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          background-color: rgba($g-color8, 0.1);
+        }
+
+        &.selected {
+          background-color: $g-color8;
+          color: $g-color1;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

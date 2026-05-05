@@ -1,0 +1,65 @@
+@import "../../../../../styles/functions";
+@import "../../../../../styles/fonts";
+@import "../../../../../styles/variables";
+
+.commonTasks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px 5px;
+
+  .nextTaskCard,
+  .taskList {
+    border: 1px solid $g-color7;
+    border-radius: 6px;
+    background-color: rgba($g-color8, 0.02);
+    padding: 12px;
+  }
+
+  .nextTaskCard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sectionLabel {
+    color: $g-color8;
+    font-weight: 700;
+  }
+
+  .taskName {
+    color: $g-color2;
+    font-weight: 700;
+  }
+
+  .taskDescription,
+  .emptyMessage {
+    color: $g-color3;
+  }
+
+  .errorMessage {
+    color: $g-color6;
+  }
+
+  .timer {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 4px;
+  }
+
+  .timerValue {
+    color: $g-color6;
+    font-weight: 700;
+  }
+
+  .timerLabel {
+    color: $g-color8;
+  }
+
+  .taskList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

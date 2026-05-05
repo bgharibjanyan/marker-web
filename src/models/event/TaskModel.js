@@ -10,6 +10,7 @@ export default class TaskModel {
                     repeatType,
                     weekdays,
                     monthday,
+                    color,
                     isPrivate,
                     media,
                     userId,
@@ -25,6 +26,7 @@ export default class TaskModel {
         this.repeatType = repeatType ? repeatType : null;
         this.weekdays = weekdays ? weekdays : [];
         this.monthday = monthday ? monthday : null;
+        this.color = color ? color : '#FF5D66';
         this.date = date ? date : null;
         this.isPrivate = isPrivate ? isPrivate : false;
         this.media = media ? media : [];

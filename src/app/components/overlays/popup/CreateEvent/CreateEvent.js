@@ -9,6 +9,7 @@ import Switch from "@/app/components/util/form/switch/Switch";
 import Radio from "@/app/components/util/form/Radio/Radio";
 import WeekdaySelector from "@/app/components/util/form/WeekdaySelector/WeekdaySelector";
 import DatePicker from "@/app/components/util/form/DatePicker/DatePicker";
+import ColorPicker from "@/app/components/util/form/ColorPicker/ColorPicker";
 import Button from "@/app/components/util/buttons/MarkerButton/Button";
 import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvider";
 
@@ -39,6 +40,7 @@ export default function CreateEvent(eventState) {
             weekdays: [],
             monthday: todaySelection.monthday,
             date: todaySelection.date,
+            color: '#FF5D66',
             media: null,
         };
     };
@@ -197,6 +199,17 @@ export default function CreateEvent(eventState) {
                         placeholder={"Eg. something about event "}
                         label={"Description"}
                         value={formData.description}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div className={`${styles.input} ${styles.eventColor}`}>
+                    <ColorPicker
+                        name={'color'}
+                        casual={true}
+                        shadowColor="#9E373E"
+                        label={"Task Color"}
+                        value={formData.color}
                         onChange={handleChange}
                     />
                 </div>

@@ -1,0 +1,45 @@
+@import "../../../../../styles/variables";
+@import "../../../../../styles/fonts";
+
+.weekdaySelector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+
+  .label {
+    color: $g-color8;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .daysContainer {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .dayButton {
+    border: 1px solid $g-color7;
+    border-radius: 4px;
+    padding: 6px 10px;
+    background-color: $g-color1;
+    color: $g-color2;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+    user-select: none;
+
+    &:hover {
+      border-color: $g-color8;
+      background-color: rgba($g-color8, 0.05);
+    }
+
+    &.selected {
+      background-color: $g-color8;
+      color: $g-color1;
+      border-color: $g-color8;
+    }
+  }
+}

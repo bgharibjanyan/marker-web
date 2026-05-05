@@ -11,12 +11,16 @@
   }
 
 
-  .eventDescription {
-    display: block;
-    color: $g-color10;
-    font-weight: 400;
-    width: 100%;
-  }
+    .eventDescription {
+      display: block;
+      color: $g-color10;
+      font-weight: 400;
+      width: 100%;
+    }
+
+    .eventColor {
+      width: 100%;
+    }
 
   .formContainer {
     position: relative;

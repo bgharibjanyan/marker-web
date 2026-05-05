@@ -6,7 +6,7 @@ import Button from "@/app/components/util/buttons/MarkerButton/Button";
 import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvider";
 
 import styles from "./page.module.scss";
-import InTimeTasksWidget from "@/app/components/widgets/tasks/InTimeTasks/InTimeTasks";
+import CommonTasksWidget from "@/app/components/widgets/tasks/CommonTasksWidget/CommonTasksWidget";
 import CreateEvent from "@/app/components/overlays/popup/CreateEvent/CreateEvent";
 
 export default function Dashboard() {
@@ -42,11 +42,11 @@ export default function Dashboard() {
 
                 <Button
                     type="primary"
-                    text="My Tasks"
+                    text="Create Task"
                     size="s"
                     bgColor="#FF5D66"
                     textColor="white"
-                    maxWidth="120px"
+                    maxWidth="160px"
                     casual={true}
                     onClick={() => {
                         openPopup(
@@ -63,7 +63,7 @@ export default function Dashboard() {
                 </div>
                 <div className={styles.mainContent}></div>
                 <div className={styles.rightSidebar}>
-                    <InTimeTasksWidget></InTimeTasksWidget>
+                    <CommonTasksWidget></CommonTasksWidget>
                 </div>
             </div>
         </div>
