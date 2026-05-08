@@ -56,6 +56,7 @@
   "Global": {
     "header": {
       "Schedule": "Schedule",
+      "Network": "Network",
       "Events": "Events",
       "Home": "Home"
     },
@@ -81,7 +82,9 @@
   },
   "CreateTask": {
     "title": "Add Task",
+    "editTitle": "Edit Task",
     "description": "Fill form to add new task to your schedule.",
+    "editDescription": "Update this task in your schedule.",
     "form": {
       "titleLabel": "Event Name",
       "titlePlaceholder": "Eg. pool party",
@@ -102,7 +105,9 @@
     "actions": {
       "cancel": "Cancel",
       "submit": "Submit",
-      "saving": "Saving..."
+      "update": "Update",
+      "saving": "Saving...",
+      "updating": "Updating..."
     },
     "validation": {
       "titleRequired": "Event name is required.",
@@ -111,7 +116,8 @@
       "repeatTypeRequired": "Repeat type is required.",
       "weekdayRequired": "Select at least one weekday.",
       "monthdayRequired": "Select a day for monthly repeat.",
-      "createFailed": "Failed to create task."
+      "createFailed": "Failed to create task.",
+      "updateFailed": "Failed to update task."
     }
   },
   "TasksWidget": {
@@ -123,11 +129,23 @@
     "until": "until {time}",
     "errors": {
       "loadFailed": "Failed to load tasks."
+    },
+    "delete": {
+      "title": "Delete task",
+      "message": "Delete “{task}”? This action cannot be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "error": "Failed to delete task."
     }
   },
   "TaskCard": {
     "start": "Start",
-    "noDescription": "No description"
+    "noDescription": "No description",
+    "actions": {
+      "more": "Open task menu",
+      "edit": "Edit",
+      "delete": "Delete"
+    }
   },
   "Form": {
     "datePicker": {

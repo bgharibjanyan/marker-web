@@ -1,7 +1,6 @@
 @import "../../../../../styles/variables";
 @import "../../../../../styles/fonts";
 
-
 .contentContainer, .homePageHeading {
   padding: 20px 15px;
 }
@@ -27,14 +26,15 @@
   gap: 20px;
 
   .leftSidebar, .rightSidebar, .mainContent {
-    border-radius: 12px;
+    border-radius: 16px;
+    overflow: hidden;
 
-    @include fluid(border-radius, 8px, 8px, 10px, 10px, 12px, 12px);
+    @include fluid(border-radius, 8px, 10px, 12px, 12px, 14px, 16px);
   }
 
   .leftSidebar, .rightSidebar {
-     min-height: 200px;
-    border: 1px solid;
+    min-height: 200px;
+
 
     @include fluid(width, 0, 0, 0, 200px, 250px, 350px);
     @include tablet {

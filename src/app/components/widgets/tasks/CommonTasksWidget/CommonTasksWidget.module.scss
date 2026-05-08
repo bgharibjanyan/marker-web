@@ -5,14 +5,15 @@
 .commonTasks {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 10px 5px;
+  gap: 5px;
+  padding: 5px;
+  max-height: calc(100vh - 400px);
+  background-color: $g-color8;
 
   .nextTaskCard,
   .taskList {
-    border: 1px solid $g-color7;
-    border-radius: 6px;
-    background-color: rgba($g-color8, 0.02);
+    border-radius: 12px;
+    background-color: $g-color1;
     padding: 12px;
   }
 
@@ -61,5 +62,12 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    max-height: calc(100% - 300px);
+    overflow: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }

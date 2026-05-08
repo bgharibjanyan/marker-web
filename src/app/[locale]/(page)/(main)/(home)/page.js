@@ -1,4 +1,5 @@
 "use client"
+import styles from "./page.module.scss";
 
 import RecEventsSlider from "@/app/components/RecEventsSlider/RecEventsSlider";
 import NetworkWidget from "@/app/components/widgets/Network/Network";
@@ -6,7 +7,6 @@ import Button from "@/app/components/util/buttons/MarkerButton/Button";
 import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvider";
 import {useTranslations} from "next-intl";
 
-import styles from "./page.module.scss";
 import CommonTasksWidget from "@/app/components/widgets/tasks/CommonTasksWidget/CommonTasksWidget";
 import CreateEvent from "@/app/components/overlays/popup/CreateEvent/CreateEvent";
 

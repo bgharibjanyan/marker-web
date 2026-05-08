@@ -14,9 +14,11 @@ import ColorPicker from "@/app/components/util/form/ColorPicker/ColorPicker";
 import Button from "@/app/components/util/buttons/MarkerButton/Button";
 import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvider";
 
-export default function CreateEvent(eventState) {
+export default function CreateEvent({task = null, onSaved, onCancel, ...eventState} = {}) {
     const {closePopup} = usePopup();
     const t = useTranslations('CreateTask');
+    const taskId = task?._id || eventState?._id;
+    const isEditing = Boolean(taskId);
 
     const getTodaySelection = () => {
         const now = new Date();
@@ -51,6 +53,7 @@ export default function CreateEvent(eventState) {
         return new TaskModel({
             ...getInitialEventState(),
             ...eventState,
+            ...(task || {}),
         });
     }, {})
     const [formKey, setFormKey] = useState(0);
@@ -121,26 +124,38 @@ export default function CreateEvent(eventState) {
 
         try {
             const token = localStorage.getItem('marker_im_token');
-            const response = await fetch('/api/task/add-task', {
+            const response = await fetch(isEditing ? '/api/task/update-task' : '/api/task/add-task', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     ...(token ? {Authorization: token} : {}),
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,
+                    ...(isEditing ? {taskId} : {}),
+                }),
             });
 
             if (!response.ok) {
-                setFormError(t('validation.createFailed'));
+                setFormError(t(isEditing ? 'validation.updateFailed' : 'validation.createFailed'));
                 return;
             }
 
-            const nextState = new TaskModel(getInitialEventState());
-            setFormData(nextState);
-            setFormKey((key) => key + 1);
+            if (onSaved) {
+                await onSaved();
+            } else {
+                window.dispatchEvent(new CustomEvent('marker:tasks-updated'));
+            }
+
+            if (!isEditing) {
+                const nextState = new TaskModel(getInitialEventState());
+                setFormData(nextState);
+                setFormKey((key) => key + 1);
+            }
+
             closePopup();
         } catch (error) {
-            setFormError(t('validation.createFailed'));
+            setFormError(t(isEditing ? 'validation.updateFailed' : 'validation.createFailed'));
         } finally {
             setIsSubmitting(false);
         }
@@ -151,8 +166,8 @@ export default function CreateEvent(eventState) {
         setFormError('');
         setFormKey((key) => key + 1);
 
-        if (typeof eventState?.onCancel === 'function') {
-            eventState.onCancel();
+        if (typeof onCancel === 'function') {
+            onCancel();
         }
 
         closePopup();
@@ -160,9 +175,9 @@ export default function CreateEvent(eventState) {
 
     return (
         <div className={styles.contentContainer}>
-            <h5 className={`${styles.title} ${styles.t3}`}>{t('title')}</h5>
+            <h5 className={`${styles.title} ${styles.t3}`}>{t(isEditing ? 'editTitle' : 'title')}</h5>
             <span className={`${styles.description} ${styles.t6}`}>
-                {t('description')}
+                {t(isEditing ? 'editDescription' : 'description')}
             </span>
 
             <div key={formKey} className={styles.formContainer}>
@@ -314,7 +329,9 @@ export default function CreateEvent(eventState) {
                         />
                         <Button
                             type="primary"
-                            text={isSubmitting ? t('actions.saving') : t('actions.submit')}
+                            text={isSubmitting
+                                ? t(isEditing ? 'actions.updating' : 'actions.saving')
+                                : t(isEditing ? 'actions.update' : 'actions.submit')}
                             bgColor="#FF5D66"
                             textColor="white"
                             width="auto"

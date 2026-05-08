@@ -5,14 +5,91 @@
 .taskCard {
   position: relative;
   display: flex;
-  gap: 10px;
-  align-items: stretch;
-  padding: 10px;
+  padding: 10px 48px 10px 10px;
   border: 1px solid var(--task-color, #FF5D66);
   border-left: 4px solid var(--task-color, #FF5D66);
   border-radius: 6px;
   background-color: $g-color1;
   box-shadow: 0 6px 18px rgba($g-color2, 0.05);
+  z-index: 1;
+}
+
+.menuOpen {
+  z-index: 10;
+}
+
+.cardHeader {
+  display: contents;
+}
+
+.menuWrapper {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  z-index: 2;
+  flex: 0 0 auto;
+  transform: translateY(-50%);
+}
+
+.moreButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid color-mix(in srgb, var(--task-color, #FF5D66) 45%, transparent);
+  border-radius: 50%;
+  background-color: var(--task-color, #FF5D66);
+  cursor: pointer;
+
+  span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: $g-color1;
+  }
+
+  &:hover,
+  &[aria-expanded="true"] {
+    background-color: color-mix(in srgb, var(--task-color, #FF5D66) 86%, $g-color2);
+  }
+}
+
+.cardBody {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.contextMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 11;
+  min-width: 112px;
+  padding: 6px;
+  border: 1px solid rgba($g-color7, 0.65);
+  border-radius: 6px;
+  background-color: $g-color1;
+  box-shadow: 0 10px 22px rgba($g-color2, 0.12);
+
+  button {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 5px;
+    background-color: transparent;
+    color: $g-color2;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--task-color, #FF5D66) 12%, transparent);
+      color: var(--task-color, #FF5D66);
+    }
+  }
 }
 
 .timeBadge {
@@ -45,28 +122,17 @@
   flex-direction: column;
   justify-content: center;
   gap: 4px;
-  padding-right: 18px;
 }
 
 .taskName {
-  color: $g-color2;
+  color: var(--task-color, #FF5D66);
   font-weight: 700;
   overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .taskDescription {
   color: $g-color3;
   line-height: 1.35;
   overflow-wrap: anywhere;
-}
-
-.colorDot {
-  position: absolute;
-  top: 50%;
-  right: 16px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background-color: var(--task-color, #FF5D66);
-  transform: translateY(-50%);
 }

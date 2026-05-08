@@ -1,8 +1,11 @@
 "use client";
 
-import {useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {useTranslations} from "next-intl";
 import TaskCard from "./TaskCard/TaskCard";
+import CreateEvent from "@/app/components/overlays/popup/CreateEvent/CreateEvent";
+import ConfirmPopup from "@/app/components/overlays/popup/ConfirmPopup/ConfirmPopup";
+import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvider";
 import styles from "./CommonTasksWidget.module.scss";
 
 const WEEKDAYS = [
@@ -149,37 +152,90 @@ const formatCountdown = (milliseconds) => {
 
 const CommonTasksWidget = () => {
     const t = useTranslations('TasksWidget');
+    const {openPopup} = usePopup();
     const [tasks, setTasks] = useState([]);
     const [now, setNow] = useState(() => new Date());
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchTasks = async () => {
-            try {
-                const token = localStorage.getItem('marker_im_token');
-                const response = await fetch('/api/task/get-user-task', {
-                    headers: {
-                        ...(token ? {Authorization: token} : {}),
-                    },
-                });
-                const data = await response.json();
+    const fetchTasks = useCallback(async ({showLoading = false} = {}) => {
+        if (showLoading) {
+            setIsLoading(true);
+        }
 
-                if (!response.ok) {
-                    setError(t('errors.loadFailed'));
-                    return;
-                }
+        try {
+            const token = localStorage.getItem('marker_im_token');
+            const response = await fetch('/api/task/get-user-task', {
+                headers: {
+                    ...(token ? {Authorization: token} : {}),
+                },
+            });
+            const data = await response.json();
 
-                setTasks(Array.isArray(data.tasks) ? data.tasks : []);
-            } catch (error) {
+            if (!response.ok) {
                 setError(t('errors.loadFailed'));
-            } finally {
-                setIsLoading(false);
+                return;
             }
+
+            setError('');
+            setTasks(Array.isArray(data.tasks) ? data.tasks : []);
+        } catch (error) {
+            setError(t('errors.loadFailed'));
+        } finally {
+            setIsLoading(false);
+        }
+    }, [t]);
+
+    useEffect(() => {
+        fetchTasks({showLoading: true});
+    }, [fetchTasks]);
+
+    useEffect(() => {
+        const handleTasksUpdated = () => {
+            fetchTasks();
         };
 
-        fetchTasks();
-    }, [t]);
+        window.addEventListener('marker:tasks-updated', handleTasksUpdated);
+        return () => window.removeEventListener('marker:tasks-updated', handleTasksUpdated);
+    }, [fetchTasks]);
+
+    const handleEditTask = useCallback((task) => {
+        openPopup(
+            <CreateEvent
+                task={task}
+                onSaved={() => fetchTasks()}
+            />
+        );
+    }, [fetchTasks, openPopup]);
+
+    const handleDeleteTask = useCallback((task) => {
+        openPopup(
+            <ConfirmPopup
+                title={t('delete.title')}
+                message={t('delete.message', {task: task.title})}
+                confirmText={t('delete.confirm')}
+                cancelText={t('delete.cancel')}
+                errorMessage={t('delete.error')}
+                onConfirm={async () => {
+                    const token = localStorage.getItem('marker_im_token');
+                    const response = await fetch('/api/task/delete-task', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...(token ? {Authorization: token} : {}),
+                        },
+                        body: JSON.stringify({taskId: task._id}),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(t('delete.error'));
+                    }
+
+                    await fetchTasks();
+                }}
+            />
+        );
+    }, [fetchTasks, openPopup, t]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -264,7 +320,12 @@ const CommonTasksWidget = () => {
                 )}
 
                 {todayTasks.map((task) => (
-                    <TaskCard key={task._id} task={task}/>
+                    <TaskCard
+                        key={task._id}
+                        task={task}
+                        onEdit={handleEditTask}
+                        onDelete={handleDeleteTask}
+                    />
                 ))}
             </div>
         </div>

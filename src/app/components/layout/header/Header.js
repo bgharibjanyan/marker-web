@@ -2,11 +2,11 @@
 
 import styles from "./Header.module.scss";
 import LanguageSwitcher from "@/app/components/util/LanguageSwitcher/LanguageSwitcher";
-import { useLocale, useTranslations } from 'next-intl';
-import { usePathname, useRouter } from "next/navigation";
+import {useLocale, useTranslations} from 'next-intl';
+import {usePathname, useRouter} from "next/navigation";
 import LinkButton from "@/app/components/util/form/LinkButton/LinkButton";
-import { ColorSelector } from "@/app/scripts/HelperFunctions/colorSelector";
-import { useEffect, useState } from "react";
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
+import {useEffect, useState} from "react";
 
 import UserManager from "@/app/lib/user/UserManager";
 
@@ -18,7 +18,7 @@ export default function Header() {
 
     const [activeColor, setActiveColor] = useState("#FF5964");
     const [defaultColor, setDefaultColor] = useState("#000");
-    
+
     const [userProfilePicture, setUserProfilePicture] = useState("/uploads/profiles/default/image.png");
     const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
@@ -61,12 +61,12 @@ export default function Header() {
                 });
 
                 if (authResponse.ok) {
-                    const { user } = await authResponse.json();
+                    const {user} = await authResponse.json();
                     setIsUserLoggedIn(true);
-                    
+
                     const profileResponse = await fetch(`/api/user/profile?userId=${user._id}`);
                     if (profileResponse.ok) {
-                        const { user: userProfile } = await profileResponse.json();
+                        const {user: userProfile} = await profileResponse.json();
                         setUserProfilePicture(userProfile.profilePicture || "/uploads/profiles/default/image.png");
                     }
                 } else {
@@ -94,6 +94,9 @@ export default function Header() {
         {
             label: t('header.Schedule'),
             src: "/schedule"
+        }, {
+            label: t('header.Network'),
+            src: "/Network"
         }
     ];
 
@@ -126,18 +129,18 @@ export default function Header() {
 
             <LanguageSwitcher currentLocale={locale}/>
             {isUserLoggedIn ? (
-                <img 
-                    className={styles.userAvatar} 
-                    src={userProfilePicture} 
+                <img
+                    className={styles.userAvatar}
+                    src={userProfilePicture}
                     alt={t('alt.userAvatar')}
                     onError={(e) => {
                         e.target.src = "/uploads/profiles/default/image.png";
                     }}
                 />
             ) : (
-                <img 
-                    className={styles.userAvatar} 
-                    src="/uploads/profiles/default/image.png" 
+                <img
+                    className={styles.userAvatar}
+                    src="/uploads/profiles/default/image.png"
                     alt={t('alt.defaultAvatar')}
                 />
             )}
