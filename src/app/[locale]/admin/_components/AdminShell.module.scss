@@ -1,0 +1,188 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/fonts";
+
+.shell {
+  min-height: 100vh;
+  display: flex;
+  background: #f7f7f8;
+  color: $g-color17;
+}
+
+.content {
+  min-width: 0;
+  flex: 1;
+  padding: 28px;
+  overflow: auto;
+}
+
+.sidebar {
+  width: 286px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  border-left: 1px solid #e7e7ea;
+  background: $g-color1;
+  padding: 22px;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+  }
+}
+
+.brandTitle,
+.brandMeta,
+.navLabel,
+.navDescription {
+  display: block;
+}
+
+.brandTitle {
+  font-size: 15px;
+  font-weight: 800;
+  color: $g-color8;
+}
+
+.brandMeta {
+  margin-top: 2px;
+  font-size: 12px;
+  color: $g-color3;
+}
+
+.navList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.navItem {
+  width: 100%;
+  min-height: 62px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: $g-color17;
+  text-align: left;
+  padding: 11px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: #f3f3f5;
+    border-color: #e4e4e8;
+  }
+
+  &.active {
+    background: $bg-color10;
+    border-color: rgba(255, 89, 100, 0.3);
+    color: $g-color8;
+  }
+}
+
+.navLabel {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.navDescription {
+  margin-top: 4px;
+  font-size: 11px;
+  color: $g-color3;
+}
+
+.logoutButton {
+  width: 100%;
+  min-height: 42px;
+  margin-top: auto;
+  border: 1px solid #e4e4e8;
+  border-radius: 8px;
+  background: $g-color1;
+  color: $g-color8;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    background: #fff2f3;
+    border-color: rgba(255, 89, 100, 0.32);
+  }
+}
+
+.loginShell,
+.loadingScreen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fff 0%, #f7f7f8 48%, #fff2f3 100%);
+}
+
+.loginShell {
+  display: grid;
+  place-items: center;
+  padding: 22px;
+}
+
+.loadingScreen {
+  display: grid;
+  place-items: center;
+}
+
+.loadingPanel {
+  min-width: 220px;
+  border: 1px solid #ececf0;
+  border-radius: 8px;
+  background: $g-color1;
+  padding: 18px 20px;
+  text-align: center;
+  color: $g-color3;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (max-width: $tablet) {
+  .shell {
+    flex-direction: column;
+  }
+
+  .content {
+    order: 2;
+    padding: 18px;
+  }
+
+  .sidebar {
+    order: 1;
+    width: auto;
+    min-height: auto;
+    position: static;
+    border-left: 0;
+    border-bottom: 1px solid #e7e7ea;
+  }
+
+  .navList {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: $mobile) {
+  .content {
+    padding: 14px;
+  }
+
+  .sidebar {
+    padding: 14px;
+  }
+
+  .navList {
+    grid-template-columns: 1fr;
+  }
+}

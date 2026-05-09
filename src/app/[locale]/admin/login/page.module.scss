@@ -1,0 +1,91 @@
+@import "../../../../styles/variables";
+
+.loginCard {
+  width: min(100%, 420px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border: 1px solid #e7e7ea;
+  border-radius: 8px;
+  background: $g-color1;
+  padding: 28px;
+  box-shadow: 0 18px 50px rgba(35, 31, 32, 0.08);
+
+  h1 {
+    margin: 0;
+    color: $g-color17;
+    font-size: 30px;
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: $g-color3;
+    font-size: 13px;
+  }
+}
+
+.logoRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: $g-color8;
+  font-size: 14px;
+  font-weight: 800;
+
+  img {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  span {
+    font-size: 12px;
+    color: $g-color3;
+    font-weight: 800;
+  }
+
+  input {
+    min-height: 46px;
+    border: 1px solid #dedee3;
+    border-radius: 8px;
+    padding: 0 13px;
+    font: inherit;
+    color: $g-color17;
+    outline: none;
+
+    &:focus {
+      border-color: $g-color4;
+      box-shadow: 0 0 0 3px rgba(69, 74, 222, 0.12);
+    }
+  }
+}
+
+.error {
+  border: 1px solid rgba(255, 89, 100, 0.34);
+  border-radius: 8px;
+  background: $bg-color10;
+  color: $g-color8;
+  padding: 11px 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.submitButton {
+  min-height: 46px;
+  border: 0;
+  border-radius: 8px;
+  background: $g-color8;
+  color: $g-color1;
+  font-weight: 800;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.65;
+  }
+}

@@ -1,5 +1,5 @@
 import clientPromise from "@/app/lib/mongodb";
-import EventMmodel from "@/models/event/EventMmodel";
+import EventModel from "@/models/event/EventModel";
 import {console} from "next/dist/compiled/@edge-runtime/primitives";
 
 export async function POST(request) {
@@ -28,7 +28,7 @@ export async function POST(request) {
         const body = await request.json();
 
 
-        let eventData = new EventMmodel(body)
+        let eventData = new EventModel(body)
 
 
         eventData.setUser(user._id)

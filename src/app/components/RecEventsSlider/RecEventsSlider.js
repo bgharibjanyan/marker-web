@@ -13,11 +13,15 @@ export default ({
 
                 }) => {
     const t = useTranslations('Global');
+    let sliderSlides = slides;
 
+    if (!sliderSlides.length) {
+        return null;
+    }
 
-    if (!slides.length<= 5) {
-        while (slides.length <= 5) {
-            slides=[...slides,...slides]
+    if (sliderSlides.length <= 5) {
+        while (sliderSlides.length <= 5) {
+            sliderSlides = [...sliderSlides, ...sliderSlides]
         }
     }
 
@@ -52,7 +56,7 @@ export default ({
                 }}
             >
 
-                {slides.map((slide, index) => (
+                {sliderSlides.map((slide, index) => (
                     <SwiperSlide key={index}>
                         <a href={slide.url}>
                             <div className={styles.slide} >

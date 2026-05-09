@@ -10,28 +10,60 @@ import {useTranslations} from "next-intl";
 import CommonTasksWidget from "@/app/components/widgets/tasks/CommonTasksWidget/CommonTasksWidget";
 import CreateEvent from "@/app/components/overlays/popup/CreateEvent/CreateEvent";
 import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
+import {useEffect, useState} from "react";
+
+const SLIDER_STORAGE_KEY = "marker-admin-homepage-slider";
+
+const defaultSlides = [
+    {
+        url: "#",
+        imgSrc: '/uploads/slider/1.png'
+    }, {
+        url: "#",
+        imgSrc: '/uploads/slider/2.png'
+    }, {
+        url: "#",
+        imgSrc: '/uploads/slider/3.png'
+    }, {
+        url: "#",
+        imgSrc: '/uploads/slider/4.png'
+    }, {
+        url: "#",
+        imgSrc: '/uploads/slider/5.png'
+    }
+]
 
 export default function Dashboard() {
     const {openPopup} = usePopup();
     const t = useTranslations('Dashboard');
-    const slides = [
-        {
-            url: "#",
-            imgSrc: '/uploads/slider/1.png'
-        }, {
-            url: "#",
-            imgSrc: '/uploads/slider/2.png'
-        }, {
-            url: "#",
-            imgSrc: '/uploads/slider/3.png'
-        }, {
-            url: "#",
-            imgSrc: '/uploads/slider/4.png'
-        }, {
-            url: "#",
-            imgSrc: '/uploads/slider/5.png'
+    const [slides, setSlides] = useState(defaultSlides);
+
+    useEffect(() => {
+        const storedSlides = window.localStorage.getItem(SLIDER_STORAGE_KEY);
+
+        if (!storedSlides) {
+            return;
         }
-    ]
+
+        try {
+            const parsedSlides = JSON.parse(storedSlides);
+            if (!Array.isArray(parsedSlides)) {
+                return;
+            }
+
+            const homepageSlides = parsedSlides
+                .filter((slide) => slide.active)
+                .map((slide) => ({
+                    url: slide.url || "#",
+                    imgSrc: slide.imgSrc
+                }))
+                .filter((slide) => slide.imgSrc);
+
+            setSlides(homepageSlides);
+        } catch (err) {
+            window.localStorage.removeItem(SLIDER_STORAGE_KEY);
+        }
+    }, []);
 
     return (
         <div>

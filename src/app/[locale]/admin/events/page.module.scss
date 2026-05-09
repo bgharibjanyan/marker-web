@@ -1,0 +1,38 @@
+@import "../../../../styles/variables";
+
+.eventsPage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  h1 {
+    margin: 4px 0 0;
+    font-size: 32px;
+    color: $g-color17;
+  }
+}
+
+.eyebrow {
+  color: $g-color8;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.panel {
+  border: 1px solid #e9e9ed;
+  border-radius: 8px;
+  background: $g-color1;
+  padding: 22px;
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    color: $g-color17;
+  }
+
+  p {
+    margin: 10px 0 0;
+    color: $g-color3;
+  }
+}

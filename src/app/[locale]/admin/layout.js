@@ -3,9 +3,7 @@ import {NextIntlClientProvider} from "next-intl";
 import {getMessages, getTranslations, setRequestLocale} from "next-intl/server";
 import {notFound} from "next/navigation";
 import {routing} from "@/i18n/routing";
-import styles from "./layout.module.scss";
-
-import MainSideBar from "@/app/components/admin/layout/mainSideBar";
+import AdminShell from "./_components/AdminShell";
 
 
 export default async function MarkerLayout({children, params}) {
@@ -24,10 +22,7 @@ export default async function MarkerLayout({children, params}) {
         </head>
         <body>
         <NextIntlClientProvider messages={messages}>
-            <div className={styles.page}>
-                <MainSideBar></MainSideBar>
-                <div className={styles.mainContent}> {children} </div>
-            </div>
+            <AdminShell>{children}</AdminShell>
         </NextIntlClientProvider>
         </body>
         </html>

@@ -12,7 +12,7 @@ export async function POST(request) {
         const usersCollection = client.db("marker").collection("user");
 
         const body = await request.json();
-        const { firstname, login,email, password, age, sex, lastname, address, profilePicture } = body;
+        const { firstname, login,email, password, age, sex, lastname, address, country, city, profilePicture } = body;
 
         if (!firstname || !login || !password || !age || !sex) {
             return Response.json({ error: "Missing required fields" }, { status: 400 });
@@ -37,6 +37,8 @@ export async function POST(request) {
             sex,
             lastname,
             address,
+            country,
+            city,
             profilePicture: defaultProfilePicture,
         });
 

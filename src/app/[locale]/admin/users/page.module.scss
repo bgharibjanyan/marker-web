@@ -1,0 +1,380 @@
+@import "../../../../styles/variables";
+
+.usersPage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header,
+.editorHeader,
+.actions {
+  display: flex;
+  align-items: center;
+}
+
+.header,
+.editorHeader {
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.header {
+  h1 {
+    margin: 4px 0 0;
+    font-size: 32px;
+    color: $g-color17;
+  }
+}
+
+.eyebrow {
+  color: $g-color8;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  gap: 16px;
+  min-height: 0;
+}
+
+.userList,
+.editor {
+  border: 1px solid #e9e9ed;
+  border-radius: 8px;
+  background: $g-color1;
+}
+
+.userList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  max-height: calc(100vh - 150px);
+  min-height: 420px;
+  overflow: hidden;
+}
+
+.searchField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 8px;
+
+  span {
+    color: $g-color3;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  input {
+    width: 100%;
+    min-height: 42px;
+    box-sizing: border-box;
+    border: 1px solid #dedee3;
+    border-radius: 8px;
+    background: $g-color1;
+    color: $g-color17;
+    font: inherit;
+    padding: 0 12px;
+    outline: none;
+
+    &:focus {
+      border-color: $g-color4;
+      box-shadow: 0 0 0 3px rgba(69, 74, 222, 0.12);
+    }
+  }
+}
+
+.userScrollArea {
+  min-height: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.userItem {
+  min-height: 62px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  padding: 10px 12px;
+  cursor: pointer;
+
+  span,
+  small {
+    display: block;
+  }
+
+  span {
+    color: $g-color17;
+    font-weight: 800;
+  }
+
+  small {
+    margin-top: 4px;
+    color: $g-color3;
+  }
+
+  &:hover,
+  &.active {
+    background: #f7f7f8;
+    border-color: #e4e4e8;
+  }
+
+  &.active {
+    color: $g-color8;
+  }
+}
+
+.editor {
+  padding: 20px;
+}
+
+.editorHeader {
+  h2 {
+    margin: 0;
+    color: $g-color17;
+    font-size: 22px;
+  }
+
+  span {
+    display: block;
+    margin-top: 4px;
+    color: $g-color3;
+    font-size: 12px;
+    font-weight: 700;
+  }
+}
+
+.actions {
+  gap: 8px;
+}
+
+.primaryButton,
+.secondaryButton {
+  min-height: 40px;
+  border-radius: 8px;
+  padding: 0 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.primaryButton {
+  border: 0;
+  background: $g-color8;
+  color: $g-color1;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+}
+
+.secondaryButton {
+  border: 1px solid #e2e2e7;
+  background: $g-color1;
+  color: $g-color3;
+}
+
+.savedState,
+.errorState,
+.emptyState {
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.savedState {
+  margin-top: 16px;
+  border: 1px solid rgba(47, 158, 68, 0.24);
+  background: rgba(47, 158, 68, 0.08);
+  color: $g-color14;
+}
+
+.errorState {
+  border: 1px solid rgba(255, 89, 100, 0.34);
+  background: $bg-color10;
+  color: $g-color8;
+}
+
+.emptyState {
+  border: 1px dashed #dedee3;
+  background: #f7f7f8;
+  color: $g-color3;
+}
+
+.listEndState {
+  padding: 8px 0;
+  color: $g-color3;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.profileUploader {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid #e9e9ed;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.profilePreview {
+  width: 92px;
+  height: 92px;
+  border: 1px solid #e2e2e7;
+  border-radius: 8px;
+  object-fit: cover;
+  background: $g-color1;
+}
+
+.profileUploadContent {
+  min-width: 0;
+
+  span,
+  strong {
+    display: block;
+  }
+
+  span {
+    color: $g-color3;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  strong {
+    margin-top: 6px;
+    color: $g-color17;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+  }
+}
+
+.uploadButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  margin-top: 12px;
+  border: 1px solid #e2e2e7;
+  border-radius: 8px;
+  background: $g-color1;
+  color: $g-color3;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 0 14px;
+  cursor: pointer;
+
+  input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  &:has(input:disabled) {
+    cursor: default;
+    opacity: 0.7;
+  }
+}
+
+.formGrid label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  span {
+    color: $g-color3;
+    font-size: 12px;
+    font-weight: 800;
+  }
+}
+
+.formGrid input,
+.formGrid select {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  border: 1px solid #dedee3;
+  border-radius: 8px;
+  background: $g-color1;
+  color: $g-color17;
+  font: inherit;
+  padding: 0 12px;
+  outline: none;
+
+  &:focus {
+    border-color: $g-color4;
+    box-shadow: 0 0 0 3px rgba(69, 74, 222, 0.12);
+  }
+
+  &:disabled {
+    background: #f7f7f8;
+    color: #8b8b96;
+    cursor: default;
+  }
+}
+
+.settingsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.switchRow {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e9e9ed;
+  border-radius: 8px;
+  padding: 0 12px;
+  color: $g-color17;
+  font-size: 13px;
+  font-weight: 800;
+
+  input {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: $tablet) {
+  .workspace,
+  .formGrid,
+  .settingsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .userList {
+    max-height: 430px;
+  }
+
+  .header,
+  .editorHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -21,11 +21,5 @@ const COLOR_FALLBACKS = {
 };
 
 export const ColorSelector = (variable) => {
-    if (typeof window === "undefined" || !document?.documentElement) {
-        return COLOR_FALLBACKS[variable] || "";
-    }
-
-    return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
-        || COLOR_FALLBACKS[variable]
-        || "";
+    return COLOR_FALLBACKS[variable] || "";
 };

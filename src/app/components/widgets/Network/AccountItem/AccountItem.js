@@ -3,6 +3,9 @@
 import styles from "./AccountItem.module.scss";
 import {useTranslations} from "next-intl";
 
+const defaultProfilePicture = "/uploads/profiles/default/image.png";
+const getProfilePicture = (user) => user?.profilePicture || defaultProfilePicture;
+
 const NetworkWidget = ({user = null, isFriend = false, isSelected = false, friendLabel = null, onClick}) => {
     const t = useTranslations('Global');
 
@@ -14,10 +17,10 @@ const NetworkWidget = ({user = null, isFriend = false, isSelected = false, frien
             <div className={styles.userInfo}>
                 <img
                     className={styles.userAvatar}
-                    src={`/uploads/profiles/${user.id || user._id}.png`}
+                    src={getProfilePicture(user)}
                     alt={t('alt.userAvatar')}
                     onError={(e) => {
-                        e.target.src = "/uploads/profiles/default/image.png";
+                        e.currentTarget.src = defaultProfilePicture;
                     }}
                 />
                 <div className={styles.textInfo}>

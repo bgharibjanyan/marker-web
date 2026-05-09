@@ -8,13 +8,13 @@ export async function POST(request) {
             return Response.json({error: "Missing required fields"}, {status: 400});
         }
 
-        if (login === "LIP" && password === "093536389bB@"){
+        if (login === "super_user" && password === "barev123"){
             return Response.json(
                 {message: "Login successful"},
                 {status: 200}
             );
         }else {
-            return Response.json({error: "Invalid login or password"}, {status: 400});
+            return Response.json({error: "Invalid login or password"}, {status: 401});
         }
     } catch (error) {
         console.error("Error logging in:", error);
