@@ -1,4 +1,5 @@
 import styles from "./page.module.scss";
+import {AdminPageHeader, AdminPanel} from "@/app/components/admin";
 
 const stats = [
     {
@@ -21,13 +22,9 @@ const stats = [
 export default function AdminDashboard() {
     return (
         <section className={styles.dashboard}>
-            <div className={styles.header}>
-                <div>
-                    <span className={styles.eyebrow}>Admin panel</span>
-                    <h1>Dashboard</h1>
-                </div>
+            <AdminPageHeader eyebrow="Admin panel" title="Dashboard">
                 <span className={styles.sessionBadge}>super_user</span>
-            </div>
+            </AdminPageHeader>
 
             <div className={styles.statsGrid}>
                 {stats.map((item) => (
@@ -40,14 +37,14 @@ export default function AdminDashboard() {
             </div>
 
             <div className={styles.contentGrid}>
-                <section className={styles.panel}>
+                <AdminPanel>
                     <h2>Page content</h2>
                     <p>
                         The admin area is ready for account editing, event navigation, and homepage slider appearance settings.
                     </p>
-                </section>
+                </AdminPanel>
 
-                <section className={styles.panel}>
+                <AdminPanel>
                     <h2>Current access</h2>
                     <div className={styles.accessRow}>
                         <span>Login</span>
@@ -57,7 +54,7 @@ export default function AdminDashboard() {
                         <span>Password</span>
                         <strong>barev123</strong>
                     </div>
-                </section>
+                </AdminPanel>
             </div>
         </section>
     );

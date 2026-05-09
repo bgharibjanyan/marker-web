@@ -6,32 +6,15 @@
   gap: 20px;
 }
 
-.header,
 .editorHeader,
 .actions {
   display: flex;
   align-items: center;
 }
 
-.header,
 .editorHeader {
   justify-content: space-between;
   gap: 16px;
-}
-
-.header {
-  h1 {
-    margin: 4px 0 0;
-    font-size: 32px;
-    color: $g-color17;
-  }
-}
-
-.eyebrow {
-  color: $g-color8;
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
 }
 
 .workspace {
@@ -158,52 +141,11 @@
   gap: 8px;
 }
 
-.primaryButton,
-.secondaryButton {
-  min-height: 40px;
-  border-radius: 8px;
-  padding: 0 14px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.primaryButton {
-  border: 0;
-  background: $g-color8;
-  color: $g-color1;
-
-  &:disabled {
-    cursor: default;
-    opacity: 0.7;
-  }
-}
-
-.secondaryButton {
-  border: 1px solid #e2e2e7;
-  background: $g-color1;
-  color: $g-color3;
-}
-
-.savedState,
-.errorState,
 .emptyState {
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 13px;
   font-weight: 800;
-}
-
-.savedState {
-  margin-top: 16px;
-  border: 1px solid rgba(47, 158, 68, 0.24);
-  background: rgba(47, 158, 68, 0.08);
-  color: $g-color14;
-}
-
-.errorState {
-  border: 1px solid rgba(255, 89, 100, 0.34);
-  background: $bg-color10;
-  color: $g-color8;
 }
 
 .emptyState {
@@ -218,13 +160,6 @@
   font-size: 12px;
   font-weight: 800;
   text-align: center;
-}
-
-.formGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 18px;
 }
 
 .profileUploader {
@@ -299,43 +234,6 @@
   }
 }
 
-.formGrid label {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  span {
-    color: $g-color3;
-    font-size: 12px;
-    font-weight: 800;
-  }
-}
-
-.formGrid input,
-.formGrid select {
-  width: 100%;
-  min-height: 44px;
-  box-sizing: border-box;
-  border: 1px solid #dedee3;
-  border-radius: 8px;
-  background: $g-color1;
-  color: $g-color17;
-  font: inherit;
-  padding: 0 12px;
-  outline: none;
-
-  &:focus {
-    border-color: $g-color4;
-    box-shadow: 0 0 0 3px rgba(69, 74, 222, 0.12);
-  }
-
-  &:disabled {
-    background: #f7f7f8;
-    color: #8b8b96;
-    cursor: default;
-  }
-}
-
 .settingsGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -343,27 +241,8 @@
   margin-top: 18px;
 }
 
-.switchRow {
-  min-height: 48px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid #e9e9ed;
-  border-radius: 8px;
-  padding: 0 12px;
-  color: $g-color17;
-  font-size: 13px;
-  font-weight: 800;
-
-  input {
-    width: 18px;
-    height: 18px;
-  }
-}
-
 @media (max-width: $tablet) {
   .workspace,
-  .formGrid,
   .settingsGrid {
     grid-template-columns: 1fr;
   }
@@ -372,7 +251,6 @@
     max-height: 430px;
   }
 
-  .header,
   .editorHeader {
     align-items: flex-start;
     flex-direction: column;

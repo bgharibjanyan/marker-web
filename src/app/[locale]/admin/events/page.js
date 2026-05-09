@@ -1,17 +1,15 @@
 import styles from "./page.module.scss";
+import {AdminPageHeader, AdminPanel} from "@/app/components/admin";
 
 export default function AdminEventsPage() {
     return (
         <section className={styles.eventsPage}>
-            <div>
-                <span className={styles.eyebrow}>Events</span>
-                <h1>Events</h1>
-            </div>
+            <AdminPageHeader eyebrow="Events" title="Events"/>
 
-            <div className={styles.panel}>
+            <AdminPanel>
                 <h2>Navigation tab ready</h2>
                 <p>The events admin section is intentionally empty for now.</p>
-            </div>
+            </AdminPanel>
         </section>
     );
 }

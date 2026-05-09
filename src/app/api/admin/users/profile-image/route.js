@@ -1,12 +1,10 @@
-import clientPromise from "@/app/lib/mongodb";
 import {ObjectId} from "mongodb";
 import {mkdir, unlink, writeFile} from "fs/promises";
 import path from "path";
+import {getUsersCollection, isAdminRequest, serializeUser} from "../_shared";
 
 export const runtime = "nodejs";
 
-const ADMIN_AUTH_HEADER = "x-marker-admin-auth";
-const ADMIN_AUTH_VALUE = "authenticated";
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const uploadDirectory = path.join(process.cwd(), "public", "uploads", "profiles");
 const allowedImageTypes = {
@@ -14,36 +12,6 @@ const allowedImageTypes = {
     "image/png": "png",
     "image/webp": "webp",
     "image/gif": "gif"
-};
-
-const serializeUser = (user) => ({
-    id: user._id.toString(),
-    firstname: user.firstname || "",
-    lastname: user.lastname || "",
-    name: [user.firstname, user.lastname].filter(Boolean).join(" ") || user.login || user.email || "Unnamed user",
-    login: user.login || "",
-    email: user.email || "",
-    age: user.age ?? "",
-    sex: user.sex || "",
-    address: user.address || "",
-    country: user.country || "",
-    city: user.city || "",
-    profilePicture: user.profilePicture || "",
-    status: user.status || "Active",
-    timezone: user.timezone || "Asia/Yerevan",
-    publicProfile: user.publicProfile ?? true,
-    notifications: user.notifications ?? true,
-    allowMessages: user.allowMessages ?? true,
-    createdAt: user.createdAt || null
-});
-
-const isAdminRequest = (request) => (
-    request.headers.get(ADMIN_AUTH_HEADER) === ADMIN_AUTH_VALUE
-);
-
-const getUsersCollection = async () => {
-    const client = await clientPromise;
-    return client.db("marker").collection("user");
 };
 
 const removeOldProfileImages = async (userId, nextExtension) => {

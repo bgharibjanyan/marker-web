@@ -5,6 +5,7 @@ import {useLocale} from "next-intl";
 import {useRouter} from "next/navigation";
 import {ADMIN_AUTH_KEY, ADMIN_AUTH_VALUE} from "../_components/AdminShell";
 import styles from "./page.module.scss";
+import {AdminButton, AdminStatusMessage, AdminTextField} from "@/app/components/admin";
 
 export default function LoginForm() {
     const locale = useLocale();
@@ -60,33 +61,29 @@ export default function LoginForm() {
                 <p>Static admin authentication</p>
             </div>
 
-            <label className={styles.field}>
-                <span>Login</span>
-                <input
-                    type="text"
-                    autoComplete="username"
-                    value={login}
-                    onChange={(event) => setLogin(event.target.value)}
-                    placeholder="super_user"
-                />
-            </label>
+            <AdminTextField
+                label="Login"
+                type="text"
+                autoComplete="username"
+                value={login}
+                onChange={setLogin}
+                placeholder="super_user"
+            />
 
-            <label className={styles.field}>
-                <span>Password</span>
-                <input
-                    type="password"
-                    autoComplete="current-password"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    placeholder="barev123"
-                />
-            </label>
+            <AdminTextField
+                label="Password"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={setPassword}
+                placeholder="barev123"
+            />
 
-            {error ? <div className={styles.error}>{error}</div> : null}
+            {error ? <AdminStatusMessage type="error">{error}</AdminStatusMessage> : null}
 
-            <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
+            <AdminButton type="submit" fullWidth className={styles.submitButton} disabled={isSubmitting}>
                 {isSubmitting ? "Signing in..." : "Sign in"}
-            </button>
+            </AdminButton>
         </form>
     );
 }

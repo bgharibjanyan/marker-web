@@ -6,27 +6,6 @@
   gap: 22px;
 }
 
-.header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-
-  h1 {
-    margin: 4px 0 0;
-    font-size: 34px;
-    line-height: 1.1;
-    color: $g-color17;
-  }
-}
-
-.eyebrow {
-  font-size: 12px;
-  font-weight: 800;
-  color: $g-color8;
-  text-transform: uppercase;
-}
-
 .sessionBadge {
   border: 1px solid rgba(69, 74, 222, 0.22);
   border-radius: 8px;
@@ -43,14 +22,10 @@
   gap: 14px;
 }
 
-.statCard,
-.panel {
+.statCard {
   border: 1px solid #e9e9ed;
   border-radius: 8px;
   background: $g-color1;
-}
-
-.statCard {
   min-height: 130px;
   padding: 18px;
 
@@ -79,10 +54,6 @@
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr);
   gap: 14px;
-}
-
-.panel {
-  padding: 20px;
 
   h2 {
     margin: 0;
@@ -125,9 +96,5 @@
   .statsGrid,
   .contentGrid {
     grid-template-columns: 1fr;
-  }
-
-  .header {
-    flex-direction: column;
   }
 }

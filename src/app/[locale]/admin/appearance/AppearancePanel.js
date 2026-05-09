@@ -2,6 +2,15 @@
 
 import {useEffect, useMemo, useState} from "react";
 import styles from "./page.module.scss";
+import {
+    AdminButton,
+    AdminCheckboxField,
+    AdminFormGrid,
+    AdminPageHeader,
+    AdminPanel,
+    AdminStatusMessage,
+    AdminTextField
+} from "@/app/components/admin";
 
 const SLIDER_STORAGE_KEY = "marker-admin-homepage-slider";
 
@@ -93,23 +102,14 @@ export default function AppearancePanel() {
 
     return (
         <section className={styles.appearancePage}>
-            <div className={styles.header}>
-                <div>
-                    <span className={styles.eyebrow}>Appearance</span>
-                    <h1>Homepage slider</h1>
-                </div>
-                <button type="button" className={styles.primaryButton} onClick={addSlide}>
+            <AdminPageHeader eyebrow="Appearance" title="Homepage slider">
+                <AdminButton onClick={addSlide}>
                     Add image
-                </button>
-            </div>
+                </AdminButton>
+            </AdminPageHeader>
 
             <div className={styles.workspace}>
-                <section className={styles.previewPanel}>
-                    <div className={styles.panelHeader}>
-                        <h2>Images</h2>
-                        <span>{activeSlides.length} active</span>
-                    </div>
-
+                <AdminPanel title="Images" meta={`${activeSlides.length} active`}>
                     <div className={styles.slideGrid}>
                         {slides.map((slide) => (
                             <button
@@ -123,50 +123,51 @@ export default function AppearancePanel() {
                             </button>
                         ))}
                     </div>
-                </section>
+                </AdminPanel>
 
-                <section className={styles.editorPanel}>
-                    <div className={styles.panelHeader}>
-                        <h2>{selectedSlide.id}</h2>
-                        <div className={styles.actions}>
-                            <button type="button" className={styles.secondaryButton} onClick={deleteSlide}>
+                <AdminPanel
+                    title={selectedSlide.id}
+                    actions={(
+                        <>
+                            <AdminButton variant="secondary" onClick={deleteSlide}>
                                 Delete
-                            </button>
-                            <button type="button" className={styles.primaryButton} onClick={saveSlides}>
+                            </AdminButton>
+                            <AdminButton onClick={saveSlides}>
                                 Save
-                            </button>
-                        </div>
-                    </div>
+                            </AdminButton>
+                        </>
+                    )}
+                >
+                    {isSaved ? <AdminStatusMessage>Slider images saved.</AdminStatusMessage> : null}
 
-                    {isSaved ? <div className={styles.savedState}>Slider images saved.</div> : null}
-
-                    <div className={styles.formGrid}>
-                        <label>
-                            <span>Image path</span>
-                            <input value={selectedSlide.imgSrc} onChange={(event) => updateSlide("imgSrc", event.target.value)}/>
-                        </label>
-                        <label>
-                            <span>Link URL</span>
-                            <input value={selectedSlide.url} onChange={(event) => updateSlide("url", event.target.value)}/>
-                        </label>
-                        <label>
-                            <span>Alt text</span>
-                            <input value={selectedSlide.alt} onChange={(event) => updateSlide("alt", event.target.value)}/>
-                        </label>
-                        <label className={styles.checkRow}>
-                            <input
-                                type="checkbox"
-                                checked={selectedSlide.active}
-                                onChange={(event) => updateSlide("active", event.target.checked)}
-                            />
-                            <span>Active slide</span>
-                        </label>
-                    </div>
+                    <AdminFormGrid>
+                        <AdminTextField
+                            label="Image path"
+                            value={selectedSlide.imgSrc}
+                            onChange={(value) => updateSlide("imgSrc", value)}
+                        />
+                        <AdminTextField
+                            label="Link URL"
+                            value={selectedSlide.url}
+                            onChange={(value) => updateSlide("url", value)}
+                        />
+                        <AdminTextField
+                            label="Alt text"
+                            value={selectedSlide.alt}
+                            onChange={(value) => updateSlide("alt", value)}
+                        />
+                        <AdminCheckboxField
+                            plain
+                            label="Active slide"
+                            checked={selectedSlide.active}
+                            onChange={(checked) => updateSlide("active", checked)}
+                        />
+                    </AdminFormGrid>
 
                     <div className={styles.largePreview}>
                         <img src={selectedSlide.imgSrc} alt={selectedSlide.alt}/>
                     </div>
-                </section>
+                </AdminPanel>
             </div>
         </section>
     );

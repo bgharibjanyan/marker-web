@@ -2,6 +2,15 @@
 
 import {useCallback, useEffect, useMemo, useState} from "react";
 import styles from "./page.module.scss";
+import {
+    AdminButton,
+    AdminCheckboxField,
+    AdminFormGrid,
+    AdminPageHeader,
+    AdminSelectField,
+    AdminStatusMessage,
+    AdminTextField
+} from "@/app/components/admin";
 
 const statuses = ["Active", "Suspended", "Pending"];
 const sexes = ["male", "female", "other"];
@@ -24,6 +33,10 @@ const countryOptions = [
     {country: "Netherlands", cities: ["Amsterdam", "Rotterdam", "The Hague", "Utrecht", "Eindhoven"]},
     {country: "United Arab Emirates", cities: ["Dubai", "Abu Dhabi", "Sharjah", "Al Ain", "Ajman"]}
 ];
+
+const getUserDisplayName = (user) => (
+    [user.firstname, user.lastname].filter(Boolean).join(" ") || user.login || user.email || "Unnamed user"
+);
 
 export default function UsersPanel() {
     const [users, setUsers] = useState([]);
@@ -109,7 +122,7 @@ export default function UsersPanel() {
         ? `${selectedUser.profilePicture}?v=${profileImageVersion}`
         : defaultProfileImage;
 
-    const updateUser = (field, value) => {
+    const updateUserFields = (fields) => {
         if (!selectedUser) {
             return;
         }
@@ -121,18 +134,15 @@ export default function UsersPanel() {
                 user.id === selectedUser.id
                     ? {
                         ...user,
-                        [field]: value,
-                        name: field === "firstname" || field === "lastname"
-                            ? [
-                                field === "firstname" ? value : user.firstname,
-                                field === "lastname" ? value : user.lastname
-                            ].filter(Boolean).join(" ") || user.login || user.email || "Unnamed user"
-                            : user.name
+                        ...fields,
+                        name: getUserDisplayName({...user, ...fields})
                     }
                     : user
             ))
         ));
     };
+
+    const updateUser = (field, value) => updateUserFields({[field]: value});
 
     const handleSave = async () => {
         if (!selectedUser) {
@@ -235,14 +245,9 @@ export default function UsersPanel() {
 
     return (
         <section className={styles.usersPage}>
-            <div className={styles.header}>
-                <div>
-                    <span className={styles.eyebrow}>Users</span>
-                    <h1>Account settings</h1>
-                </div>
-            </div>
+            <AdminPageHeader eyebrow="Users" title="Account settings"/>
 
-            {error ? <div className={styles.errorState}>{error}</div> : null}
+            {error ? <AdminStatusMessage type="error">{error}</AdminStatusMessage> : null}
 
             <div className={styles.workspace}>
                 <aside className={styles.userList}>
@@ -292,13 +297,13 @@ export default function UsersPanel() {
                             <span>{selectedUser.id}</span>
                         </div>
                         <div className={styles.actions}>
-                            <button type="button" className={styles.primaryButton} onClick={handleSave} disabled={isSaving}>
+                            <AdminButton onClick={handleSave} disabled={isSaving}>
                                 {isSaving ? "Saving..." : "Save"}
-                            </button>
+                            </AdminButton>
                         </div>
                     </div>
 
-                    {isSaved ? <div className={styles.savedState}>User configuration saved.</div> : null}
+                    {isSaved ? <AdminStatusMessage>User configuration saved.</AdminStatusMessage> : null}
 
                     <div className={styles.profileUploader}>
                         <img
@@ -324,120 +329,76 @@ export default function UsersPanel() {
                         </div>
                     </div>
 
-                    <div className={styles.formGrid}>
-                        <label>
-                            <span>First name</span>
-                            <input value={selectedUser.firstname} onChange={(event) => updateUser("firstname", event.target.value)}/>
-                        </label>
-                        <label>
-                            <span>Last name</span>
-                            <input value={selectedUser.lastname} onChange={(event) => updateUser("lastname", event.target.value)}/>
-                        </label>
-                        <label>
-                            <span>Login</span>
-                            <input value={selectedUser.login} onChange={(event) => updateUser("login", event.target.value)}/>
-                        </label>
-                        <label>
-                            <span>Email</span>
-                            <input type="email" value={selectedUser.email} onChange={(event) => updateUser("email", event.target.value)}/>
-                        </label>
-                        <label>
-                            <span>New password</span>
-                            <input
-                                type="password"
-                                value={password}
-                                placeholder="Leave empty to keep current"
-                                onChange={(event) => {
-                                    setPassword(event.target.value);
-                                    setIsSaved(false);
-                                    setError("");
-                                }}
-                            />
-                        </label>
-                        <label>
-                            <span>Age</span>
-                            <input
-                                type="number"
-                                min="0"
-                                value={selectedUser.age}
-                                onChange={(event) => updateUser("age", Number(event.target.value))}
-                            />
-                        </label>
-                        <label>
-                            <span>Sex</span>
-                            <select value={selectedUser.sex} onChange={(event) => updateUser("sex", event.target.value)}>
-                                {sexes.map((sex) => <option key={sex} value={sex}>{sex}</option>)}
-                            </select>
-                        </label>
-                        <label>
-                            <span>Address</span>
-                            <input value={selectedUser.address} onChange={(event) => updateUser("address", event.target.value)}/>
-                        </label>
-                        <label>
-                            <span>Country</span>
-                            <select
-                                value={selectedUser.country}
-                                onChange={(event) => {
-                                    updateUser("country", event.target.value);
-                                    updateUser("city", "");
-                                }}
-                            >
-                                <option value="">Select country</option>
-                                {countryOptions.map((item) => (
-                                    <option key={item.country} value={item.country}>{item.country}</option>
-                                ))}
-                            </select>
-                        </label>
-                        <label>
-                            <span>City</span>
-                            <select
-                                value={selectedUser.city}
-                                onChange={(event) => updateUser("city", event.target.value)}
-                                disabled={!selectedUser.country}
-                            >
-                                <option value="">{selectedUser.country ? "Select city" : "Select country first"}</option>
-                                {visibleCityOptions.map((city) => (
-                                    <option key={city} value={city}>{city}</option>
-                                ))}
-                            </select>
-                        </label>
-                        <label>
-                            <span>Status</span>
-                            <select value={selectedUser.status} onChange={(event) => updateUser("status", event.target.value)}>
-                                {statuses.map((status) => <option key={status} value={status}>{status}</option>)}
-                            </select>
-                        </label>
-                        <label>
-                            <span>Timezone</span>
-                            <input value={selectedUser.timezone} onChange={(event) => updateUser("timezone", event.target.value)}/>
-                        </label>
-                    </div>
+                    <AdminFormGrid>
+                        <AdminTextField label="First name" value={selectedUser.firstname} onChange={(value) => updateUser("firstname", value)}/>
+                        <AdminTextField label="Last name" value={selectedUser.lastname} onChange={(value) => updateUser("lastname", value)}/>
+                        <AdminTextField label="Login" value={selectedUser.login} onChange={(value) => updateUser("login", value)}/>
+                        <AdminTextField label="Email" type="email" value={selectedUser.email} onChange={(value) => updateUser("email", value)}/>
+                        <AdminTextField
+                            label="New password"
+                            type="password"
+                            value={password}
+                            placeholder="Leave empty to keep current"
+                            onChange={(value) => {
+                                setPassword(value);
+                                setIsSaved(false);
+                                setError("");
+                            }}
+                        />
+                        <AdminTextField
+                            label="Age"
+                            type="number"
+                            min="0"
+                            value={selectedUser.age}
+                            onChange={(value) => updateUser("age", value === "" ? "" : Number(value))}
+                        />
+                        <AdminSelectField
+                            label="Sex"
+                            value={selectedUser.sex}
+                            options={sexes}
+                            onChange={(value) => updateUser("sex", value)}
+                        />
+                        <AdminTextField label="Address" value={selectedUser.address} onChange={(value) => updateUser("address", value)}/>
+                        <AdminSelectField
+                            label="Country"
+                            value={selectedUser.country}
+                            placeholder="Select country"
+                            options={countryOptions.map((item) => item.country)}
+                            onChange={(value) => updateUserFields({country: value, city: ""})}
+                        />
+                        <AdminSelectField
+                            label="City"
+                            value={selectedUser.city}
+                            placeholder={selectedUser.country ? "Select city" : "Select country first"}
+                            options={visibleCityOptions}
+                            onChange={(value) => updateUser("city", value)}
+                            disabled={!selectedUser.country}
+                        />
+                        <AdminSelectField
+                            label="Status"
+                            value={selectedUser.status}
+                            options={statuses}
+                            onChange={(value) => updateUser("status", value)}
+                        />
+                        <AdminTextField label="Timezone" value={selectedUser.timezone} onChange={(value) => updateUser("timezone", value)}/>
+                    </AdminFormGrid>
 
                     <div className={styles.settingsGrid}>
-                        <label className={styles.switchRow}>
-                            <input
-                                type="checkbox"
-                                checked={selectedUser.publicProfile}
-                                onChange={(event) => updateUser("publicProfile", event.target.checked)}
-                            />
-                            <span>Public profile</span>
-                        </label>
-                        <label className={styles.switchRow}>
-                            <input
-                                type="checkbox"
-                                checked={selectedUser.notifications}
-                                onChange={(event) => updateUser("notifications", event.target.checked)}
-                            />
-                            <span>Notifications</span>
-                        </label>
-                        <label className={styles.switchRow}>
-                            <input
-                                type="checkbox"
-                                checked={selectedUser.allowMessages}
-                                onChange={(event) => updateUser("allowMessages", event.target.checked)}
-                            />
-                            <span>Direct messages</span>
-                        </label>
+                        <AdminCheckboxField
+                            label="Public profile"
+                            checked={selectedUser.publicProfile}
+                            onChange={(checked) => updateUser("publicProfile", checked)}
+                        />
+                        <AdminCheckboxField
+                            label="Notifications"
+                            checked={selectedUser.notifications}
+                            onChange={(checked) => updateUser("notifications", checked)}
+                        />
+                        <AdminCheckboxField
+                            label="Direct messages"
+                            checked={selectedUser.allowMessages}
+                            onChange={(checked) => updateUser("allowMessages", checked)}
+                        />
                     </div>
 
                 </form>
