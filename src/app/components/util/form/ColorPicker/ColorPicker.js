@@ -2,14 +2,15 @@
 
 import styles from "./ColorPicker.module.scss";
 import {useTranslations} from "next-intl";
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
 const DEFAULT_COLORS = [
-    '#FF5D66',
-    '#9E373E',
-    '#454ADE',
-    '#2F9E44',
-    '#F59F00',
-    '#15AABF',
+    ColorSelector("--g-color13"),
+    ColorSelector("--g-color8"),
+    ColorSelector("--g-color4"),
+    ColorSelector("--g-color14"),
+    ColorSelector("--g-color15"),
+    ColorSelector("--g-color16"),
 ];
 
 const ColorPicker = ({
@@ -33,7 +34,7 @@ const ColorPicker = ({
             {label && <span className={`${styles.t5} ${styles.fieldLabel}`}>{label}</span>}
             <div
                 className={`${styles.colorContainer} ${casual ? styles.casual : ''}`}
-                style={{"--shadow-color": shadowColor || "#9E373E"}}
+                style={{"--shadow-color": shadowColor || ColorSelector("--g-color8")}}
             >
                 <div className={styles.swatches}>
                     {colors.map((color) => (

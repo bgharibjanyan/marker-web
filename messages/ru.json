@@ -75,6 +75,30 @@
     "title": "Моя сеть",
     "empty": "Пока нет связей"
   },
+  "NetworkPage": {
+    "search": {
+      "label": "Пользователи",
+      "placeholder": "Поиск пользователей"
+    },
+    "tabs": {
+      "chat": "Чат",
+      "posts": "Посты",
+      "schedule": "Расписание"
+    },
+    "actions": {
+      "follow": "Подписаться",
+      "following": "Подписка...",
+      "unfollow": "Отписаться",
+      "unfollowing": "Отписка..."
+    },
+    "states": {
+      "loading": "Загрузка пользователей...",
+      "searching": "Поиск...",
+      "empty": "Пока нет связей",
+      "noSearchResults": "Пользователи не найдены",
+      "friend": "Друг"
+    }
+  },
   "Pages": {
     "events": "Страница событий",
     "schedule": "Страница расписания"

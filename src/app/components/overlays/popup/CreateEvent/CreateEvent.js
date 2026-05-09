@@ -13,6 +13,7 @@ import DatePicker from "@/app/components/util/form/DatePicker/DatePicker";
 import ColorPicker from "@/app/components/util/form/ColorPicker/ColorPicker";
 import Button from "@/app/components/util/buttons/MarkerButton/Button";
 import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvider";
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
 export default function CreateEvent({task = null, onSaved, onCancel, ...eventState} = {}) {
     const {closePopup} = usePopup();
@@ -44,7 +45,7 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
             weekdays: [],
             monthday: todaySelection.monthday,
             date: todaySelection.date,
-            color: '#FF5D66',
+            color: ColorSelector("--g-color13"),
             media: null,
         };
     };
@@ -185,7 +186,7 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
                     <TextInput
                         name={'title'}
                         casual={true}
-                        shadowColor="#9E373E"
+                        shadowColor={ColorSelector("--g-color8")}
                         placeholder={t('form.titlePlaceholder')}
                         label={t('form.titleLabel')}
                         value={formData.title}
@@ -200,9 +201,9 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
                         checked={formData.isPrivate}
                         onChange={handleChange}
                         casual
-                        shadowColor="#9E373E"
-                        activeColor="#9E373E"
-                        inactiveColor="#ddd"
+                        shadowColor={ColorSelector("--g-color8")}
+                        activeColor={ColorSelector("--g-color8")}
+                        inactiveColor={ColorSelector("--g-color18")}
                     />
                 </div>
 
@@ -210,7 +211,7 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
                     <TextInput
                         name={'description'}
                         casual={true}
-                        shadowColor="#9E373E"
+                        shadowColor={ColorSelector("--g-color8")}
                         placeholder={t('form.descriptionPlaceholder')}
                         label={t('form.descriptionLabel')}
                         value={formData.description}
@@ -222,7 +223,7 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
                     <ColorPicker
                         name={'color'}
                         casual={true}
-                        shadowColor="#9E373E"
+                        shadowColor={ColorSelector("--g-color8")}
                         label={t('form.colorLabel')}
                         value={formData.color}
                         onChange={handleChange}
@@ -237,9 +238,9 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
                             checked={formData.repeat}
                             onChange={handleChange}
                             casual
-                            shadowColor="#9E373E"
-                            activeColor="#9E373E"
-                            inactiveColor="#ddd"
+                            shadowColor={ColorSelector("--g-color8")}
+                            activeColor={ColorSelector("--g-color8")}
+                            inactiveColor={ColorSelector("--g-color18")}
                         />
                     </div>
 
@@ -287,7 +288,7 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
                             <TimeInput
                                 name={'start'}
                                 casual={true}
-                                shadowColor="#9E373E"
+                                shadowColor={ColorSelector("--g-color8")}
                                 placeholder={t('form.timePlaceholder')}
                                 label={t('form.startTimeLabel')}
                                 value={formData.start || ""}
@@ -296,7 +297,7 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
                             <TimeInput
                                 name={'end'}
                                 casual={true}
-                                shadowColor="#9E373E"
+                                shadowColor={ColorSelector("--g-color8")}
                                 placeholder={t('form.timePlaceholder')}
                                 label={t('form.endTimeLabel')}
                                 value={formData.end || ""}
@@ -318,13 +319,13 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
                     <div className={styles.actions}>
                         <Button
                             text={t('actions.cancel')}
-                            bgColor="#fff"
-                            textColor="#000"
+                            bgColor={ColorSelector("--g-color1")}
+                            textColor={ColorSelector("--g-color2")}
                             width="auto"
                             onClick={handleCancel}
                             disabled={isSubmitting}
                             casual={true}
-                            shadowColor="#9E373E"
+                            shadowColor={ColorSelector("--g-color8")}
                             padding="10px 24px"
                         />
                         <Button
@@ -332,13 +333,13 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
                             text={isSubmitting
                                 ? t(isEditing ? 'actions.updating' : 'actions.saving')
                                 : t(isEditing ? 'actions.update' : 'actions.submit')}
-                            bgColor="#FF5D66"
-                            textColor="white"
+                            bgColor={ColorSelector("--g-color13")}
+                            textColor={ColorSelector("--g-color1")}
                             width="auto"
                             onClick={handleSubmit}
                             disabled={isSubmitting}
                             casual={true}
-                            shadowColor="#9E373E"
+                            shadowColor={ColorSelector("--g-color8")}
                             padding="10px 24px"
                         />
                     </div>

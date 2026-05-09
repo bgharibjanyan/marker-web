@@ -9,6 +9,7 @@ import {useTranslations} from "next-intl";
 
 import CommonTasksWidget from "@/app/components/widgets/tasks/CommonTasksWidget/CommonTasksWidget";
 import CreateEvent from "@/app/components/overlays/popup/CreateEvent/CreateEvent";
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
 export default function Dashboard() {
     const {openPopup} = usePopup();
@@ -46,8 +47,8 @@ export default function Dashboard() {
                     type="primary"
                     text={t('createTask')}
                     size="s"
-                    bgColor="#FF5D66"
-                    textColor="white"
+                    bgColor={ColorSelector("--g-color13")}
+                    textColor={ColorSelector("--g-color1")}
                     maxWidth="160px"
                     casual={true}
                     onClick={() => {
@@ -55,7 +56,7 @@ export default function Dashboard() {
                             <CreateEvent></CreateEvent>,
                         )
                     }}
-                    shadowColor="#9E373E"
+                    shadowColor={ColorSelector("--g-color8")}
                 />
             </div>
 

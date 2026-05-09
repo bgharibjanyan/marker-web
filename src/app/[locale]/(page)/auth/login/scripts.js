@@ -2,12 +2,13 @@
 import {useState} from "react";
 import useApiCall from "@/app/lib/api/call";
 import {useRouter} from "next/navigation";
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
 
 export const previewLayers = [
-    { color: "#FF5964", content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry." },
-    { color: "#454ADE", content: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s." },
-    { color: "#231F20", content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry." }
+    { color: ColorSelector("--g-color5"), content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry." },
+    { color: ColorSelector("--g-color4"), content: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s." },
+    { color: ColorSelector("--g-color17"), content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry." }
 ];
 
 export const useLoginLogic = (locale) => {

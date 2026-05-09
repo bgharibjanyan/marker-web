@@ -3,11 +3,14 @@
 import styles from "./AccountItem.module.scss";
 import {useTranslations} from "next-intl";
 
-const NetworkWidget = ({user = null}) => {
+const NetworkWidget = ({user = null, isFriend = false, isSelected = false, friendLabel = null, onClick}) => {
     const t = useTranslations('Global');
 
     return (
-        <div className={styles.userItemContainer}>
+        <div
+            className={`${styles.userItemContainer} ${isFriend ? styles.friend : ""} ${isSelected ? styles.selected : ""}`}
+            onClick={onClick}
+        >
             <div className={styles.userInfo}>
                 <img
                     className={styles.userAvatar}
@@ -24,11 +27,9 @@ const NetworkWidget = ({user = null}) => {
                 </div>
             </div>
 
-            <button className={styles.messageAction}>
-                <svg>
-                    <use href="/images/sprites.svg#message-send-icon"></use>
-                </svg>
-            </button>
+            {isFriend && friendLabel && (
+                <span className={`${styles.t7} ${styles.friendBadge}`}>{friendLabel}</span>
+            )}
         </div>
     );
 };

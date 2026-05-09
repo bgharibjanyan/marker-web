@@ -16,8 +16,8 @@ export default function Header() {
     const pathname = usePathname();
     const t = useTranslations('Global');
 
-    const [activeColor, setActiveColor] = useState("#FF5964");
-    const [defaultColor, setDefaultColor] = useState("#000");
+    const [activeColor, setActiveColor] = useState(ColorSelector("--g-color5"));
+    const [defaultColor, setDefaultColor] = useState(ColorSelector("--g-color2"));
 
     const [userProfilePicture, setUserProfilePicture] = useState("/uploads/profiles/default/image.png");
     const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
@@ -96,7 +96,7 @@ export default function Header() {
             src: "/schedule"
         }, {
             label: t('header.Network'),
-            src: "/Network"
+            src: "/network"
         }
     ];
 

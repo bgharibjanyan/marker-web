@@ -75,6 +75,30 @@
     "title": "Իմ ցանցը",
     "empty": "Կապեր դեռ չկան"
   },
+  "NetworkPage": {
+    "search": {
+      "label": "Օգտատերեր",
+      "placeholder": "Փնտրել օգտատերեր"
+    },
+    "tabs": {
+      "chat": "Չաթ",
+      "posts": "Գրառումներ",
+      "schedule": "Ժամանակացույց"
+    },
+    "actions": {
+      "follow": "Հետևել",
+      "following": "Հետևում է...",
+      "unfollow": "Չհետևել",
+      "unfollowing": "Դադարեցնում է..."
+    },
+    "states": {
+      "loading": "Օգտատերերը բեռնվում են...",
+      "searching": "Փնտրում է...",
+      "empty": "Կապեր դեռ չկան",
+      "noSearchResults": "Օգտատերեր չեն գտնվել",
+      "friend": "Ընկեր"
+    }
+  },
   "Pages": {
     "events": "Իրադարձությունների էջ",
     "schedule": "Ժամանակացույցի էջ"

@@ -8,6 +8,7 @@ import Checkbox from "@/app/components/util/form/Checkbox/Checkbox";
 import LinkButton from "@/app/components/util/form/LinkButton/LinkButton";
 import SelectField from "@/app/components/util/form/Select/SelectField";
 import TimeInput from "@/app/components/util/form/TimeInput/TimeInput";
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
 const Form = ({fields, onSubmit}) => {
     const [formData, setFormData] = useState(() =>
@@ -50,7 +51,7 @@ const Form = ({fields, onSubmit}) => {
                             type={field.type}
                             name={field.name}
                             casual={true}
-                            shadowColor="#9E373E"
+                            shadowColor={ColorSelector("--g-color8")}
                             placeholder={field.placeholder}
                             label={field.label}
                             value={formData[field.name] || ""}
@@ -63,7 +64,7 @@ const Form = ({fields, onSubmit}) => {
                             name={field.name}
                             casual={true}
                             options={field.options}
-                            shadowColor="#9E373E"
+                            shadowColor={ColorSelector("--g-color8")}
                             label={field.label}
                             value={formData[field.name] || ""}
                             onChange={handleChange}
@@ -74,12 +75,12 @@ const Form = ({fields, onSubmit}) => {
                         <Button
                             type="primary"
                             text={field.label}
-                            bgColor="#FF5D66"
-                            textColor="white"
+                            bgColor={ColorSelector("--g-color13")}
+                            textColor={ColorSelector("--g-color1")}
                             width="auto"
                             onClick={() => field.onClick(formData)}
                             casual={true}
-                            shadowColor="#9E373E"
+                            shadowColor={ColorSelector("--g-color8")}
                         />
                     )}
 
@@ -104,7 +105,7 @@ const Form = ({fields, onSubmit}) => {
                         <TimeInput
                             name={field.name}
                             casual={true}
-                            shadowColor="#9E373E"
+                            shadowColor={ColorSelector("--g-color8")}
                             placeholder={field.placeholder}
                             label={field.label}
                             value={formData[field.name] || ""}

@@ -24,12 +24,18 @@
 .contentContainer {
   display: flex;
   gap: 20px;
+  max-height: calc(100vh - 375px);
+
 
   .leftSidebar, .rightSidebar, .mainContent {
     border-radius: 16px;
     overflow: hidden;
 
     @include fluid(border-radius, 8px, 10px, 12px, 12px, 14px, 16px);
+  }
+
+  .leftSidebar {
+    border: 4px dashed $g-color4;
   }
 
   .leftSidebar, .rightSidebar {
@@ -44,8 +50,6 @@
 
 
   .leftSidebar {
-    border-color: $g-color5;
-
     @include tablet-large {
       display: none;
     }

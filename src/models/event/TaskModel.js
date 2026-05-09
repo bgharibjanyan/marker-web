@@ -1,3 +1,5 @@
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
+
 export default class TaskModel {
     constructor({
                     title,
@@ -26,7 +28,7 @@ export default class TaskModel {
         this.repeatType = repeatType ? repeatType : null;
         this.weekdays = weekdays ? weekdays : [];
         this.monthday = monthday ? monthday : null;
-        this.color = color ? color : '#FF5D66';
+        this.color = color ? color : ColorSelector("--g-color13");
         this.date = date ? date : null;
         this.isPrivate = isPrivate ? isPrivate : false;
         this.media = media ? media : [];

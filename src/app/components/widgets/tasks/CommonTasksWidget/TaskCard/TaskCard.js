@@ -3,8 +3,9 @@
 import styles from "./TaskCard.module.scss";
 import {useEffect, useRef, useState} from "react";
 import {useTranslations} from "next-intl";
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
-const DEFAULT_TASK_COLOR = '#FF5D66';
+const DEFAULT_TASK_COLOR = ColorSelector("--g-color13");
 
 const TaskCard = ({task, onEdit, onDelete}) => {
     const t = useTranslations('TaskCard');

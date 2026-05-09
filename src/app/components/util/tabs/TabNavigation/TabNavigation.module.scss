@@ -1,0 +1,57 @@
+.tabNavigation {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 2px 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(158, 55, 62, 0.35) transparent;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(158, 55, 62, 0.25);
+    border-radius: 999px;
+  }
+}
+
+.tabButton {
+  flex: 0 0 auto;
+  border: 1px solid var(--g-color7, #B3B3B3);
+  border-radius: 6px;
+  padding: 8px 14px;
+  background-color: var(--g-color1, #fff);
+  color: var(--g-color2, #000);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  user-select: none;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: var(--tab-color, var(--g-color8, #9E373E));
+    background-color: rgba(158, 55, 62, 0.05);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(158, 55, 62, 0.16);
+  }
+
+  &.active {
+    border-color: var(--tab-color, var(--g-color8, #9E373E));
+    background-color: var(--tab-color, var(--g-color8, #9E373E));
+    color: var(--g-color1, #fff);
+  }
+}

@@ -2,6 +2,7 @@
 
 import styles from "./SelectField.module.scss";
 import {useEffect} from 'react';
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
 const SelectField = ({
                          name,
@@ -32,7 +33,7 @@ const SelectField = ({
                     style={{
                         color: textColor,
                         width,
-                        "--shadow-color": shadowColor || "#9E373E",
+                        "--shadow-color": shadowColor || ColorSelector("--g-color8"),
                     }}
                 >
                     {options.map((option, index) => (

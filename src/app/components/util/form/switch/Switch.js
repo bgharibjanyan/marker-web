@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "./Switch.module.scss";
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
 const Switch = ({
                          name,
@@ -11,8 +12,8 @@ const Switch = ({
                          shadowColor,
                          width,
                          casual = false,
-                         activeColor = "#9E373E",
-                         inactiveColor = "#ccc"
+                         activeColor = ColorSelector("--g-color8"),
+                         inactiveColor = ColorSelector("--g-color19")
                      }) => {
 
     const [isOn, setIsOn] = useState(checked);

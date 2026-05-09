@@ -1,3 +1,93 @@
 @import "../../../../../styles/variables";
 @import "../../../../../styles/fonts";
 
+.networkPage {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(0, 3fr);
+  gap: 20px;
+  padding: 20px 15px;
+  min-height: calc(100vh - 95px);
+  background:
+          radial-gradient(circle at top left, rgba($g-color5, 0.08), transparent 34%),
+          linear-gradient(180deg, rgba($g-color9, 0.08), transparent 260px);
+
+  @media (max-width: $tablet) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.users,
+.userDashboard {
+  border-radius: 18px;
+  background-color: rgba($g-color1, 0.92);
+  box-shadow: 0 18px 45px rgba($g-color2, 0.07);
+}
+
+.users {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: visible;
+  position: relative;
+}
+
+.search {
+  position: relative;
+  z-index: 2;
+  padding: 16px 16px 18px;
+}
+
+.userList {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 360px;
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  padding: 10px 14px 16px;
+}
+
+.emptyMessage {
+  width: 100%;
+  text-align: center;
+  color: $g-color3;
+}
+
+.searching {
+  position: sticky;
+  bottom: 0;
+  display: block;
+  width: 100%;
+  padding: 8px;
+  color: $g-color8;
+  text-align: center;
+  background-color: rgba($g-color1, 0.92);
+}
+
+.userDashboard {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.dashboardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  background-color: rgba($g-color9, 0.08);
+
+  @media (max-width: $mobileLarge) {
+    flex-direction: column;
+  }
+}
+
+.dashboardBody {
+  flex: 1;
+  min-height: 420px;
+  padding: 20px;
+}
+

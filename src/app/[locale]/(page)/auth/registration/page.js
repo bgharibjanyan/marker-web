@@ -190,7 +190,7 @@ export default function Registration() {
                                 backToRegistration()
                             }}
                             casual={false}
-                            shadowColor="#9E373E"
+                            shadowColor={ColorSelector("--g-color8")}
                         />
                     </div>
 

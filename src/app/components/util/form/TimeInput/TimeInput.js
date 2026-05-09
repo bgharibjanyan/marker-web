@@ -3,6 +3,7 @@
 import {useState, useRef, useEffect} from "react";
 import {useTranslations} from "next-intl";
 import styles from "./TimeInput.module.scss";
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
 const TimeInput = ({
                        name,
@@ -97,7 +98,7 @@ const TimeInput = ({
                     style={{
                         color: textColor,
                         width,
-                        "--shadow-color": shadowColor || "#9E373E",
+                        "--shadow-color": shadowColor || ColorSelector("--g-color8"),
                     }}
                 />
                 <div className={styles.timeIcon}>

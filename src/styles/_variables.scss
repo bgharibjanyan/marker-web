@@ -1,18 +1,24 @@
-$g-color1 : #fff;
-$g-color2 : #000;
-$g-color3 : #616161;
-$g-color4 : #454ADE;
-$g-color5 : #FF5964;
-$g-color6 : #e04848;
-$g-color7 : #B3B3B3;
-$g-color8 : #9E373E;
-$g-color9 : #f5babf;
-$g-color10 : #acacac;
-$g-color11 : #129a00;
-$g-color12 : #fff500;
+$g-color1: #fff;
+$g-color2: #000;
+$g-color3: #616161;
+$g-color4: #454ADE;
+$g-color5: #FF5964;
+$g-color6: #e04848;
+$g-color7: #B3B3B3;
+$g-color8: #9E373E;
+$g-color9: #f5babf;
+$g-color10: #acacac;
+$g-color11: #129a00;
+$g-color12: #fff500;
+$g-color13: #FF5D66;
+$g-color14: #2F9E44;
+$g-color15: #F59F00;
+$g-color16: #15AABF;
+$g-color17: #231F20;
+$g-color18: #ddd;
+$g-color19: #ccc;
 
-$bg-color10 : rgba(255, 89, 100, 0.07);
-
+$bg-color10: rgba(255, 89, 100, 0.07);
 
 $mobile: 540px;
 $mobileLarge: 720px;
@@ -21,20 +27,3 @@ $tabletLarge: 1024px;
 $desktop: 1440px;
 $desktopLarge: 1920px;
 
-:root {
-  --g-color1: #fff;
-  --g-color2: #000;
-  --g-color3: #616161;
-  --g-color4: #454ADE;
-  --g-color5: #FF5964;
-  --g-color6: #e04848;
-  --g-color7: #B3B3B3;
-  --g-color8: #9E373E;
-
-  --mobile: 540px;
-  --mobileLarge: 720px;
-  --tablet: 960px;
-  --tabletLarge: 1024px;
-  --desktop: 1440px;
-  --desktopLarge: 1920px;
-}

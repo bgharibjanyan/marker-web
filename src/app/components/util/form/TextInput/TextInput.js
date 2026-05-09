@@ -2,6 +2,7 @@
 
 import {useState} from "react";
 import styles from "./TextInput.module.scss";
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
 const TextInput = ({
                        type = "text",
@@ -38,7 +39,7 @@ const TextInput = ({
                     style={{
                         color: textColor,
                         width,
-                        "--shadow-color": shadowColor || "#9E373E",
+                        "--shadow-color": shadowColor || ColorSelector("--g-color8"),
                     }}
                 />
                 {type === "password" && (

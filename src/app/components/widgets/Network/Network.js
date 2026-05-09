@@ -17,7 +17,6 @@ const NetworkWidget = ({}) => {
         const fetchNetwork = async () => {
             try {
                 const user = await UserManager.getUser();
-                console.log("Current user:", user);
 
                 if (user?.connections?.length) {
                     const res = await apiCall("post", "/user/get-user-collection", {

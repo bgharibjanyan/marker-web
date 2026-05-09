@@ -76,6 +76,30 @@
     "title": "My Network",
     "empty": "No connections yet"
   },
+  "NetworkPage": {
+    "search": {
+      "label": "Users",
+      "placeholder": "Search users"
+    },
+    "tabs": {
+      "chat": "Chat",
+      "posts": "Posts",
+      "schedule": "Schedule"
+    },
+    "actions": {
+      "follow": "Follow",
+      "following": "Following...",
+      "unfollow": "Unfollow",
+      "unfollowing": "Unfollowing..."
+    },
+    "states": {
+      "loading": "Loading users...",
+      "searching": "Searching...",
+      "empty": "No connections yet",
+      "noSearchResults": "No users found",
+      "friend": "Friend"
+    }
+  },
   "Pages": {
     "events": "Events Page",
     "schedule": "Schedule Page"

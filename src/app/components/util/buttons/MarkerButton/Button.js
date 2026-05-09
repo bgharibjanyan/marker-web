@@ -1,4 +1,5 @@
 import styles from "./Button.module.scss";
+import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
 export default function Button({
                                    type = "primary",
@@ -24,7 +25,7 @@ export default function Button({
                 style={{
                     backgroundColor: bgColor,
                     color: textColor,
-                    "--shadow-color": shadowColor || "#9E373E",
+                    "--shadow-color": shadowColor || ColorSelector("--g-color8"),
                     ...(horizontalAlign && {justifyContent: horizontalAlign,}),
                     ...(width && {width}),
                     ...(maxWidth && {maxWidth}),
@@ -41,7 +42,7 @@ export default function Button({
                 {text}
             </button>
 
-            {casual && (<div style={{backgroundColor: shadowColor || "#9E373E"}}
+            {casual && (<div style={{backgroundColor: shadowColor || ColorSelector("--g-color8")}}
                              className={"shadow"}>
             </div>)}
         </div>
