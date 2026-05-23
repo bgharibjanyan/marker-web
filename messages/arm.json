@@ -83,7 +83,8 @@
     "tabs": {
       "chat": "Չաթ",
       "posts": "Գրառումներ",
-      "schedule": "Ժամանակացույց"
+      "schedule": "Ժամանակացույց",
+      "profile": "Պրոֆիլ"
     },
     "actions": {
       "follow": "Հետևել",
@@ -97,11 +98,145 @@
       "empty": "Կապեր դեռ չկան",
       "noSearchResults": "Օգտատերեր չեն գտնվել",
       "friend": "Ընկեր"
+    },
+    "chat": {
+      "labels": {
+        "chatWith": "Չաթ",
+        "editing": "Խմբագրվում է հաղորդագրությունը",
+        "user": "Օգտատեր"
+      },
+      "form": {
+        "placeholder": "Գրեք հաղորդագրություն",
+        "editPlaceholder": "Խմբագրեք հաղորդագրությունը"
+      },
+      "actions": {
+        "send": "Ուղարկել հաղորդագրությունը",
+        "save": "Պահպանել հաղորդագրությունը",
+        "edit": "Խմբագրել",
+        "cancel": "Չեղարկել",
+        "menu": "Բացել հաղորդագրության մենյուն"
+      },
+      "states": {
+        "loading": "Չաթը բեռնվում է...",
+        "loadingMore": "Բեռնվում են հին հաղորդագրությունները...",
+        "empty": "Հաղորդագրություններ դեռ չկան",
+        "noUser": "Ընտրեք օգտատեր՝ չաթ սկսելու համար։",
+        "loadFailed": "Չհաջողվեց բեռնել հաղորդագրությունները։",
+        "sendFailed": "Չհաջողվեց պահպանել հաղորդագրությունը։"
+      }
+    }
+  },
+  "ProfilePage": {
+    "labels": {
+      "profile": "Պրոֆիլ",
+      "myProfile": "Իմ պրոֆիլը"
+    },
+    "fields": {
+      "firstname": "Անուն",
+      "lastname": "Ազգանուն",
+      "login": "Լոգին",
+      "email": "Email",
+      "age": "Տարիք",
+      "sex": "Սեռ",
+      "address": "Հասցե",
+      "country": "Երկիր",
+      "city": "Քաղաք",
+      "timezone": "Ժամային գոտի",
+      "publicProfile": "Հանրային պրոֆիլ",
+      "notifications": "Ծանուցումներ",
+      "allowMessages": "Ուղիղ հաղորդագրություններ",
+      "favoriteTags": "Սիրելի թեգեր",
+      "tagPlaceholder": "rock, racing, food",
+      "select": "Ընտրել",
+      "selectCountry": "Նախ ընտրեք երկիրը"
+    },
+    "actions": {
+      "share": "Կիսվել",
+      "follow": "Հետևել",
+      "unfollow": "Չհետևել",
+      "save": "Պահպանել պրոֆիլը",
+      "saving": "Պահպանվում է...",
+      "uploadImage": "Վերբեռնել նկար",
+      "uploading": "Վերբեռնվում է..."
+    },
+    "states": {
+      "loading": "Պրոֆիլը բեռնվում է...",
+      "empty": "Պրոֆիլը չի գտնվել։",
+      "loadFailed": "Չհաջողվեց բեռնել պրոֆիլը։",
+      "saveFailed": "Չհաջողվեց պահպանել պրոֆիլը։",
+      "saved": "Պրոֆիլը պահպանվել է։",
+      "shared": "Պրոֆիլի հղումը պատճենված է։",
+      "followFailed": "Չհաջողվեց թարմացնել կապը։",
+      "imageSaved": "Պրոֆիլի նկարը պահպանվել է։",
+      "imageFailed": "Չհաջողվեց վերբեռնել պրոֆիլի նկարը։",
+      "imageTypeError": "Խնդրում ենք վերբեռնել նկարի ֆայլ։"
     }
   },
   "Pages": {
     "events": "Իրադարձությունների էջ",
     "schedule": "Ժամանակացույցի էջ"
+  },
+  "SchedulePage": {
+    "eyebrow": "Իմ ժամանակացույցը",
+    "title": "Ժամանակացույց և հավելվածի օգտագործում",
+    "tabs": {
+      "year": "Տարի",
+      "month": "Ամիս",
+      "week": "Շաբաթ",
+      "day": "Օր"
+    },
+    "actions": {
+      "create": "Ստեղծել առաջադրանք",
+      "previousMonth": "Նախորդ",
+      "nextMonth": "Հաջորդ",
+      "previousWeek": "Նախորդ",
+      "nextWeek": "Հաջորդ",
+      "previousDay": "Նախորդ",
+      "nextDay": "Հաջորդ",
+      "previousYear": "Նախորդ",
+      "nextYear": "Հաջորդ"
+    },
+    "usage": {
+      "total": "Բոլոր առաջադրանքները",
+      "today": "Այսօր",
+      "repeating": "Կրկնվող",
+      "private": "Գաղտնի"
+    },
+    "labels": {
+      "anytime": "Ցանկացած ժամ",
+      "currentRange": "Ընթացիկ միջակայք",
+      "ends": "Ավարտ՝ {time}",
+      "dayUsage": "Զբաղված",
+      "duration": "{time}",
+      "durationLabel": "Տևողություն",
+      "time": "Ժամ",
+      "startsIn": "Սկսվում է {time}-ից",
+      "startsInLabel": "Սկսվում է",
+      "endsIn": "Ավարտվում է {time}-ից",
+      "endsInLabel": "Ավարտվում է",
+      "completed": "Ավարտված",
+      "status": "Կարգավիճակ",
+      "hour": "ժամ",
+      "more": "+{count} ևս",
+      "overlappingTasks": "Նույն ժամանակի առաջադրանքներ",
+      "private": "Գաղտնի",
+      "repeating": "Կրկնվող",
+      "selectedDay": "Ընտրված օր",
+      "selectedTask": "Ընտրված առաջադրանք",
+      "tasks": "առաջադրանք"
+    },
+    "states": {
+      "loading": "Ժամանակացույցը բեռնվում է...",
+      "loadFailed": "Չհաջողվեց բեռնել ժամանակացույցը։",
+      "noTasks": "Առաջադրանքներ չկան",
+      "noTasksSelected": "Այս օրվա համար առաջադրանքներ չկան",
+      "noTasksToday": "Այսօրվա համար առաջադրանքներ չկան",
+      "noDescription": "Նկարագրություն չկա"
+    },
+    "summary": {
+      "label": "Օգտագործման ամփոփում",
+      "value": "Այժմ ակտիվ են {dated} պլանավորված և {repeating} կրկնվող առաջադրանքներ։"
+    }
   },
   "CreateTask": {
     "title": "Ավելացնել առաջադրանք",
@@ -114,6 +249,8 @@
       "privateLabel": "Գաղտնի",
       "descriptionLabel": "Նկարագրություն",
       "descriptionPlaceholder": "Օր.՝ ինչ-որ բան իրադարձության մասին",
+      "tagsLabel": "Թեգեր",
+      "tagsPlaceholder": "ռոք, մրցումներ, ուտելիք",
       "colorLabel": "Առաջադրանքի գույն",
       "repeatLabel": "Կրկնել",
       "timePlaceholder": "ԺԺ:ՐՐ",

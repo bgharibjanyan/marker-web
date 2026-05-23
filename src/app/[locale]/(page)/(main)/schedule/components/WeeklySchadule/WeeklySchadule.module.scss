@@ -1,0 +1,176 @@
+@import "../../../../../../../styles/variables";
+
+.weeklySchadule {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.weekControls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+
+  button {
+    border: 1px solid rgba($g-color8, 0.28);
+    border-radius: 8px;
+    padding: 8px 12px;
+    background-color: $g-color1;
+    color: $g-color8;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.18s, border-color 0.18s;
+  }
+
+  button:hover {
+    border-color: rgba($g-color8, 0.56);
+    background-color: rgba($g-color8, 0.06);
+  }
+
+  strong {
+    overflow: hidden;
+    color: $g-color2;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr 1fr;
+
+    strong {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+  }
+}
+
+.weekGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+
+  @media (max-width: $mobileLarge) {
+    grid-template-columns: 1fr;
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+}
+
+.weekColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 320px;
+  border: 1px solid rgba($g-color7, 0.45);
+  border-radius: 12px;
+  padding: 12px;
+
+  @media (max-width: $mobileLarge) {
+    min-height: 0;
+  }
+
+  &.isToday {
+    border-color: rgba($g-color13, 0.72);
+    box-shadow: inset 0 0 0 1px rgba($g-color13, 0.45);
+  }
+}
+
+.weekDayHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  span {
+    color: $g-color3;
+    font-size: 11px;
+  }
+
+  strong {
+    color: $g-color2;
+    font-size: 16px;
+  }
+}
+
+.weekTasks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+
+  @media (max-width: $mobileLarge) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+
+.taskPill {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  border-left: 4px solid var(--task-color, #{$g-color13});
+  border-radius: 7px;
+  padding: 6px 8px;
+  background-color: rgba($g-color9, 0.14);
+  color: $g-color2;
+  font-size: 11px;
+
+  span {
+    color: $g-color8;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  strong {
+    overflow: hidden;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.disabledTaskPill {
+  grid-template-columns: 1fr;
+  border-left-color: $g-color10;
+  background-color: rgba($g-color18, 0.45);
+  color: $g-color3;
+  opacity: 0.7;
+
+  span {
+    color: $g-color3;
+  }
+}
+
+.emptyInline {
+  color: $g-color3;
+  font-size: 11px;
+}
+
+.weekDayUsage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  border-radius: 8px;
+  padding: 8px;
+  background-color: rgba($g-color8, 0.06);
+
+  span {
+    color: $g-color3;
+    font-size: 11px;
+  }
+
+  strong {
+    color: $g-color8;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+}

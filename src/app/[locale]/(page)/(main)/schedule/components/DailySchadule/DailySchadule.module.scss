@@ -1,0 +1,358 @@
+@import "../../../../../../../styles/variables";
+
+.dailySchadule {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.dayControls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+
+  button {
+    border: 1px solid rgba($g-color8, 0.28);
+    border-radius: 8px;
+    padding: 8px 12px;
+    background-color: $g-color1;
+    color: $g-color8;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.18s, border-color 0.18s;
+  }
+
+  button:hover {
+    border-color: rgba($g-color8, 0.56);
+    background-color: rgba($g-color8, 0.06);
+  }
+
+  strong {
+    overflow: hidden;
+    color: $g-color2;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr 1fr;
+
+    strong {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+  }
+}
+
+.timelineScroller {
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 1px solid rgba($g-color3, 0.14);
+  background-color: rgba($g-color9, 0.08);
+}
+
+.timeline {
+  min-width: 1320px;
+}
+
+.hourHeader {
+  display: grid;
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+  border-bottom: 1px solid rgba($g-color3, 0.14);
+
+  span {
+    min-width: 0;
+    padding: 12px 8px;
+    color: rgba($g-color3, 0.8);
+    font-size: 11px;
+    font-weight: 700;
+    text-align: left;
+  }
+}
+
+.timelineBody {
+  position: relative;
+  min-height: calc((var(--lane-count, 1) * 72px) + 34px);
+  background-image: linear-gradient(to right, rgba($g-color3, 0.08) 1px, transparent 1px);
+  background-size: calc(100% / 24) 100%;
+}
+
+.hourDivider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: rgba($g-color3, 0.08);
+  pointer-events: none;
+}
+
+.currentTimeLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  width: 2px;
+  background-color: $g-color11;
+  box-shadow: 0 0 0 3px rgba($g-color11, 0.14);
+  pointer-events: none;
+
+  i {
+    position: absolute;
+    top: 8px;
+    left: 7px;
+    border-radius: 7px;
+    padding: 4px 7px;
+    background-color: $g-color11;
+    color: $g-color1;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+}
+
+.timelineTask {
+  position: absolute;
+  left: var(--task-left);
+  top: calc(18px + (var(--task-lane) * 72px));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  width: var(--task-width);
+  min-width: 44px;
+  height: 56px;
+  overflow: hidden;
+  border: 1px solid rgba($g-color1, 0.52);
+  border-left: 6px solid var(--task-color, #{$g-color13});
+  border-radius: 10px;
+  padding: 8px 10px;
+  background-color: rgba($g-color1, 0.94);
+  box-shadow: 0 10px 24px rgba($g-color3, 0.12);
+  color: $g-color2;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+
+  strong,
+  span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  strong {
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  span {
+    color: $g-color3;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--task-color, #{$g-color13});
+    box-shadow: 0 14px 28px rgba($g-color3, 0.18);
+    outline: none;
+    transform: translateY(-1px);
+  }
+}
+
+.selectedTimelineTask {
+  border-color: var(--task-color, #{$g-color13});
+  background-color: rgba($g-color9, 0.2);
+}
+
+.disabledTimelineTask {
+  border-left-color: $g-color10;
+  background-color: rgba($g-color18, 0.55);
+  color: $g-color3;
+  opacity: 0.72;
+}
+
+.anytimeTasks {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr;
+  }
+
+  > span {
+    border-radius: 8px;
+    padding: 8px;
+    background-color: rgba($g-color8, 0.08);
+    color: $g-color8;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+  }
+}
+
+.anytimeTask {
+  border-radius: 8px;
+  border: 1px solid rgba($g-color3, 0.12);
+  border-left: 5px solid var(--task-color, #{$g-color13});
+  padding: 9px 12px;
+  background-color: rgba($g-color9, 0.1);
+  color: $g-color2;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.disabledAnytimeTask {
+  border-left-color: $g-color10;
+  background-color: rgba($g-color18, 0.45);
+  color: $g-color3;
+  opacity: 0.72;
+}
+
+.selectedTaskPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.selectedTaskTitle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  justify-content: space-between;
+
+  span {
+    color: $g-color3;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  strong {
+    color: $g-color2;
+    font-size: 14px;
+  }
+}
+
+.taskInfoCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid rgba($g-color3, 0.12);
+  border-left: 6px solid var(--task-color, #{$g-color13});
+  border-radius: 12px;
+  padding: 14px;
+  background-color: rgba($g-color1, 0.9);
+  box-shadow: 0 12px 24px rgba($g-color3, 0.08);
+
+  p {
+    margin: 0;
+    color: $g-color3;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+.disabledTaskInfoCard {
+  opacity: 0.58;
+  filter: grayscale(0.55);
+}
+
+.taskInfoHeader {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  justify-content: space-between;
+
+  strong {
+    color: $g-color2;
+    font-size: 15px;
+  }
+
+  span {
+    color: $g-color3;
+    font-size: 12px;
+    font-weight: 800;
+  }
+}
+
+.taskTimer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+  padding: 12px;
+  background-color: rgba($g-color9, 0.16);
+
+  span {
+    color: $g-color3;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  strong {
+    color: var(--task-color, #{$g-color13});
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1;
+  }
+}
+
+.taskInfoMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  span {
+    border-radius: 999px;
+    padding: 6px 9px;
+    background-color: rgba($g-color9, 0.16);
+    color: $g-color8;
+    font-size: 12px;
+    font-weight: 800;
+  }
+}
+
+.overlapGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  > span {
+    color: $g-color3;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+}
+
+.emptyState {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  border-radius: 12px;
+  background-color: rgba($g-color9, 0.08);
+  color: $g-color3;
+  text-align: center;
+}

@@ -3,7 +3,7 @@
 import styles from "./CreateEvent.module.scss";
 import TextInput from "@/app/components/util/form/TextInput/TextInput";
 import TimeInput from "@/app/components/util/form/TimeInput/TimeInput";
-import {useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useTranslations} from "next-intl";
 import TaskModel from "@/models/event/TaskModel";
 import Switch from "@/app/components/util/form/switch/Switch";
@@ -11,6 +11,7 @@ import Radio from "@/app/components/util/form/Radio/Radio";
 import WeekdaySelector from "@/app/components/util/form/WeekdaySelector/WeekdaySelector";
 import DatePicker from "@/app/components/util/form/DatePicker/DatePicker";
 import ColorPicker from "@/app/components/util/form/ColorPicker/ColorPicker";
+import TagSelect from "@/app/components/util/form/TagSelect/TagSelect";
 import Button from "@/app/components/util/buttons/MarkerButton/Button";
 import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvider";
 import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
@@ -60,6 +61,24 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
     const [formKey, setFormKey] = useState(0);
     const [formError, setFormError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [popularTags, setPopularTags] = useState([]);
+
+    const loadPopularTags = useCallback(async () => {
+        try {
+            const response = await fetch('/api/tags?limit=24');
+            const data = await response.json();
+
+            if (response.ok) {
+                setPopularTags(data.tags || []);
+            }
+        } catch (error) {
+            setPopularTags([]);
+        }
+    }, []);
+
+    useEffect(() => {
+        loadPopularTags();
+    }, [loadPopularTags]);
 
     const handleChange = (name, value) => {
         const shouldRestoreDate = (name === 'repeat' && !value) || (name === 'repeatType' && value !== 'weekly');
@@ -216,6 +235,16 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
                         label={t('form.descriptionLabel')}
                         value={formData.description}
                         onChange={handleChange}
+                    />
+                </div>
+
+                <div className={styles.tagsCard}>
+                    <TagSelect
+                        label={t('form.tagsLabel')}
+                        selectedTags={formData.tags || []}
+                        popularTags={popularTags}
+                        onChange={(tags) => handleChange('tags', tags)}
+                        placeholder={t('form.tagsPlaceholder')}
                     />
                 </div>
 

@@ -43,6 +43,19 @@ export default function Header() {
 
         loadUser();
 
+        const handleUserUpdated = (event) => {
+            const updatedUser = event.detail?.user;
+
+            if (updatedUser && (updatedUser.id || updatedUser._id)) {
+                setUserProfilePicture(getProfilePicture(updatedUser));
+                setIsUserLoggedIn(true);
+            }
+        };
+
+        window.addEventListener("marker:user-updated", handleUserUpdated);
+
+        return () => window.removeEventListener("marker:user-updated", handleUserUpdated);
+
     }, []);
 
     const navList = [
@@ -65,6 +78,10 @@ export default function Header() {
 
     const routChange = (src) => {
         router.replace(`/${locale}${src}`);
+    };
+
+    const openProfile = () => {
+        router.replace(`/${locale}/${isUserLoggedIn ? "profile" : "auth/login"}`);
     };
 
     return (
@@ -99,12 +116,14 @@ export default function Header() {
                     onError={(e) => {
                         e.currentTarget.src = defaultProfilePicture;
                     }}
+                    onClick={openProfile}
                 />
             ) : (
                 <img
                     className={styles.userAvatar}
                     src={defaultProfilePicture}
                     alt={t('alt.defaultAvatar')}
+                    onClick={openProfile}
                 />
             )}
         </div>

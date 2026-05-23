@@ -23,7 +23,7 @@ export default class TaskModel {
         this.start = start ? start : null;
         this.end = end ? end : null;
         this.location = location ? location : null;
-        this.tags = tags ? tags : null;
+        this.tags = Array.isArray(tags) ? tags : [];
         this.repeat = repeat ? repeat : null;
         this.repeatType = repeatType ? repeatType : null;
         this.weekdays = weekdays ? weekdays : [];

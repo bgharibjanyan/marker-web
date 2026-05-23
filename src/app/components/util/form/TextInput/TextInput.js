@@ -15,6 +15,13 @@ const TextInput = ({
                        label,
                        width,
                        casual = false,
+                       disabled = false,
+                       onKeyDown,
+                       actionIcon = null,
+                       actionLabel = "",
+                       actionButtonType = "button",
+                       actionDisabled = false,
+                       onActionClick,
                    }) => {
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -26,7 +33,9 @@ const TextInput = ({
     return (
         <div className={styles.inputField}>
             {label && <span className={`${styles.t5} ${styles.fieldLabel}`}>{label}</span>}
-            <div className={`${styles.inputContainer} ${casual ? styles.casual : ''}`}>
+            <div
+                className={`${styles.inputContainer} ${casual ? styles.casual : ''} ${actionIcon && type !== "password" ? styles.hasAction : ""}`}
+            >
                 <input
                     type={type === "password" ? (isPasswordVisible ? "text" : "password") : type}
                     name={name}
@@ -35,6 +44,8 @@ const TextInput = ({
                     onChange={(e) => {
                         onChange(name, e.target.value)
                     }}
+                    onKeyDown={onKeyDown}
+                    disabled={disabled}
                     className={styles.input}
                     style={{
                         color: textColor,
@@ -48,6 +59,22 @@ const TextInput = ({
                             <svg className={`${styles.icon} ${isPasswordVisible ? styles.shown : styles.hidden}`}>
                                 <use
                                     href={`/images/sprites.svg#${isPasswordVisible ? "hide-password-icon" : "show-password-icon"}`}></use>
+                            </svg>
+                        </button>
+                    </div>
+                )}
+                {actionIcon && type !== "password" && (
+                    <div className={styles.fieldAction}>
+                        <button
+                            type={actionButtonType}
+                            className={styles.iconButton}
+                            onClick={onActionClick}
+                            aria-label={actionLabel}
+                            title={actionLabel}
+                            disabled={actionDisabled}
+                        >
+                            <svg className={styles.icon}>
+                                <use href={`/images/sprites.svg#${actionIcon}`}></use>
                             </svg>
                         </button>
                     </div>

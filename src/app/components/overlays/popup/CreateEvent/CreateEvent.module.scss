@@ -79,6 +79,14 @@
 
     }
 
+    .tagsCard {
+      width: 100%;
+      border: 1px solid $g-color7;
+      border-radius: 6px;
+      padding: 12px;
+      background-color: rgba($g-color8, 0.02);
+    }
+
     .scheduleCard {
       display: flex;
       align-items: flex-start;

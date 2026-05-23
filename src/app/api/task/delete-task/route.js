@@ -1,5 +1,6 @@
 import clientPromise from "@/app/lib/mongodb";
 import {ObjectId} from "mongodb";
+import {updateTaskTagUsage} from "@/app/api/task/_shared";
 
 export async function POST(request) {
     try {
@@ -21,6 +22,7 @@ export async function POST(request) {
         const sessionsCollection = db.collection('session');
         const usersCollection = db.collection('user');
         const tasksCollection = db.collection('tasks');
+        const tagsCollection = db.collection('tag');
 
         const session = await sessionsCollection.findOne({token: authToken});
 
@@ -35,6 +37,12 @@ export async function POST(request) {
         }
 
         const objectId = new ObjectId(taskId);
+        const task = await tasksCollection.findOne({_id: objectId, userId: user._id});
+
+        if (!task) {
+            return Response.json({error: 'Task not found'}, {status: 404});
+        }
+
         const result = await tasksCollection.deleteOne({_id: objectId, userId: user._id});
 
         if (result.deletedCount === 0) {
@@ -45,6 +53,7 @@ export async function POST(request) {
             {_id: user._id},
             {$pull: {tasks: objectId}}
         );
+        await updateTaskTagUsage(tagsCollection, task.tags || [], []);
 
         return Response.json({message: 'Task deleted successfully'}, {status: 200});
     } catch (error) {

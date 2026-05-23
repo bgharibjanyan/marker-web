@@ -71,13 +71,19 @@
       }
     }
 
+    &.hasAction .input {
+      padding-right: 54px;
+      width: calc(100% - 68px);
+    }
+
     &.casual:hover::after,
     &.casual:focus-within::after {
       top: 7px;
       left: 6px;
     }
 
-    .visibilityAction {
+    .visibilityAction,
+    .fieldAction {
       position: absolute;
       top: 50%;
       right: 20px;
@@ -86,6 +92,12 @@
       .iconButton {
         border: none;
         background-color: transparent;
+        cursor: pointer;
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.45;
+        }
 
         .icon {
           width: 24px;

@@ -1,0 +1,58 @@
+@import "../../../../../../../styles/variables";
+@import "../../../../../../../styles/fonts";
+
+.scheduleHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  @media (max-width: $mobileLarge) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+.eyebrow {
+  display: block;
+  color: $g-color8;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 4px 0 0;
+  color: $g-color2;
+}
+
+.usageGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+
+  @media (max-width: $mobileLarge) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  article {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+    border: 1px solid rgba($g-color8, 0.12);
+    border-radius: 12px;
+    padding: 12px;
+    background-color: rgba($g-color9, 0.1);
+  }
+
+  span {
+    color: $g-color3;
+    font-size: 12px;
+  }
+
+  strong {
+    color: $g-color8;
+    font-size: 24px;
+    line-height: 1;
+  }
+}

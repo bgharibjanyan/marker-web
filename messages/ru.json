@@ -83,7 +83,8 @@
     "tabs": {
       "chat": "Чат",
       "posts": "Посты",
-      "schedule": "Расписание"
+      "schedule": "Расписание",
+      "profile": "Профиль"
     },
     "actions": {
       "follow": "Подписаться",
@@ -97,11 +98,145 @@
       "empty": "Пока нет связей",
       "noSearchResults": "Пользователи не найдены",
       "friend": "Друг"
+    },
+    "chat": {
+      "labels": {
+        "chatWith": "Чат с",
+        "editing": "Редактирование сообщения",
+        "user": "Пользователь"
+      },
+      "form": {
+        "placeholder": "Введите сообщение",
+        "editPlaceholder": "Редактируйте сообщение"
+      },
+      "actions": {
+        "send": "Отправить сообщение",
+        "save": "Сохранить сообщение",
+        "edit": "Редактировать",
+        "cancel": "Отмена",
+        "menu": "Открыть меню сообщения"
+      },
+      "states": {
+        "loading": "Чат загружается...",
+        "loadingMore": "Загрузка старых сообщений...",
+        "empty": "Сообщений пока нет",
+        "noUser": "Выберите пользователя, чтобы начать чат.",
+        "loadFailed": "Не удалось загрузить сообщения.",
+        "sendFailed": "Не удалось сохранить сообщение."
+      }
+    }
+  },
+  "ProfilePage": {
+    "labels": {
+      "profile": "Профиль",
+      "myProfile": "Мой профиль"
+    },
+    "fields": {
+      "firstname": "Имя",
+      "lastname": "Фамилия",
+      "login": "Логин",
+      "email": "Email",
+      "age": "Возраст",
+      "sex": "Пол",
+      "address": "Адрес",
+      "country": "Страна",
+      "city": "Город",
+      "timezone": "Часовой пояс",
+      "publicProfile": "Публичный профиль",
+      "notifications": "Уведомления",
+      "allowMessages": "Личные сообщения",
+      "favoriteTags": "Любимые теги",
+      "tagPlaceholder": "rock, racing, food",
+      "select": "Выбрать",
+      "selectCountry": "Сначала выберите страну"
+    },
+    "actions": {
+      "share": "Поделиться",
+      "follow": "Подписаться",
+      "unfollow": "Отписаться",
+      "save": "Сохранить профиль",
+      "saving": "Сохранение...",
+      "uploadImage": "Загрузить изображение",
+      "uploading": "Загрузка..."
+    },
+    "states": {
+      "loading": "Профиль загружается...",
+      "empty": "Профиль не найден.",
+      "loadFailed": "Не удалось загрузить профиль.",
+      "saveFailed": "Не удалось сохранить профиль.",
+      "saved": "Профиль сохранен.",
+      "shared": "Ссылка на профиль скопирована.",
+      "followFailed": "Не удалось обновить связь.",
+      "imageSaved": "Изображение профиля сохранено.",
+      "imageFailed": "Не удалось загрузить изображение профиля.",
+      "imageTypeError": "Пожалуйста, загрузите файл изображения."
     }
   },
   "Pages": {
     "events": "Страница событий",
     "schedule": "Страница расписания"
+  },
+  "SchedulePage": {
+    "eyebrow": "Мое расписание",
+    "title": "Расписание и использование приложения",
+    "tabs": {
+      "year": "Год",
+      "month": "Месяц",
+      "week": "Неделя",
+      "day": "День"
+    },
+    "actions": {
+      "create": "Создать задачу",
+      "previousMonth": "Назад",
+      "nextMonth": "Вперед",
+      "previousWeek": "Назад",
+      "nextWeek": "Вперед",
+      "previousDay": "Назад",
+      "nextDay": "Вперед",
+      "previousYear": "Назад",
+      "nextYear": "Вперед"
+    },
+    "usage": {
+      "total": "Все задачи",
+      "today": "Сегодня",
+      "repeating": "Повторяются",
+      "private": "Приватные"
+    },
+    "labels": {
+      "anytime": "Без времени",
+      "currentRange": "Текущий период",
+      "ends": "Заканчивается {time}",
+      "dayUsage": "Занято",
+      "duration": "{time}",
+      "durationLabel": "Длительность",
+      "time": "Время",
+      "startsIn": "Начнется через {time}",
+      "startsInLabel": "Начнется через",
+      "endsIn": "Закончится через {time}",
+      "endsInLabel": "Закончится через",
+      "completed": "Завершено",
+      "status": "Статус",
+      "hour": "час",
+      "more": "еще +{count}",
+      "overlappingTasks": "Задачи в это же время",
+      "private": "Приватно",
+      "repeating": "Повторяется",
+      "selectedDay": "Выбранный день",
+      "selectedTask": "Выбранная задача",
+      "tasks": "задач"
+    },
+    "states": {
+      "loading": "Загрузка расписания...",
+      "loadFailed": "Не удалось загрузить расписание.",
+      "noTasks": "Нет задач",
+      "noTasksSelected": "На этот день задач нет",
+      "noTasksToday": "На сегодня задач нет",
+      "noDescription": "Нет описания"
+    },
+    "summary": {
+      "label": "Сводка использования",
+      "value": "Сейчас активны {dated} запланированных задач и {repeating} повторяющихся задач."
+    }
   },
   "CreateTask": {
     "title": "Добавить задачу",
@@ -114,6 +249,8 @@
       "privateLabel": "Приватно",
       "descriptionLabel": "Описание",
       "descriptionPlaceholder": "Например, что-то о событии",
+      "tagsLabel": "Теги",
+      "tagsPlaceholder": "рок, гонки, еда",
       "colorLabel": "Цвет задачи",
       "repeatLabel": "Повтор",
       "timePlaceholder": "ЧЧ:ММ",

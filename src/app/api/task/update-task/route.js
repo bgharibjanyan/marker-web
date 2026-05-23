@@ -1,6 +1,7 @@
 import clientPromise from "@/app/lib/mongodb";
 import TaskModel from "@/models/event/TaskModel";
 import {ObjectId} from "mongodb";
+import {resolveTaskTagIds, updateTaskTagUsage} from "@/app/api/task/_shared";
 
 const validateTask = (task) => {
     const isDailyRepeat = task.repeat && task.repeatType === 'daily';
@@ -60,6 +61,7 @@ export async function POST(request) {
         const sessionsCollection = db.collection('session');
         const usersCollection = db.collection('user');
         const tasksCollection = db.collection('tasks');
+        const tagsCollection = db.collection('tag');
 
         const session = await sessionsCollection.findOne({token: authToken});
 
@@ -73,17 +75,30 @@ export async function POST(request) {
             return Response.json({error: 'User not found'}, {status: 404});
         }
 
-        const taskData = new TaskModel(body);
+        const objectId = new ObjectId(taskId);
+        const existingTask = await tasksCollection.findOne({_id: objectId, userId: user._id});
+
+        if (!existingTask) {
+            return Response.json({error: 'Task not found'}, {status: 404});
+        }
+
+        const tagIds = await resolveTaskTagIds(tagsCollection, body.tags);
+        const taskData = new TaskModel({
+            ...body,
+            tags: tagIds,
+        });
         taskData.setUser(user._id);
 
         const result = await tasksCollection.updateOne(
-            {_id: new ObjectId(taskId), userId: user._id},
+            {_id: objectId, userId: user._id},
             {$set: taskData}
         );
 
         if (result.matchedCount === 0) {
             return Response.json({error: 'Task not found'}, {status: 404});
         }
+
+        await updateTaskTagUsage(tagsCollection, existingTask.tags || [], body.tags);
 
         return Response.json({message: 'Task updated successfully'}, {status: 200});
     } catch (error) {

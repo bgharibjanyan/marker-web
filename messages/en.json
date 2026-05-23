@@ -58,7 +58,8 @@
       "Schedule": "Schedule",
       "Network": "Network",
       "Events": "Events",
-      "Home": "Home"
+      "Home": "Home",
+      "profile": "Profile"
     },
     "alt": {
       "logo": "Marker logo",
@@ -84,7 +85,8 @@
     "tabs": {
       "chat": "Chat",
       "posts": "Posts",
-      "schedule": "Schedule"
+      "schedule": "Schedule",
+      "profile": "Profile"
     },
     "actions": {
       "follow": "Follow",
@@ -98,11 +100,145 @@
       "empty": "No connections yet",
       "noSearchResults": "No users found",
       "friend": "Friend"
+    },
+    "chat": {
+      "labels": {
+        "chatWith": "Chat with",
+        "editing": "Editing message",
+        "user": "User"
+      },
+      "form": {
+        "placeholder": "Type a message",
+        "editPlaceholder": "Edit your message"
+      },
+      "actions": {
+        "send": "Send message",
+        "save": "Save message",
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "menu": "Open message menu"
+      },
+      "states": {
+        "loading": "Loading chat...",
+        "loadingMore": "Loading older messages...",
+        "empty": "No messages yet",
+        "noUser": "Select a user to start chatting.",
+        "loadFailed": "Failed to load messages.",
+        "sendFailed": "Failed to save message."
+      }
+    }
+  },
+  "ProfilePage": {
+    "labels": {
+      "profile": "Profile",
+      "myProfile": "My profile"
+    },
+    "fields": {
+      "firstname": "First name",
+      "lastname": "Last name",
+      "login": "Login",
+      "email": "Email",
+      "age": "Age",
+      "sex": "Sex",
+      "address": "Address",
+      "country": "Country",
+      "city": "City",
+      "timezone": "Timezone",
+      "publicProfile": "Public profile",
+      "notifications": "Notifications",
+      "allowMessages": "Direct messages",
+      "favoriteTags": "Favorite tags",
+      "tagPlaceholder": "rock, racing, food",
+      "select": "Select",
+      "selectCountry": "Select country first"
+    },
+    "actions": {
+      "share": "Share",
+      "follow": "Follow",
+      "unfollow": "Unfollow",
+      "save": "Save profile",
+      "saving": "Saving...",
+      "uploadImage": "Upload image",
+      "uploading": "Uploading..."
+    },
+    "states": {
+      "loading": "Loading profile...",
+      "empty": "Profile not found.",
+      "loadFailed": "Failed to load profile.",
+      "saveFailed": "Failed to save profile.",
+      "saved": "Profile saved.",
+      "shared": "Profile URL copied.",
+      "followFailed": "Failed to update connection.",
+      "imageSaved": "Profile image saved.",
+      "imageFailed": "Failed to upload profile image.",
+      "imageTypeError": "Please upload an image file."
     }
   },
   "Pages": {
     "events": "Events Page",
     "schedule": "Schedule Page"
+  },
+  "SchedulePage": {
+    "eyebrow": "My schedule",
+    "title": "Schedule and app usage",
+    "tabs": {
+      "year": "Year",
+      "month": "Month",
+      "week": "Week",
+      "day": "Day"
+    },
+    "actions": {
+      "create": "Create Task",
+      "previousMonth": "Prev",
+      "nextMonth": "Next",
+      "previousWeek": "Prev",
+      "nextWeek": "Next",
+      "previousDay": "Prev",
+      "nextDay": "Next",
+      "previousYear": "Prev",
+      "nextYear": "Next"
+    },
+    "usage": {
+      "total": "All tasks",
+      "today": "Today",
+      "repeating": "Repeating",
+      "private": "Private"
+    },
+    "labels": {
+      "anytime": "Anytime",
+      "currentRange": "Current range",
+      "ends": "Ends {time}",
+      "dayUsage": "Busy",
+      "duration": "{time}",
+      "durationLabel": "Duration",
+      "time": "Time",
+      "startsIn": "Starts in {time}",
+      "startsInLabel": "Starts in",
+      "endsIn": "Ends in {time}",
+      "endsInLabel": "Ends in",
+      "completed": "Completed",
+      "status": "Status",
+      "hour": "hour",
+      "more": "+{count} more",
+      "overlappingTasks": "Overlapping tasks",
+      "private": "Private",
+      "repeating": "Repeating",
+      "selectedDay": "Selected day",
+      "selectedTask": "Selected task",
+      "tasks": "tasks"
+    },
+    "states": {
+      "loading": "Loading schedule...",
+      "loadFailed": "Failed to load schedule.",
+      "noTasks": "No tasks",
+      "noTasksSelected": "No tasks for this day",
+      "noTasksToday": "No tasks for today",
+      "noDescription": "No description"
+    },
+    "summary": {
+      "label": "Usage summary",
+      "value": "{dated} scheduled tasks and {repeating} repeating routines are currently active."
+    }
   },
   "CreateTask": {
     "title": "Add Task",
@@ -115,6 +251,8 @@
       "privateLabel": "Private",
       "descriptionLabel": "Description",
       "descriptionPlaceholder": "Eg. something about event",
+      "tagsLabel": "Tags",
+      "tagsPlaceholder": "rock, racing, food",
       "colorLabel": "Task Color",
       "repeatLabel": "Repeat",
       "timePlaceholder": "HH:MM",
