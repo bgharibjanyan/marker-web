@@ -282,6 +282,37 @@
       "updateFailed": "Failed to update task."
     }
   },
+  "CreatePost": {
+    "title": "Create Post",
+    "editTitle": "Edit Post",
+    "description": "Create a post from this task.",
+    "editDescription": "Update this post.",
+    "form": {
+      "titleLabel": "Post title",
+      "titlePlaceholder": "What should this post be called?",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Write a short post description",
+      "mediaLabel": "Media",
+      "mediaButton": "Upload images",
+      "removeImage": "Remove image",
+      "existingImage": "Post image"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "submit": "Create post",
+      "update": "Update post",
+      "saving": "Saving...",
+      "updating": "Updating..."
+    },
+    "validation": {
+      "taskRequired": "Task is required.",
+      "titleRequired": "Post title is required.",
+      "mediaLimit": "You can upload up to 4 images.",
+      "mediaType": "Please upload image files only.",
+      "createFailed": "Failed to create post.",
+      "updateFailed": "Failed to update post."
+    }
+  },
   "TasksWidget": {
     "nextTask": "Next task",
     "loading": "Loading...",
@@ -306,6 +337,7 @@
     "actions": {
       "more": "Open task menu",
       "edit": "Edit",
+      "createPost": "Create post",
       "delete": "Delete"
     }
   },

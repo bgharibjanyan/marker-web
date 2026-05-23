@@ -26,6 +26,7 @@ export default function Schedule({currentUser, selectedUser}) {
     const [tasks, setTasks] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const [isMounted, setIsMounted] = useState(false);
     const today = useMemo(() => new Date(), []);
     const [selectedDate, setSelectedDate] = useState(() => new Date());
     const [visibleMonth, setVisibleMonth] = useState(() => new Date());
@@ -46,6 +47,10 @@ export default function Schedule({currentUser, selectedUser}) {
     const availableTabs = useMemo(() => (
         isTabletLarge ? tabs.filter((tab) => tab.key !== "month") : tabs
     ), [isTabletLarge, tabs]);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     const loadTasks = useCallback(async () => {
         if (!selectedUserId) {
@@ -171,6 +176,10 @@ export default function Schedule({currentUser, selectedUser}) {
 
     if (!selectedUserId) {
         return <div className={styles.emptyState}>{t("states.noTasksSelected")}</div>;
+    }
+
+    if (!isMounted) {
+        return <div className={styles.emptyState}>{t("states.loading")}</div>;
     }
 
     return (

@@ -7,7 +7,7 @@ import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
 const DEFAULT_TASK_COLOR = ColorSelector("--g-color13");
 
-const TaskCard = ({task, onEdit, onDelete}) => {
+const TaskCard = ({task, onEdit, onDelete, onCreatePost}) => {
     const t = useTranslations('TaskCard');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef(null);
@@ -30,6 +30,7 @@ const TaskCard = ({task, onEdit, onDelete}) => {
         setIsMenuOpen(false);
 
         if (action === 'edit' && onEdit) onEdit(task);
+        if (action === 'createPost' && onCreatePost) onCreatePost(task);
         if (action === 'delete' && onDelete) onDelete(task);
     };
 
@@ -56,6 +57,9 @@ const TaskCard = ({task, onEdit, onDelete}) => {
                         <div className={styles.contextMenu}>
                             <button type="button" onClick={() => handleMenuAction('edit')}>
                                 {t('actions.edit')}
+                            </button>
+                            <button type="button" onClick={() => handleMenuAction('createPost')}>
+                                {t('actions.createPost')}
                             </button>
                             <button type="button" onClick={() => handleMenuAction('delete')}>
                                 {t('actions.delete')}

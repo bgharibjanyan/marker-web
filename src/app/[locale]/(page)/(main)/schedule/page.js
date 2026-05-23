@@ -24,6 +24,7 @@ export default function SchedulePage() {
     const [tasks, setTasks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const [isMounted, setIsMounted] = useState(false);
     const today = useMemo(() => new Date(), []);
     const [selectedDate, setSelectedDate] = useState(() => new Date());
     const [visibleMonth, setVisibleMonth] = useState(() => new Date());
@@ -37,6 +38,10 @@ export default function SchedulePage() {
         {key: "week", label: t("tabs.week"), color: ColorSelector("--g-color5")},
         {key: "day", label: t("tabs.day"), color: ColorSelector("--g-color13")},
     ], [t]);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     
     const availableTabs = useMemo(() => (
@@ -114,6 +119,16 @@ export default function SchedulePage() {
             <CreateEvent onSaved={() => loadTasks()}/>
         );
     };
+
+    if (!isMounted) {
+        return (
+            <div className={styles.schedulePage}>
+                <section className={styles.scheduleWorkspace}>
+                    <div className={styles.emptyState}>{t("states.loading")}</div>
+                </section>
+            </div>
+        );
+    }
 
     const renderActiveView = () => {
         if (activeTabKey === "year") {

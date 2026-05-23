@@ -4,6 +4,7 @@ import {useCallback, useEffect, useMemo, useState} from "react";
 import {useTranslations} from "next-intl";
 import TaskCard from "./TaskCard/TaskCard";
 import CreateEvent from "@/app/components/overlays/popup/CreateEvent/CreateEvent";
+import CreatePost from "@/app/components/overlays/popup/CreatePost/CreatePost";
 import ConfirmPopup from "@/app/components/overlays/popup/ConfirmPopup/ConfirmPopup";
 import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvider";
 import styles from "./CommonTasksWidget.module.scss";
@@ -237,6 +238,14 @@ const CommonTasksWidget = () => {
         );
     }, [fetchTasks, openPopup, t]);
 
+    const handleCreatePost = useCallback((task) => {
+        openPopup(
+            <CreatePost
+                task={task}
+            />
+        );
+    }, [openPopup]);
+
     useEffect(() => {
         const interval = setInterval(() => {
             setNow(new Date());
@@ -325,6 +334,7 @@ const CommonTasksWidget = () => {
                         task={task}
                         onEdit={handleEditTask}
                         onDelete={handleDeleteTask}
+                        onCreatePost={handleCreatePost}
                     />
                 ))}
             </div>

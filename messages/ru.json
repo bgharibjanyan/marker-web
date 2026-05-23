@@ -280,6 +280,37 @@
       "updateFailed": "Не удалось обновить задачу."
     }
   },
+  "CreatePost": {
+    "title": "Создать пост",
+    "editTitle": "Редактировать пост",
+    "description": "Создайте пост из этой задачи.",
+    "editDescription": "Обновите этот пост.",
+    "form": {
+      "titleLabel": "Название поста",
+      "titlePlaceholder": "Как назвать этот пост?",
+      "descriptionLabel": "Описание",
+      "descriptionPlaceholder": "Напишите короткое описание поста",
+      "mediaLabel": "Медиа",
+      "mediaButton": "Загрузить изображения",
+      "removeImage": "Удалить изображение",
+      "existingImage": "Изображение поста"
+    },
+    "actions": {
+      "cancel": "Отмена",
+      "submit": "Создать пост",
+      "update": "Обновить пост",
+      "saving": "Сохранение...",
+      "updating": "Обновление..."
+    },
+    "validation": {
+      "taskRequired": "Задача обязательна.",
+      "titleRequired": "Название поста обязательно.",
+      "mediaLimit": "Можно загрузить до 4 изображений.",
+      "mediaType": "Пожалуйста, загрузите только изображения.",
+      "createFailed": "Не удалось создать пост.",
+      "updateFailed": "Не удалось обновить пост."
+    }
+  },
   "TasksWidget": {
     "nextTask": "Следующая задача",
     "loading": "Загрузка...",
@@ -304,6 +335,7 @@
     "actions": {
       "more": "Открыть меню задачи",
       "edit": "Редактировать",
+      "createPost": "Создать пост",
       "delete": "Удалить"
     }
   },

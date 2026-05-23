@@ -280,6 +280,37 @@
       "updateFailed": "Չհաջողվեց թարմացնել առաջադրանքը։"
     }
   },
+  "CreatePost": {
+    "title": "Ստեղծել գրառում",
+    "editTitle": "Խմբագրել գրառումը",
+    "description": "Ստեղծեք գրառում այս առաջադրանքից։",
+    "editDescription": "Թարմացրեք այս գրառումը։",
+    "form": {
+      "titleLabel": "Գրառման վերնագիր",
+      "titlePlaceholder": "Ինչպե՞ս անվանել այս գրառումը",
+      "descriptionLabel": "Նկարագրություն",
+      "descriptionPlaceholder": "Գրեք կարճ նկարագրություն",
+      "mediaLabel": "Մեդիա",
+      "mediaButton": "Վերբեռնել նկարներ",
+      "removeImage": "Հեռացնել նկարը",
+      "existingImage": "Գրառման նկար"
+    },
+    "actions": {
+      "cancel": "Չեղարկել",
+      "submit": "Ստեղծել գրառումը",
+      "update": "Թարմացնել գրառումը",
+      "saving": "Պահպանվում է...",
+      "updating": "Թարմացվում է..."
+    },
+    "validation": {
+      "taskRequired": "Առաջադրանքը պարտադիր է։",
+      "titleRequired": "Գրառման վերնագիրը պարտադիր է։",
+      "mediaLimit": "Կարող եք վերբեռնել մինչև 4 նկար։",
+      "mediaType": "Խնդրում ենք վերբեռնել միայն նկարներ։",
+      "createFailed": "Չհաջողվեց ստեղծել գրառումը։",
+      "updateFailed": "Չհաջողվեց թարմացնել գրառումը։"
+    }
+  },
   "TasksWidget": {
     "nextTask": "Հաջորդ առաջադրանք",
     "loading": "Բեռնվում է...",
@@ -304,6 +335,7 @@
     "actions": {
       "more": "Բացել առաջադրանքի մենյուն",
       "edit": "Խմբագրել",
+      "createPost": "Ստեղծել գրառում",
       "delete": "Ջնջել"
     }
   },
