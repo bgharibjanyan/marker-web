@@ -4,6 +4,7 @@ import styles from "./TaskCard.module.scss";
 import {useEffect, useRef, useState} from "react";
 import {useTranslations} from "next-intl";
 import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
+import RichTextContent from "@/app/components/util/RichTextContent/RichTextContent";
 
 const DEFAULT_TASK_COLOR = ColorSelector("--g-color13");
 
@@ -77,9 +78,11 @@ const TaskCard = ({task, onEdit, onDelete, onCreatePost}) => {
 
                 <div className={styles.taskContent}>
                     <span className={`${styles.taskName} ${styles.t6}`}>{task.title}</span>
-                    <span className={`${styles.taskDescription} ${styles.t7}`}>
-                        {task.description || t('noDescription')}
-                    </span>
+                    <RichTextContent
+                        value={task.description}
+                        fallback={<span className={`${styles.taskDescription} ${styles.t7}`}>{t('noDescription')}</span>}
+                        className={`${styles.taskDescription} ${styles.t7}`}
+                    />
                 </div>
             </div>
         </article>

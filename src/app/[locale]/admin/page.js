@@ -9,8 +9,8 @@ const stats = [
     },
     {
         label: "Events",
-        value: "Later",
-        meta: "Navigation tab ready"
+        value: "Live",
+        meta: "List, create, and edit ready"
     },
     {
         label: "Slider images",

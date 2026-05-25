@@ -1,43 +1,40 @@
-import clientPromise from "@/app/lib/mongodb";
-import {NextResponse} from 'next/server';
+import {NextResponse} from "next/server";
+import {
+    createEventTagMap,
+    getAuthenticatedEventContext,
+    serializeEvent,
+    toObjectId,
+} from "@/app/api/event/_shared";
 
 export async function GET(request) {
     try {
+        const auth = await getAuthenticatedEventContext(request);
+
+        if (auth.error) {
+            return auth.error;
+        }
+
+        const {eventsCollection, tagsCollection, userId} = auth;
         const {searchParams} = new URL(request.url);
-        const userId = searchParams.get('userId');
-        const authToken = request.headers.get('authorization');
+        const requestedUserId = searchParams.get("userId");
+        const targetUserId = requestedUserId ? toObjectId(requestedUserId) : userId;
 
-        const client = await clientPromise;
-        const db = client.db("marker");
-
-        const sessionsCollection = db.collection("session");
-        const eventsCollection = db.collection("events");
-
-        const session = await sessionsCollection.findOne({token: authToken});
-
-        if (!session || !session.userId) {
-            return NextResponse.json({error: "Unauthorized"}, {status: 401});
+        if (!targetUserId) {
+            return NextResponse.json({error: "Invalid userId"}, {status: 400});
         }
 
-        const memberId = session.userId;
+        const filter = requestedUserId
+            ? {userId: targetUserId, isPrivate: false}
+            : {userId: targetUserId};
+        const events = await eventsCollection
+            .find(filter)
+            .sort({createdAt: -1, _id: -1})
+            .toArray();
+        const tagMap = await createEventTagMap(tagsCollection, events);
 
-        let events;
-
-        if (userId) {
-            events = await eventsCollection.find({userId: userId, isPrivate:false}).toArray();
-        } else {
-            events = await eventsCollection.find({userId: memberId}).toArray();
-        }
-
-        const serializedEvents = events.map(event => ({
-            ...event,
-            _id: event._id.toString(),
-        }));
-
-        return NextResponse.json(serializedEvents);
-
+        return NextResponse.json({events: events.map((event) => serializeEvent(event, tagMap))}, {status: 200});
     } catch (error) {
-        console.error(error);
+        console.error("Error in GET /event/get-user-events:", error);
         return NextResponse.json({error: "Failed to fetch events"}, {status: 500});
     }
 }

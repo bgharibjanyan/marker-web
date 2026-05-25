@@ -3,6 +3,7 @@
 import {useEffect, useRef, useState} from "react";
 import {useTranslations} from "next-intl";
 import Button from "@/app/components/util/buttons/MarkerButton/Button";
+import RichTextInput from "@/app/components/util/form/RichTextInput/RichTextInput";
 import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvider";
 import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 import styles from "./CreatePost.module.scss";
@@ -186,18 +187,21 @@ export default function CreatePost({task = null, post = null, onSaved, onCancel}
                     />
                 </label>
 
-                <label className={styles.field}>
-                    <span className={`${styles.fieldLabel} ${styles.t5}`}>{t("form.descriptionLabel")}</span>
-                    <textarea
-                        className={styles.textarea}
+                <div className={styles.field}>
+                    <RichTextInput
+                        name="description"
+                        casual={true}
+                        shadowColor={ColorSelector("--g-color8")}
                         value={description}
                         placeholder={t("form.descriptionPlaceholder")}
-                        onChange={(event) => {
-                            setDescription(event.target.value);
+                        label={t("form.descriptionLabel")}
+                        minHeight={190}
+                        onChange={(name, value) => {
+                            setDescription(value);
                             setFormError("");
                         }}
                     />
-                </label>
+                </div>
 
                 <div className={styles.mediaPicker}>
                     <span className={`${styles.fieldLabel} ${styles.t5}`}>{t("form.mediaLabel")}</span>

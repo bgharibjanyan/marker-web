@@ -132,9 +132,9 @@
 }
 
 .input,
-.select {
+.select,
+.textarea {
   width: 100%;
-  min-height: 44px;
   box-sizing: border-box;
   border: 1px solid #dedee3;
   border-radius: 8px;
@@ -154,6 +154,17 @@
     color: #8b8b96;
     cursor: default;
   }
+}
+
+.input,
+.select {
+  min-height: 44px;
+}
+
+.textarea {
+  min-height: 108px;
+  resize: vertical;
+  padding: 12px;
 }
 
 .checkboxField {

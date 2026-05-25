@@ -4,15 +4,380 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
 
-  h2 {
-    margin: 0;
-    font-size: 20px;
-    color: $g-color17;
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  gap: 16px;
+  min-height: 0;
+}
+
+.eventList,
+.editor,
+.createPanel {
+  border: 1px solid #e9e9ed;
+  border-radius: 8px;
+  background: $g-color1;
+}
+
+.eventList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  max-height: calc(100vh - 150px);
+  min-height: 420px;
+  overflow: hidden;
+}
+
+.searchField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 8px;
+
+  span {
+    color: $g-color3;
+    font-size: 12px;
+    font-weight: 800;
   }
+
+  input {
+    width: 100%;
+    min-height: 42px;
+    box-sizing: border-box;
+    border: 1px solid #dedee3;
+    border-radius: 8px;
+    background: $g-color1;
+    color: $g-color17;
+    font: inherit;
+    padding: 0 12px;
+    outline: none;
+
+    &:focus {
+      border-color: $g-color4;
+      box-shadow: 0 0 0 3px rgba(69, 74, 222, 0.12);
+    }
+  }
+}
+
+.eventScrollArea {
+  min-height: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.eventItem {
+  min-height: 66px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  padding: 10px 12px;
+  cursor: pointer;
+
+  span,
+  small {
+    display: block;
+  }
+
+  span {
+    color: $g-color17;
+    font-weight: 800;
+  }
+
+  small {
+    margin-top: 5px;
+    color: $g-color3;
+    font-size: 12px;
+  }
+
+  &:hover,
+  &.active {
+    background: #f7f7f8;
+    border-color: #e4e4e8;
+  }
+
+  &.active span {
+    color: $g-color8;
+  }
+}
+
+.editor,
+.createPanel {
+  padding: 20px;
+}
+
+.eventForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.formMeta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #ededf0;
+  padding-bottom: 14px;
+
+  span,
+  strong {
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  span {
+    color: $g-color8;
+  }
+
+  strong {
+    color: $g-color3;
+    overflow-wrap: anywhere;
+    text-align: right;
+  }
+}
+
+.websiteFormGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(168px, 220px);
+  gap: 16px;
+}
+
+.eventTitleInput {
+  min-width: 0;
+}
+
+.eventSwitchInput {
+  align-self: end;
+  min-width: 0;
+}
+
+.eventDescriptionInput {
+  grid-column: 1 / -1;
+}
+
+.tagsCard,
+.colorCard,
+.repeatCard,
+.scheduleCard {
+  border: 1px solid $g-color7;
+  border-radius: 6px;
+  background-color: rgba($g-color8, 0.02);
+  padding: 12px;
+}
+
+.repeatCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.repeatHeader {
+  display: flex;
+  align-items: center;
+}
+
+.repeatOptions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.weekdayPickerContainer {
+  border-top: 1px solid $g-color7;
+  padding-top: 12px;
+}
+
+.scheduleCard {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.scheduleTime {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.calendarContainer {
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+}
+
+.mediaUploader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid #e9e9ed;
+  border-radius: 8px;
+  padding: 12px;
 
   p {
-    margin: 10px 0 0;
+    margin: 0;
     color: $g-color3;
+    font-size: 13px;
+    font-weight: 700;
   }
+}
+
+.mediaUploaderHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  > span {
+    color: $g-color3;
+    font-size: 12px;
+    font-weight: 800;
+  }
+}
+
+.mediaUploadButton {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e2e7;
+  border-radius: 8px;
+  background: $g-color1;
+  color: $g-color3;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 0 14px;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: $g-color13;
+    color: $g-color13;
+    background-color: rgba($g-color13, 0.06);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.62;
+  }
+}
+
+.mediaFileInput {
+  display: none;
+}
+
+.mediaGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mediaPreview {
+  position: relative;
+  min-width: 0;
+  border: 1px solid #e9e9ed;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f7f7f8;
+  aspect-ratio: 1;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #e8e8ed;
+  }
+
+  button {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: grid;
+    width: 24px;
+    height: 24px;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: rgba($g-color2, 0.76);
+    color: $g-color1;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+  }
+}
+
+.formActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.emptyState {
+  border: 1px dashed #dedee3;
+  border-radius: 8px;
+  background: #f7f7f8;
+  color: $g-color3;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.listEndState {
+  padding: 8px 0;
+  color: $g-color3;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+@media (max-width: $tablet) {
+  .workspace,
+  .websiteFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .eventList {
+    max-height: 430px;
+  }
+
+  .mediaGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scheduleCard {
+    flex-direction: column;
+  }
+
+  .calendarContainer {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+@media (max-width: $mobile) {
+  .formMeta,
+  .mediaUploaderHeader,
+  .formActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .formMeta strong {
+    text-align: left;
+  }
+
 }

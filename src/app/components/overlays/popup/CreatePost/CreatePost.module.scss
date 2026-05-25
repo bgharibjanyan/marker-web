@@ -38,8 +38,7 @@
   color: $g-color8;
 }
 
-.input,
-.textarea {
+.input {
   box-sizing: border-box;
   width: 100%;
   border: 1px solid $g-color7;
@@ -72,12 +71,6 @@
   @include mobile-large {
     padding: 14px 10px;
   }
-}
-
-.textarea {
-  min-height: 116px;
-  padding: 14px 12px;
-  resize: vertical;
 }
 
 .fileInput {

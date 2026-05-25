@@ -69,6 +69,16 @@
   border: 1px solid rgba($g-color7, 0.45);
   border-radius: 12px;
   padding: 12px;
+  cursor: pointer;
+  transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+
+  &:hover,
+  &:focus-visible {
+    border-color: rgba($g-color8, 0.56);
+    box-shadow: 0 10px 22px rgba($g-color3, 0.1);
+    outline: none;
+    transform: translateY(-1px);
+  }
 
   @media (max-width: $mobileLarge) {
     min-height: 0;

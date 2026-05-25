@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import styles from "./Switch.module.scss";
 import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 
@@ -17,6 +17,10 @@ const Switch = ({
                      }) => {
 
     const [isOn, setIsOn] = useState(checked);
+
+    useEffect(() => {
+        setIsOn(Boolean(checked));
+    }, [checked]);
 
     const handleToggle = () => {
         const newValue = !isOn;

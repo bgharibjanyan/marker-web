@@ -21,8 +21,18 @@ const navigation = [
     },
     {
         label: "Events",
-        description: "Later",
-        path: "/admin/events"
+        description: "Public tasks",
+        path: "/admin/events",
+        children: [
+            {
+                label: "List",
+                path: "/admin/events"
+            },
+            {
+                label: "Create",
+                path: "/admin/events/create"
+            }
+        ]
     },
     {
         label: "Appearance",
@@ -38,6 +48,7 @@ export default function AdminShell({children}) {
     const pathname = usePathname();
     const router = useRouter();
     const [isReady, setIsReady] = useState(false);
+    const [openNavItems, setOpenNavItems] = useState({"/admin/events": true});
 
     const loginPath = `/${locale}/admin/login`;
     const isLoginPage = pathname === loginPath;
@@ -65,13 +76,25 @@ export default function AdminShell({children}) {
             return "/admin";
         }
 
-        const match = navigation
+        const navigationItems = navigation.flatMap((item) => [item, ...(item.children || [])]);
+        const match = navigationItems
             .filter((item) => item.path !== "/admin")
             .sort((a, b) => b.path.length - a.path.length)
             .find((item) => pathname === `/${locale}${item.path}` || pathname.startsWith(`/${locale}${item.path}/`));
 
         return match?.path ?? "/admin";
     }, [locale, pathname]);
+
+    const isNavItemActive = (item) => (
+        activePath === item.path || Boolean(item.children?.some((child) => activePath === child.path))
+    );
+
+    const toggleNavItem = (path) => {
+        setOpenNavItems((currentItems) => ({
+            ...currentItems,
+            [path]: !currentItems[path],
+        }));
+    };
 
     const handleLogout = () => {
         window.localStorage.removeItem(ADMIN_AUTH_KEY);
@@ -109,18 +132,48 @@ export default function AdminShell({children}) {
 
                 <nav className={styles.navList}>
                     {navigation.map((item) => {
-                        const isActive = activePath === item.path;
+                        const hasChildren = Boolean(item.children?.length);
+                        const isActive = isNavItemActive(item);
+                        const isOpen = hasChildren && (openNavItems[item.path] || isActive);
 
                         return (
-                            <button
-                                key={item.path}
-                                type="button"
-                                className={`${styles.navItem} ${isActive ? styles.active : ""}`}
-                                onClick={() => router.push(`/${locale}${item.path}`)}
-                            >
-                                <span className={styles.navLabel}>{item.label}</span>
-                                <span className={styles.navDescription}>{item.description}</span>
-                            </button>
+                            <div key={item.path} className={styles.navGroup}>
+                                <button
+                                    type="button"
+                                    className={`${styles.navItem} ${isActive ? styles.active : ""}`}
+                                    onClick={() => {
+                                        if (hasChildren) {
+                                            toggleNavItem(item.path);
+                                            router.push(`/${locale}${item.path}`);
+                                            return;
+                                        }
+
+                                        router.push(`/${locale}${item.path}`);
+                                    }}
+                                    aria-expanded={hasChildren ? isOpen : undefined}
+                                >
+                                    <span>
+                                        <span className={styles.navLabel}>{item.label}</span>
+                                        <span className={styles.navDescription}>{item.description}</span>
+                                    </span>
+                                    {hasChildren ? <span className={styles.navChevron}>{isOpen ? "-" : "+"}</span> : null}
+                                </button>
+
+                                {hasChildren && isOpen ? (
+                                    <div className={styles.subNavList}>
+                                        {item.children.map((child) => (
+                                            <button
+                                                key={child.path}
+                                                type="button"
+                                                className={`${styles.subNavItem} ${activePath === child.path ? styles.active : ""}`}
+                                                onClick={() => router.push(`/${locale}${child.path}`)}
+                                            >
+                                                {child.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                ) : null}
+                            </div>
                         );
                     })}
                 </nav>

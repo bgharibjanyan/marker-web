@@ -2,6 +2,7 @@
 
 import styles from "./CreateEvent.module.scss";
 import TextInput from "@/app/components/util/form/TextInput/TextInput";
+import RichTextInput from "@/app/components/util/form/RichTextInput/RichTextInput";
 import TimeInput from "@/app/components/util/form/TimeInput/TimeInput";
 import {useCallback, useEffect, useState} from "react";
 import {useTranslations} from "next-intl";
@@ -227,7 +228,7 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
                 </div>
 
                 <div className={`${styles.input} ${styles.eventDescription}`}>
-                    <TextInput
+                    <RichTextInput
                         name={'description'}
                         casual={true}
                         shadowColor={ColorSelector("--g-color8")}
@@ -235,6 +236,7 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
                         label={t('form.descriptionLabel')}
                         value={formData.description}
                         onChange={handleChange}
+                        minHeight={190}
                     />
                 </div>
 

@@ -83,6 +83,20 @@ export function AdminTextField({label, value, onChange, className = "", inputCla
     );
 }
 
+export function AdminTextareaField({label, value, onChange, className = "", textareaClassName = "", ...props}) {
+    return (
+        <label className={joinClassNames(styles.field, className)}>
+            <span>{label}</span>
+            <textarea
+                className={joinClassNames(styles.textarea, textareaClassName)}
+                value={value ?? ""}
+                onChange={(event) => onChange?.(event.target.value, event)}
+                {...props}
+            />
+        </label>
+    );
+}
+
 export function AdminSelectField({label, value, onChange, options = [], placeholder = "", className = "", selectClassName = "", ...props}) {
     return (
         <label className={joinClassNames(styles.field, className)}>

@@ -10,6 +10,7 @@
     "swagger:check": "node scripts/check-swagger.cjs"
   },
   "dependencies": {
+    "@tinymce/tinymce-react": "^6.3.0",
     "axios": "^1.8.4",
     "bcryptjs": "^3.0.0",
     "clsx": "^2.1.1",
@@ -22,7 +23,8 @@
     "react-dom": "^19.0.0",
     "sass": "^1.85.0",
     "swagger-ui-react": "^5.32.6",
-    "swiper": "^11.2.6"
+    "swiper": "^11.2.6",
+    "tinymce": "^8.5.1"
   },
   "devDependencies": {
     "@types/swagger-ui-react": "^5.18.0",

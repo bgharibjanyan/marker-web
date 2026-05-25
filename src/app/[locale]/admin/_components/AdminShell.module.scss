@@ -66,9 +66,19 @@
   gap: 8px;
 }
 
+.navGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .navItem {
   width: 100%;
   min-height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
@@ -90,6 +100,13 @@
   }
 }
 
+.navChevron {
+  color: inherit;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+}
+
 .navLabel {
   font-size: 14px;
   font-weight: 800;
@@ -99,6 +116,33 @@
   margin-top: 4px;
   font-size: 11px;
   color: $g-color3;
+}
+
+.subNavList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 12px;
+}
+
+.subNavItem {
+  min-height: 34px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: $g-color3;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 0 12px;
+  cursor: pointer;
+
+  &:hover,
+  &.active {
+    background: #f7f7f8;
+    border-color: #e4e4e8;
+    color: $g-color8;
+  }
 }
 
 .logoutButton {

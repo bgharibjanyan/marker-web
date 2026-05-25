@@ -251,6 +251,7 @@
 }
 
 .taskInfoCard {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -258,7 +259,7 @@
   border: 1px solid rgba($g-color3, 0.12);
   border-left: 6px solid var(--task-color, #{$g-color13});
   border-radius: 12px;
-  padding: 14px;
+  padding: 14px 52px 14px 14px;
   background-color: rgba($g-color1, 0.9);
   box-shadow: 0 12px 24px rgba($g-color3, 0.08);
 
@@ -267,6 +268,78 @@
     color: $g-color3;
     font-size: 13px;
     line-height: 1.5;
+  }
+}
+
+.taskInfoDescription {
+  color: $g-color3;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.menuOpen {
+  z-index: 10;
+}
+
+.taskInfoMenuWrapper {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+}
+
+.taskInfoMoreButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid color-mix(in srgb, var(--task-color, #{$g-color13}) 45%, transparent);
+  border-radius: 50%;
+  background-color: var(--task-color, #{$g-color13});
+  cursor: pointer;
+
+  span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: $g-color1;
+  }
+
+  &:hover,
+  &[aria-expanded="true"] {
+    background-color: color-mix(in srgb, var(--task-color, #{$g-color13}) 86%, $g-color2);
+  }
+}
+
+.taskInfoContextMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 11;
+  min-width: 132px;
+  padding: 6px;
+  border: 1px solid rgba($g-color7, 0.65);
+  border-radius: 6px;
+  background-color: $g-color1;
+  box-shadow: 0 10px 22px rgba($g-color2, 0.12);
+
+  button {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 5px;
+    background-color: transparent;
+    color: $g-color2;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--task-color, #{$g-color13}) 12%, transparent);
+      color: var(--task-color, #{$g-color13});
+    }
   }
 }
 

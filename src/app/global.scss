@@ -94,3 +94,10 @@ body {
   font-family: 'MontserratArm', sans-serif;
   margin: 0;
 }
+
+.tox-tinymce-aux,
+.tox-dialog-wrap,
+.tox-dialog-wrap__backdrop,
+.tox-silver-sink {
+  z-index: 10050 !important;
+}

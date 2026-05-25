@@ -1,4 +1,5 @@
 import PostModel from "@/models/post/PostModel";
+import {sanitizeRichText} from "@/app/lib/richText";
 import {
     getAuthenticatedPostContext,
     getOwnedTask,
@@ -25,7 +26,7 @@ export async function POST(request) {
         const postId = toObjectId(formData.get("postId") || formData.get("_id"));
         const taskId = toObjectId(formData.get("task") || formData.get("taskId"));
         const title = formData.get("title");
-        const description = formData.get("description");
+        const description = sanitizeRichText(formData.get("description"));
         const mediaFiles = getPostMediaFiles(formData);
 
         if (!postId) {

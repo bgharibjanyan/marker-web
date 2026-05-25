@@ -6,5 +6,6 @@ export {
     AdminPanel,
     AdminSelectField,
     AdminStatusMessage,
+    AdminTextareaField,
     AdminTextField
 } from "./AdminUI";

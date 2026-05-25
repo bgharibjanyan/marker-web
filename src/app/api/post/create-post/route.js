@@ -1,5 +1,6 @@
 import PostModel from "@/models/post/PostModel";
 import {ObjectId} from "mongodb";
+import {sanitizeRichText} from "@/app/lib/richText";
 import {
     getAuthenticatedPostContext,
     getOwnedTask,
@@ -28,7 +29,7 @@ export async function POST(request) {
         const formData = await request.formData();
         const taskId = toObjectId(formData.get("task") || formData.get("taskId"));
         const title = formData.get("title");
-        const description = formData.get("description");
+        const description = sanitizeRichText(formData.get("description"));
         const mediaFiles = getPostMediaFiles(formData);
         const validationError = validatePostInput({taskId, title, mediaFiles});
 

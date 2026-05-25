@@ -1,0 +1,28 @@
+.page {
+  min-height: 100vh;
+  background: var(--g-color1, #fff);
+}
+
+.header {
+  padding: 24px 32px 16px;
+  border-bottom: 1px solid var(--g-color18, #ddd);
+
+  h1 {
+    margin: 0;
+    color: var(--g-color17, #231F20);
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  p {
+    max-width: 760px;
+    margin: 8px 0 0;
+    color: var(--g-color3, #616161);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+.swaggerContainer {
+  padding: 8px 0 32px;
+}

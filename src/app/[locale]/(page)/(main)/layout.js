@@ -1,4 +1,3 @@
-import "../../../global.scss";
 import {NextIntlClientProvider} from "next-intl";
 import {getMessages, setRequestLocale} from "next-intl/server";
 import {notFound} from "next/navigation";
@@ -16,12 +15,6 @@ export default async function MarkerLayout({children, params}) {
     const messages = await getMessages();
 
     return (
-        <html lang={locale}>
-        <head>
-            <link rel="icon" type="image/png" href="/images/logo/logo.svg"/>
-            <title>Marker</title>
-        </head>
-        <body>
         <NextIntlClientProvider messages={messages}>
             <PopupProvider>
                 <AuthRedirect locale={locale}/>
@@ -31,7 +24,5 @@ export default async function MarkerLayout({children, params}) {
                 </div>
             </PopupProvider>
         </NextIntlClientProvider>
-        </body>
-        </html>
     );
 }

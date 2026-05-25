@@ -6,8 +6,15 @@ export default class EventModel {
                     end,
                     location,
                     tags,
+                    repeat,
+                    repeatType,
+                    weekdays,
+                    monthday,
+                    color,
+                    date,
                     isPrivate,
                     media,
+                    subscribers,
                     userId
                 }) {
         this.title = title;
@@ -15,9 +22,16 @@ export default class EventModel {
         this.start = start ? start : null;
         this.end = end ? end : null;
         this.location = location ? location : null;
-        this.tags = tags ? tags : null;
+        this.tags = Array.isArray(tags) ? tags : [];
+        this.repeat = repeat ? repeat : false;
+        this.repeatType = repeatType ? repeatType : null;
+        this.weekdays = Array.isArray(weekdays) ? weekdays : [];
+        this.monthday = monthday ? monthday : null;
+        this.color = color ? color : null;
+        this.date = date ? date : null;
         this.isPrivate = isPrivate ? isPrivate : false;
-        this.media = media ? media : [];
+        this.media = Array.isArray(media) ? media : [];
+        this.subscribers = Array.isArray(subscribers) ? subscribers : [];
         this.userId = userId;
     }
 

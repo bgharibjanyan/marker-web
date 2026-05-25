@@ -1,0 +1,160 @@
+@import "../../../../../styles/variables";
+@import "../../../../../styles/fonts";
+
+.richTextField {
+  width: 100%;
+
+  .fieldLabel {
+    display: block;
+    margin-bottom: 8px;
+    color: $g-color8;
+
+    @include mobile-large {
+      margin-bottom: 6px;
+    }
+  }
+}
+
+.editorContainer {
+  width: 100%;
+  border-radius: 6px;
+  color: $g-color2;
+  outline: none;
+  box-shadow: none;
+  position: relative;
+
+  &.casual {
+    border: 1px solid $g-color2;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 3px;
+      width: 100%;
+      height: 100%;
+      background-color: var(--shadow-color, #9E373E);
+      border-radius: 10px;
+      z-index: -1;
+      transition: top 0.2s, left 0.2s;
+    }
+  }
+
+  &.casual:hover::after,
+  &.casual:focus-within::after {
+    top: 7px;
+    left: 6px;
+  }
+
+  &.disabled {
+    opacity: 0.72;
+  }
+
+  :global(.tox-tinymce) {
+    border: 1px solid $g-color7 !important;
+    border-radius: 6px !important;
+    background-color: $g-color1 !important;
+    box-shadow: none !important;
+    color: $g-color2;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  &:hover :global(.tox-tinymce),
+  &:focus-within :global(.tox-tinymce) {
+    border-color: $g-color2 !important;
+    box-shadow: 0 0 5px rgba($g-color2, 0.5) !important;
+  }
+
+  &.casual:hover :global(.tox-tinymce),
+  &.casual:focus-within :global(.tox-tinymce) {
+    border-color: $g-color8 !important;
+    box-shadow: 0 0 5px rgba($g-color2, 0.35) !important;
+  }
+
+  :global(.tox .tox-editor-container),
+  :global(.tox .tox-edit-area),
+  :global(.tox .tox-edit-area__iframe),
+  :global(.tox .tox-toolbar-overlord) {
+    background-color: $g-color1 !important;
+  }
+
+  :global(.tox .tox-editor-header) {
+    border-bottom: 1px solid $g-color7 !important;
+    background-color: $g-color1 !important;
+    box-shadow: none !important;
+    padding: 8px;
+  }
+
+  :global(.tox .tox-toolbar__primary) {
+    background: transparent !important;
+  }
+
+  :global(.tox .tox-toolbar__group) {
+    border: 0 !important;
+    padding: 0 6px 0 0;
+  }
+
+  :global(.tox .tox-tbtn) {
+    width: 36px;
+    height: 32px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: $g-color2 !important;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+  }
+
+  :global(.tox .tox-tbtn:hover),
+  :global(.tox .tox-tbtn:focus),
+  :global(.tox .tox-tbtn--enabled) {
+    border-color: $g-color8 !important;
+    background-color: rgba($g-color8, 0.05) !important;
+    color: $g-color8 !important;
+  }
+
+  :global(.tox .tox-tbtn svg) {
+    fill: currentColor !important;
+  }
+
+  :global(.tox .tox-edit-area::before) {
+    border: 0 !important;
+  }
+
+  :global(.tox .tox-statusbar) {
+    display: none !important;
+  }
+
+  @include mobile-large {
+    :global(.tox .tox-editor-header) {
+      padding: 6px;
+    }
+
+    :global(.tox .tox-tbtn) {
+      width: 32px;
+      height: 30px;
+    }
+  }
+}
+
+.editorFallback {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid $g-color7;
+  border-radius: 6px;
+  background-color: $g-color1;
+  color: $g-color7;
+  font-size: 18px;
+  line-height: 1.55;
+  padding: 20px 12px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+
+  &.error {
+    color: $g-color8;
+  }
+
+  @include mobile-large {
+    padding: 14px 10px;
+    font-size: 16px;
+  }
+}

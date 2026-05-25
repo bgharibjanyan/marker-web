@@ -1,5 +1,6 @@
 import styles from "./YearlySchadule.module.scss";
 import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
+import TaskCard from "@/app/components/widgets/tasks/CommonTasksWidget/TaskCard/TaskCard";
 import {
     formatDateKey,
     getDateRange,
@@ -20,6 +21,9 @@ export default function YearlySchadule({
                                            selectedDate,
                                            selectedDayTasks,
                                            setSelectedDate,
+                                           onEditTask,
+                                           onDeleteTask,
+                                           onCreatePost,
                                            t,
                                            viewerUserId = "",
                                        }) {
@@ -37,6 +41,18 @@ export default function YearlySchadule({
                     {selectedDayTasks.length ? selectedDayTasks.map((task) => {
                         const isPrivateHidden = isTaskPrivateForViewer(task, viewerUserId);
 
+                        if (!isPrivateHidden) {
+                            return (
+                                <TaskCard
+                                    key={task._id}
+                                    task={task}
+                                    onEdit={onEditTask}
+                                    onDelete={onDeleteTask}
+                                    onCreatePost={onCreatePost}
+                                />
+                            );
+                        }
+
                         return (
                             <article
                                 key={task._id}
@@ -45,12 +61,6 @@ export default function YearlySchadule({
                                 aria-disabled={isPrivateHidden}
                             >
                                 <span>{getTaskDisplayTime(task, t("labels.anytime"))}</span>
-                                {!isPrivateHidden ? (
-                                    <>
-                                        <strong>{task.title}</strong>
-                                        <small>{task.description || t("states.noDescription")}</small>
-                                    </>
-                                ) : null}
                             </article>
                         );
                     }) : (

@@ -1,44 +1,52 @@
-import clientPromise from "@/app/lib/mongodb";
-import EventModel from "@/models/event/EventModel";
-import {console} from "next/dist/compiled/@edge-runtime/primitives";
+import {
+    createEventTagMap,
+    getAuthenticatedEventContext,
+    parseEventRequestBody,
+    prepareEventDocument,
+    serializeEvent,
+    saveEventMedia,
+    updateEventTagUsage,
+} from "@/app/api/event/_shared";
+import {ObjectId} from "mongodb";
 
 export async function POST(request) {
     try {
-        const client = await clientPromise;
+        const auth = await getAuthenticatedEventContext(request);
 
-
-        let authToken = request.headers.get('authorization');
-
-        const db = client.db("marker");
-
-        const usersCollection = db.collection("user");
-
-        const sessionsCollection = db.collection("session");
-
-        const session = await sessionsCollection.findOne({token: authToken})
-
-        if (!session.userId) {
-            return Response.json({error: "Unnauthorized"}, {status: 401});
+        if (auth.error) {
+            return auth.error;
         }
 
-        const user = await usersCollection.findOne({_id: session.userId})
+        const {eventsCollection, tagsCollection, userId} = auth;
+        const {body, mediaFiles} = await parseEventRequestBody(request);
+        const prepared = await prepareEventDocument(tagsCollection, body, mediaFiles);
 
-        const eventsCollection = db.collection("events");
+        if (prepared.error) {
+            return Response.json({error: prepared.error}, {status: 400});
+        }
 
-        const body = await request.json();
+        const now = new Date();
+        const eventId = new ObjectId();
+        const uploadedMedia = await saveEventMedia(eventId, mediaFiles);
+        const eventDocument = {
+            _id: eventId,
+            ...prepared.eventData,
+            media: uploadedMedia.length ? uploadedMedia : prepared.eventData.media,
+            subscribers: [],
+            userId,
+            createdAt: now,
+            updatedAt: now,
+        };
+        const result = await eventsCollection.insertOne(eventDocument);
 
+        await updateEventTagUsage(tagsCollection, [], body.tags);
 
-        let eventData = new EventModel(body)
+        const event = await eventsCollection.findOne({_id: result.insertedId});
+        const tagMap = await createEventTagMap(tagsCollection, [event]);
 
-
-        eventData.setUser(user._id)
-
-        eventsCollection.insertOne(eventData)
-
-
-        return Response.json({error: "Event Added Successfully"}, {status: 200});
+        return Response.json({event: serializeEvent(event, tagMap)}, {status: 201});
     } catch (error) {
-        console.log(error);
-        return Response.json({error: "Failed to fetch events"}, {status: 500});
+        console.error("Error in POST /event/create-event:", error);
+        return Response.json({error: "Failed to create event"}, {status: 500});
     }
 }

@@ -1,6 +1,8 @@
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
+import {useTranslations} from "next-intl";
 import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 import {formatDateKey, getTaskDisplayTime, getTaskTimeRange, isTaskPrivateForViewer, parseTaskTime} from "../scripts/scheduleUtils";
+import RichTextContent from "@/app/components/util/RichTextContent/RichTextContent";
 import styles from "./DailySchadule.module.scss";
 
 const DAY_MINUTES = 24 * 60;
@@ -120,8 +122,43 @@ const hasTimeOverlap = (firstTask, secondTask) => {
     return firstRange.start < secondRange.end && secondRange.start < firstRange.end;
 };
 
-function TaskInfoCard({task, selectedDate, now, t, disabled = false, hiddenContent = false}) {
+function TaskInfoCard({
+                          task,
+                          selectedDate,
+                          now,
+                          t,
+                          disabled = false,
+                          hiddenContent = false,
+                          onEdit,
+                          onDelete,
+                          onCreatePost,
+                      }) {
+    const taskCardT = useTranslations("TaskCard");
     const timer = getTaskTimer(task, selectedDate, now, t);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const menuRef = useRef(null);
+    const hasActions = !hiddenContent && (onEdit || onDelete || onCreatePost);
+
+    useEffect(() => {
+        if (!isMenuOpen) return;
+
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsMenuOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [isMenuOpen]);
+
+    const handleMenuAction = (action) => {
+        setIsMenuOpen(false);
+
+        if (action === "edit" && onEdit) onEdit(task);
+        if (action === "createPost" && onCreatePost) onCreatePost(task);
+        if (action === "delete" && onDelete) onDelete(task);
+    };
 
     if (hiddenContent) {
         return (
@@ -139,14 +176,48 @@ function TaskInfoCard({task, selectedDate, now, t, disabled = false, hiddenConte
 
     return (
         <article
-            className={`${styles.taskInfoCard} ${disabled ? styles.disabledTaskInfoCard : ""}`}
+            className={`${styles.taskInfoCard} ${disabled ? styles.disabledTaskInfoCard : ""} ${isMenuOpen ? styles.menuOpen : ""}`}
             style={{"--task-color": task.color || DEFAULT_TASK_COLOR}}
         >
+            {hasActions ? (
+                <div className={styles.taskInfoMenuWrapper} ref={menuRef}>
+                    <button
+                        type="button"
+                        className={styles.taskInfoMoreButton}
+                        aria-label={taskCardT("actions.more")}
+                        aria-expanded={isMenuOpen}
+                        onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
+                    >
+                        <span/>
+                        <span/>
+                        <span/>
+                    </button>
+
+                    {isMenuOpen ? (
+                        <div className={styles.taskInfoContextMenu}>
+                            <button type="button" onClick={() => handleMenuAction("edit")}>
+                                {taskCardT("actions.edit")}
+                            </button>
+                            <button type="button" onClick={() => handleMenuAction("createPost")}>
+                                {taskCardT("actions.createPost")}
+                            </button>
+                            <button type="button" onClick={() => handleMenuAction("delete")}>
+                                {taskCardT("actions.delete")}
+                            </button>
+                        </div>
+                    ) : null}
+                </div>
+            ) : null}
+
             <div className={styles.taskInfoHeader}>
                 <strong>{task.title}</strong>
                 <span>{formatRange(task, t)}</span>
             </div>
-            <p>{task.description || t("states.noDescription")}</p>
+            <RichTextContent
+                value={task.description}
+                fallback={<p>{t("states.noDescription")}</p>}
+                className={styles.taskInfoDescription}
+            />
             <div className={styles.taskTimer}>
                 <span>{timer.label}</span>
                 <strong>{timer.value}</strong>
@@ -160,7 +231,16 @@ function TaskInfoCard({task, selectedDate, now, t, disabled = false, hiddenConte
     );
 }
 
-export default function DailySchadule({selectedDate, setSelectedDate, selectedDayTasks, t, viewerUserId = ""}) {
+export default function DailySchadule({
+                                          selectedDate,
+                                          setSelectedDate,
+                                          selectedDayTasks,
+                                          onEditTask,
+                                          onDeleteTask,
+                                          onCreatePost,
+                                          t,
+                                          viewerUserId = "",
+                                      }) {
     const [now, setNow] = useState(() => new Date());
     const {scheduledTasks, anytimeTasks, laneCount} = useMemo(() => (
         getTimelineTasks(selectedDayTasks)
@@ -312,6 +392,9 @@ export default function DailySchadule({selectedDate, setSelectedDate, selectedDa
                                 now={now}
                                 t={t}
                                 hiddenContent={isTaskPrivateForViewer(selectedTask, viewerUserId)}
+                                onEdit={onEditTask}
+                                onDelete={onDeleteTask}
+                                onCreatePost={onCreatePost}
                             />
 
                             {overlappingTasks.length ? (

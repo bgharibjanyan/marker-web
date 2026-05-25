@@ -1,0 +1,36 @@
+.richTextContent {
+  min-width: 0;
+  overflow-wrap: anywhere;
+
+  p,
+  ul,
+  ol {
+    margin: 0 0 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  ul,
+  ol {
+    padding-left: 18px;
+  }
+
+  a {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  strong,
+  b {
+    font-weight: 800;
+  }
+
+  em,
+  i {
+    font-style: italic;
+  }
+}

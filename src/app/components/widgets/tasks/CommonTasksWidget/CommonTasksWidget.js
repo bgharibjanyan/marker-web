@@ -7,6 +7,7 @@ import CreateEvent from "@/app/components/overlays/popup/CreateEvent/CreateEvent
 import CreatePost from "@/app/components/overlays/popup/CreatePost/CreatePost";
 import ConfirmPopup from "@/app/components/overlays/popup/ConfirmPopup/ConfirmPopup";
 import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvider";
+import RichTextContent from "@/app/components/util/RichTextContent/RichTextContent";
 import styles from "./CommonTasksWidget.module.scss";
 
 const WEEKDAYS = [
@@ -307,9 +308,10 @@ const CommonTasksWidget = () => {
                 {nextTask && (
                     <>
                         <span className={`${styles.taskName} ${styles.t5}`}>{nextTask.title}</span>
-                        {nextTask.description && (
-                            <span className={`${styles.taskDescription} ${styles.t6}`}>{nextTask.description}</span>
-                        )}
+                        <RichTextContent
+                            value={nextTask.description}
+                            className={`${styles.taskDescription} ${styles.t6}`}
+                        />
 
                         <div className={styles.timer}>
                             <span className={`${styles.timerValue} ${styles.t3}`}>{countdown}</span>

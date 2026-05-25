@@ -1,5 +1,6 @@
 import styles from "./MonthlySchadule.module.scss";
 import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
+import {stripRichText} from "@/app/lib/richText";
 import {formatDateKey, getTaskDisplayTime, getTasksForDate, isTaskPrivateForViewer} from "../scripts/scheduleUtils";
 
 export default function MonthlySchadule({
@@ -8,6 +9,7 @@ export default function MonthlySchadule({
                                             setVisibleMonth,
                                             tasks,
                                             today,
+                                            onDayClick,
                                             t,
                                             viewerUserId = "",
                                         }) {
@@ -20,19 +22,27 @@ export default function MonthlySchadule({
     const renderTaskPill = (task) => {
         const isPrivateHidden = isTaskPrivateForViewer(task, viewerUserId);
         const displayTime = getTaskDisplayTime(task, t("labels.anytime"));
+        const description = stripRichText(task.description);
 
         return (
             <span
                 key={task._id}
                 className={`${styles.taskPill} ${isPrivateHidden ? styles.disabledTaskPill : ""}`}
                 style={{"--task-color": task.color || ColorSelector("--g-color13")}}
-                title={isPrivateHidden ? displayTime : (task.description || task.title)}
+                title={isPrivateHidden ? displayTime : (description || task.title)}
                 aria-disabled={isPrivateHidden}
             >
                 <span>{displayTime}</span>
                 {!isPrivateHidden ? <strong>{task.title}</strong> : null}
             </span>
         );
+    };
+
+    const handleDayKeyDown = (event, date) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+
+        event.preventDefault();
+        onDayClick?.(date);
     };
 
     return (
@@ -67,7 +77,11 @@ export default function MonthlySchadule({
                         <article
                             key={dateKey}
                             className={`${styles.dayCell} ${isToday && isCurrentMonth ? styles.isToday : ""} ${!isCurrentMonth ? styles.isDisabledDay : ""}`}
-                            aria-disabled={!isCurrentMonth}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => onDayClick?.(date)}
+                            onKeyDown={(event) => handleDayKeyDown(event, date)}
+                            aria-label={date.toLocaleDateString([], {weekday: "long", month: "long", day: "numeric", year: "numeric"})}
                         >
                             <div className={styles.cellHeader}>
                                 <span>{date.toLocaleDateString([], {weekday: "short"})}</span>

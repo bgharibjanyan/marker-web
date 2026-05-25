@@ -2,6 +2,7 @@ import clientPromise from "@/app/lib/mongodb";
 import TaskModel from "@/models/event/TaskModel";
 import {ObjectId} from "mongodb";
 import {resolveTaskTagIds, updateTaskTagUsage} from "@/app/api/task/_shared";
+import {sanitizeRichText} from "@/app/lib/richText";
 
 const validateTask = (task) => {
     const isDailyRepeat = task.repeat && task.repeatType === 'daily';
@@ -85,6 +86,7 @@ export async function POST(request) {
         const tagIds = await resolveTaskTagIds(tagsCollection, body.tags);
         const taskData = new TaskModel({
             ...body,
+            description: sanitizeRichText(body.description) || null,
             tags: tagIds,
         });
         taskData.setUser(user._id);

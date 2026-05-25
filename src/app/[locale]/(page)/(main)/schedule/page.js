@@ -6,6 +6,8 @@ import styles from "./page.module.scss";
 import CommonTasksWidget from "@/app/components/widgets/tasks/CommonTasksWidget/CommonTasksWidget";
 import TabNavigation from "@/app/components/util/tabs/TabNavigation/TabNavigation";
 import CreateEvent from "@/app/components/overlays/popup/CreateEvent/CreateEvent";
+import CreatePost from "@/app/components/overlays/popup/CreatePost/CreatePost";
+import ConfirmPopup from "@/app/components/overlays/popup/ConfirmPopup/ConfirmPopup";
 import {usePopup} from "@/app/components/overlays/popup/PopupProvider/PopupProvider";
 import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 import MonthlySchadule from "./components/MonthlySchadule";
@@ -19,6 +21,7 @@ const TABLET_LARGE_QUERY = "(max-width: 1024px)";
 
 export default function SchedulePage() {
     const t = useTranslations("SchedulePage");
+    const taskWidgetT = useTranslations("TasksWidget");
     const {openPopup} = usePopup();
     const [activeTabKey, setActiveTabKey] = useState("month");
     const [tasks, setTasks] = useState([]);
@@ -120,6 +123,56 @@ export default function SchedulePage() {
         );
     };
 
+    const openDailyView = useCallback((date) => {
+        setSelectedDate(new Date(date));
+        setActiveTabKey("day");
+    }, []);
+
+    const handleEditTask = useCallback((task) => {
+        openPopup(
+            <CreateEvent
+                task={task}
+                onSaved={() => loadTasks()}
+            />
+        );
+    }, [loadTasks, openPopup]);
+
+    const handleDeleteTask = useCallback((task) => {
+        openPopup(
+            <ConfirmPopup
+                title={taskWidgetT("delete.title")}
+                message={taskWidgetT("delete.message", {task: task.title})}
+                confirmText={taskWidgetT("delete.confirm")}
+                cancelText={taskWidgetT("delete.cancel")}
+                errorMessage={taskWidgetT("delete.error")}
+                onConfirm={async () => {
+                    const token = localStorage.getItem("marker_im_token");
+                    const response = await fetch("/api/task/delete-task", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            ...(token ? {Authorization: token} : {}),
+                        },
+                        body: JSON.stringify({taskId: task._id}),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(taskWidgetT("delete.error"));
+                    }
+
+                    await loadTasks();
+                    window.dispatchEvent(new CustomEvent("marker:tasks-updated"));
+                }}
+            />
+        );
+    }, [loadTasks, openPopup, taskWidgetT]);
+
+    const handleCreatePost = useCallback((task) => {
+        openPopup(
+            <CreatePost task={task}/>
+        );
+    }, [openPopup]);
+
     if (!isMounted) {
         return (
             <div className={styles.schedulePage}>
@@ -142,6 +195,9 @@ export default function SchedulePage() {
                     selectedDate={selectedDate}
                     selectedDayTasks={selectedDayTasks}
                     setSelectedDate={setSelectedDate}
+                    onEditTask={handleEditTask}
+                    onDeleteTask={handleDeleteTask}
+                    onCreatePost={handleCreatePost}
                     t={t}
                 />
             );
@@ -155,6 +211,7 @@ export default function SchedulePage() {
                     setVisibleMonth={setVisibleMonth}
                     tasks={tasks}
                     today={today}
+                    onDayClick={openDailyView}
                     t={t}
                 />
             );
@@ -167,6 +224,7 @@ export default function SchedulePage() {
                     setVisibleWeek={setVisibleWeek}
                     tasks={tasks}
                     today={today}
+                    onDayClick={openDailyView}
                     t={t}
                 />
             );
@@ -177,6 +235,9 @@ export default function SchedulePage() {
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
                 selectedDayTasks={selectedDayTasks}
+                onEditTask={handleEditTask}
+                onDeleteTask={handleDeleteTask}
+                onCreatePost={handleCreatePost}
                 t={t}
             />
         );

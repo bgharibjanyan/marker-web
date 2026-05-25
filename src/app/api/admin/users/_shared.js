@@ -1,7 +1,7 @@
 import clientPromise from "@/app/lib/mongodb";
+import {ADMIN_AUTH_HEADER, ADMIN_AUTH_VALUE, isAdminRequest} from "@/app/api/admin/_shared";
 
-export const ADMIN_AUTH_HEADER = "x-marker-admin-auth";
-export const ADMIN_AUTH_VALUE = "authenticated";
+export {ADMIN_AUTH_HEADER, ADMIN_AUTH_VALUE, isAdminRequest};
 
 export const editableFields = [
     "firstname",
@@ -46,7 +46,3 @@ export const getUsersCollection = async () => {
     const client = await clientPromise;
     return client.db("marker").collection("user");
 };
-
-export const isAdminRequest = (request) => (
-    request.headers.get(ADMIN_AUTH_HEADER) === ADMIN_AUTH_VALUE
-);
