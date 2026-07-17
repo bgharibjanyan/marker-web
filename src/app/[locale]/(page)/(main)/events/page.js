@@ -1,9 +1,5 @@
-import {getTranslations} from "next-intl/server";
+import EventsPageClient from "./components/EventsPageClient";
 
-export default async function Home() {
-    const t = await getTranslations('Pages');
-
-    return (
-        <div>{t('events')}</div>
-    );
+export default function EventsPage() {
+    return <EventsPageClient/>;
 }

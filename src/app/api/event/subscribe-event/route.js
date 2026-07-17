@@ -1,5 +1,6 @@
 import {
     createEventTagMap,
+    createEventUserMap,
     createSubscribedTask,
     getAuthenticatedEventContext,
     serializeEvent,
@@ -48,9 +49,10 @@ export async function POST(request) {
 
         const updatedEvent = await eventsCollection.findOne({_id: eventId});
         const tagMap = await createEventTagMap(tagsCollection, [updatedEvent]);
+        const userMap = await createEventUserMap(usersCollection, [updatedEvent]);
 
         return Response.json({
-            event: serializeEvent(updatedEvent, tagMap),
+            event: serializeEvent(updatedEvent, tagMap, userMap, userId),
             taskId: String(task._id),
             message: "Subscribed to event",
         }, {status: 200});

@@ -1,4 +1,4 @@
-const allowedRichTextTags = new Set(["a", "b", "br", "em", "i", "li", "ol", "p", "strong", "u", "ul"]);
+const allowedRichTextTags = new Set(["a", "b", "br", "em", "font", "i", "li", "ol", "p", "span", "strong", "u", "ul"]);
 
 const escapeAttribute = (value) => (
     String(value || "")
@@ -22,6 +22,44 @@ const getAttributeValue = (attributes = "", name = "") => {
     const match = attributes.match(new RegExp(`\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i"));
 
     return match?.[1] || match?.[2] || match?.[3] || "";
+};
+
+const normalizeCssColor = (value) => {
+    const color = String(value || "").trim();
+
+    if (/^#[0-9a-f]{3,8}$/i.test(color)) {
+        return color;
+    }
+
+    if (/^rgba?\(\s*\d{1,3}%?\s*,\s*\d{1,3}%?\s*,\s*\d{1,3}%?(?:\s*,\s*(?:0|1|0?\.\d+))?\s*\)$/i.test(color)) {
+        return color;
+    }
+
+    return "";
+};
+
+const sanitizeColorStyle = (style = "") => {
+    const safeRules = String(style || "")
+        .split(";")
+        .map((rule) => {
+            const separatorIndex = rule.indexOf(":");
+
+            if (separatorIndex === -1) {
+                return "";
+            }
+
+            const property = rule.slice(0, separatorIndex).trim().toLowerCase();
+            const value = normalizeCssColor(rule.slice(separatorIndex + 1));
+
+            if (!value || (property !== "color" && property !== "background-color")) {
+                return "";
+            }
+
+            return `${property}: ${value}`;
+        })
+        .filter(Boolean);
+
+    return safeRules.join("; ");
 };
 
 export const sanitizeRichText = (value) => {
@@ -50,6 +88,10 @@ export const sanitizeRichText = (value) => {
             }
 
             if (isClosingTag) {
+                if (tag === "font") {
+                    return "</span>";
+                }
+
                 return `</${tag}>`;
             }
 
@@ -61,6 +103,18 @@ export const sanitizeRichText = (value) => {
                 }
 
                 return `<a href="${escapeAttribute(href)}" target="_blank" rel="noopener noreferrer">`;
+            }
+
+            if (tag === "span") {
+                const style = sanitizeColorStyle(getAttributeValue(attributes, "style"));
+
+                return style ? `<span style="${escapeAttribute(style)}">` : "<span>";
+            }
+
+            if (tag === "font") {
+                const color = normalizeCssColor(getAttributeValue(attributes, "color"));
+
+                return color ? `<span style="color: ${escapeAttribute(color)}">` : "<span>";
             }
 
             return `<${tag}>`;

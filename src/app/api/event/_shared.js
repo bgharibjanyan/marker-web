@@ -262,15 +262,52 @@ export const validateEventData = (event) => {
 
 export const createEventTagMap = createTaskTagMap;
 
-export const serializeEvent = (event, tagMap = new Map()) => {
-    const id = String(event?._id || "");
-    const subscribers = (Array.isArray(event?.subscribers) ? event.subscribers : [])
-        .map((subscriberId) => String(subscriberId || ""))
-        .filter(Boolean);
+const serializeEventUser = (user) => {
+    const id = String(user?._id || user?.id || "");
 
     return {
         id,
         _id: id,
+        name: [user?.firstname, user?.lastname].filter(Boolean).join(" ") || user?.login || user?.email || "Unnamed user",
+        login: user?.login || "",
+        profilePicture: user?.profilePicture || "",
+    };
+};
+
+export const createEventUserMap = async (usersCollection, events = []) => {
+    const userIds = [
+        ...new Set(events.flatMap((event) => ([
+            event?.userId,
+            ...(Array.isArray(event?.subscribers) ? event.subscribers : []),
+        ]))
+            .map((userId) => String(userId || ""))
+            .filter((userId) => ObjectId.isValid(userId)))
+    ].map((userId) => new ObjectId(userId));
+
+    if (!userIds.length) {
+        return new Map();
+    }
+
+    const users = await usersCollection
+        .find({_id: {$in: userIds}}, {projection: {password: 0}})
+        .toArray();
+
+    return new Map(users.map((user) => [String(user._id), serializeEventUser(user)]));
+};
+
+export const serializeEvent = (event, tagMap = new Map(), userMap = new Map(), currentUserId = "") => {
+    const id = String(event?._id || "");
+    const subscribers = (Array.isArray(event?.subscribers) ? event.subscribers : [])
+        .map((subscriberId) => String(subscriberId || ""))
+        .filter(Boolean);
+    const userId = String(event?.userId || "");
+    const currentUserIdString = String(currentUserId || "");
+
+    return {
+        id,
+        _id: id,
+        userId,
+        owner: userMap.get(userId) || null,
         title: event?.title || "",
         description: event?.description || "",
         start: event?.start || "",
@@ -287,7 +324,11 @@ export const serializeEvent = (event, tagMap = new Map()) => {
         isPrivate: Boolean(event?.isPrivate),
         media: Array.isArray(event?.media) ? event.media : [],
         subscribers,
+        subscriberUsers: subscribers.map((subscriberId) => (
+            userMap.get(subscriberId) || {id: subscriberId, _id: subscriberId, name: "Unnamed user", login: "", profilePicture: ""}
+        )),
         subscriberCount: subscribers.length,
+        isSubscribed: currentUserIdString ? subscribers.includes(currentUserIdString) : false,
         createdAt: event?.createdAt || null,
         updatedAt: event?.updatedAt || null,
     };
