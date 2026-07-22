@@ -31,11 +31,15 @@ const getEndpointPath = (routeFile) => {
 
 const getExportedMethods = (routeFile) => {
     const source = fs.readFileSync(routeFile, "utf8");
-    const matches = [...source.matchAll(/export\s+async\s+function\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\b/g)];
+    const functionMatches = [...source.matchAll(
+        /export\s+async\s+function\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\b/g,
+    )];
+    const constantMatches = [...source.matchAll(
+        /export\s+const\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s*=/g,
+    )];
 
-    return matches.map((match) => match[1].toLowerCase());
+    return [...functionMatches, ...constantMatches].map((match) => match[1].toLowerCase());
 };
-
 const routeFiles = walk(apiRoot);
 const problems = [];
 

@@ -3,10 +3,8 @@
 import {useEffect, useState} from "react";
 import {useLocale} from "next-intl";
 import {useRouter} from "next/navigation";
-import {ADMIN_AUTH_KEY, ADMIN_AUTH_VALUE} from "../_components/AdminShell";
 import styles from "./page.module.scss";
 import {AdminButton, AdminStatusMessage, AdminTextField} from "@/app/components/admin";
-
 export default function LoginForm() {
     const locale = useLocale();
     const router = useRouter();
@@ -16,37 +14,33 @@ export default function LoginForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        if (window.localStorage.getItem(ADMIN_AUTH_KEY) === ADMIN_AUTH_VALUE) {
-            router.replace(`/${locale}/admin`);
-        }
+        fetch("/api/auth/check")
+            .then((response) => response.ok ? response.json() : null)
+            .then((data) => {
+                if (data?.user?.role === "admin") router.replace(`/${locale}/admin`);
+            })
+            .catch(() => {});
     }, [locale, router]);
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async (event) => {        event.preventDefault();
         setError("");
         setIsSubmitting(true);
 
         try {
             const response = await fetch("/api/admin/auth/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({login, password})
             });
-
             if (!response.ok) {
                 setError("Invalid login or password.");
                 return;
             }
-
-            window.localStorage.setItem(ADMIN_AUTH_KEY, ADMIN_AUTH_VALUE);
             router.replace(`/${locale}/admin`);
-        } catch (err) {
+        } catch {
             setError("Unable to login right now.");
         } finally {
-            setIsSubmitting(false);
-        }
+            setIsSubmitting(false);        }
     };
 
     return (
@@ -55,35 +49,29 @@ export default function LoginForm() {
                 <img src="/images/logo/logo.svg" alt="Marker logo"/>
                 <span>Marker Admin</span>
             </div>
-
             <div>
                 <h1>Login</h1>
-                <p>Static admin authentication</p>
+                <p>Sign in with an administrator account</p>
             </div>
-
             <AdminTextField
-                label="Login"
+                label="Login or email"
                 type="text"
                 autoComplete="username"
                 value={login}
                 onChange={setLogin}
-                placeholder="super_user"
+                placeholder="admin@example.com"
             />
-
             <AdminTextField
                 label="Password"
                 type="password"
                 autoComplete="current-password"
                 value={password}
                 onChange={setPassword}
-                placeholder="barev123"
+                placeholder="Your password"
             />
-
             {error ? <AdminStatusMessage type="error">{error}</AdminStatusMessage> : null}
-
             <AdminButton type="submit" fullWidth className={styles.submitButton} disabled={isSubmitting}>
                 {isSubmitting ? "Signing in..." : "Sign in"}
-            </AdminButton>
-        </form>
+            </AdminButton>        </form>
     );
 }

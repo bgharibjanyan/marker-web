@@ -15,45 +15,46 @@ export default function PostArchive() {
     const {openPopup} = usePopup();
     const [posts, setPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [nextCursor, setNextCursor] = useState(null);
+    const [hasMore, setHasMore] = useState(false);
     const [error, setError] = useState("");
 
-    const loadPosts = useCallback(async () => {
-        setIsLoading(true);
+    const loadPosts = useCallback(async ({append = false} = {}) => {
+        append ? setIsLoadingMore(true) : setIsLoading(true);
         setError("");
 
         try {
-            const token = localStorage.getItem("marker_im_token");
-            const response = await fetch("/api/post/get-user-posts", {
-                headers: {
-                    ...(token ? {Authorization: token} : {}),
-                },
-            });
+            const params = new URLSearchParams({limit: "24"});
+            if (append && nextCursor) params.set("cursor", nextCursor);
+            const response = await fetch(`/api/post/get-user-posts?${params.toString()}`);
             const data = await response.json();
-
             if (!response.ok) {
-                setPosts([]);
+                if (!append) setPosts([]);
                 setError(data?.error || t("states.error"));
                 return;
             }
 
-            setPosts(data?.posts || []);
-        } catch (requestError) {
-            setPosts([]);
+            setPosts((current) => append ? [...current, ...(data.posts || [])] : (data.posts || []));
+            setNextCursor(data.nextCursor || null);
+            setHasMore(Boolean(data.hasMore));
+        } catch {
+            if (!append) setPosts([]);
             setError(t("states.error"));
         } finally {
-            setIsLoading(false);
+            append ? setIsLoadingMore(false) : setIsLoading(false);
         }
-    }, [t]);
+    }, [nextCursor, t]);
 
     useEffect(() => {
         loadPosts();
+        const handlePostsUpdated = () => loadPosts();
 
-        window.addEventListener("marker:posts-updated", loadPosts);
-        return () => window.removeEventListener("marker:posts-updated", loadPosts);
+        window.addEventListener("marker:posts-updated", handlePostsUpdated);
+        return () => window.removeEventListener("marker:posts-updated", handlePostsUpdated);
     }, [loadPosts]);
 
-    const openPost = (post) => {
-        openPopup(<PostReviewPopup post={post}/>);
+    const openPost = (post) => {        openPopup(<PostReviewPopup post={post}/>);
     };
 
     return (
@@ -81,10 +82,10 @@ export default function PostArchive() {
             ) : posts.length === 0 ? (
                 <div className={styles.stateCard}>{t("states.empty")}</div>
             ) : (
+                <>
                 <section className={styles.grid} aria-label={t("title")}>
                     {posts.map((post) => {
-                        const media = Array.isArray(post.media) ? post.media : [];
-                        const cover = media[0];
+                        const media = Array.isArray(post.media) ? post.media : [];                        const cover = media[0];
 
                         return (
                             <button
@@ -107,7 +108,18 @@ export default function PostArchive() {
                         );
                     })}
                 </section>
+                {hasMore ? (
+                    <div className={styles.loadMore}>
+                        <Button
+                            text={isLoadingMore ? t("states.loading") : t("actions.loadMore")}
+                            size="M"
+                            padding="9px 18px"
+                            disabled={isLoadingMore}
+                            onClick={() => loadPosts({append: true})}
+                        />
+                    </div>
+                ) : null}
+                </>
             )}
         </main>
-    );
-}
+    );}

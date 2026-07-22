@@ -1,29 +1,30 @@
-import clientPromise from "@/app/lib/mongodb";
+import {logger} from "@/server/observability/logger";
+import clientPromise from "@/app/lib/mongodb";import {requireUser} from "@/app/api/_auth/session";
 import {ObjectId} from "mongodb";
 import {mkdir, readdir, rm, unlink, writeFile} from "fs/promises";
 import path from "path";
+import {ALLOWED_IMAGE_TYPES, multipartRequestLimit, validateImageFile} from "@/server/uploads/image-validation";
+import {rejectOversizedRequest} from "@/server/http/request-validation";
+import {withMongoTransaction} from "@/server/database/with-mongo-transaction";
 import EventModel from "@/models/event/EventModel";
 import TaskModel from "@/models/event/TaskModel";
-import {createTaskTagMap, resolveTaskTagIds, serializeTaskTags, updateTaskTagUsage} from "@/app/api/task/_shared";
-import {isSupportedMapLink, MAP_LINK_ERROR} from "@/app/lib/mapLinks";
-import {sanitizeRichText} from "@/app/lib/richText";
-
+import {
+    createTaskTagMap,
+    normalizeTaskTagNames,
+    resolveTaskTagIds,
+    serializeTaskTags,
+    updateTaskTagUsage,
+} from "@/app/api/task/_shared";import {isSupportedMapLink, MAP_LINK_ERROR} from "@/app/lib/mapLinks";import {sanitizeRichText} from "@/app/lib/richText";
 export const EVENT_PAGE_SIZE = 20;
 export const MAX_EVENT_IMAGES = 4;
 export const MAX_EVENT_IMAGE_SIZE = 5 * 1024 * 1024;
 export const EVENT_REPEAT_TYPES = ["daily", "weekly", "monthly"];
 export const EVENT_WEEKDAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 const eventUploadDirectory = path.join(process.cwd(), "public", "uploads", "events");
-const allowedImageTypes = {
-    "image/jpeg": "jpg",
-    "image/png": "png",
-    "image/webp": "webp",
-    "image/gif": "gif",
-};
+const allowedImageTypes = ALLOWED_IMAGE_TYPES;
 
 export const toObjectId = (id) => {
-    const stringId = String(id || "");
-    return ObjectId.isValid(stringId) ? new ObjectId(stringId) : null;
+    const stringId = String(id || "");    return ObjectId.isValid(stringId) ? new ObjectId(stringId) : null;
 };
 
 export const getEventCollections = async () => {
@@ -31,37 +32,23 @@ export const getEventCollections = async () => {
     const db = client.db("marker");
 
     return {
+        client,
         db,
         eventsCollection: db.collection("events"),
-        sessionsCollection: db.collection("session"),
-        usersCollection: db.collection("user"),
+        sessionsCollection: db.collection("session"),        usersCollection: db.collection("user"),
         tasksCollection: db.collection("tasks"),
         tagsCollection: db.collection("tag"),
     };
 };
 
 export const getAuthenticatedEventContext = async (request) => {
-    const token = request.headers.get("authorization");
-
-    if (!token) {
-        return {error: Response.json({error: "Unauthorized"}, {status: 401})};
+    const auth = await requireUser(request);
+    if (auth.error) {
+        return auth;
     }
 
     const collections = await getEventCollections();
-    const session = await collections.sessionsCollection.findOne({token});
-    const userId = toObjectId(session?.userId);
-
-    if (!userId) {
-        return {error: Response.json({error: "Unauthorized"}, {status: 401})};
-    }
-
-    const user = await collections.usersCollection.findOne({_id: userId}, {projection: {password: 0}});
-
-    if (!user) {
-        return {error: Response.json({error: "User not found"}, {status: 404})};
-    }
-
-    return {...collections, user, userId};
+    return {...collections, user: auth.user, userId: auth.userId};
 };
 
 const normalizeString = (value) => String(value || "").trim();
@@ -80,10 +67,16 @@ export const getEventMediaFiles = (formData) => (
 
 export const parseEventRequestBody = async (request) => {
     const contentType = request.headers.get("content-type") || "";
+    const maxBytes = contentType.includes("multipart/form-data")
+        ? multipartRequestLimit(MAX_EVENT_IMAGES, MAX_EVENT_IMAGE_SIZE)
+        : 64 * 1024;
+    const sizeError = rejectOversizedRequest(request, maxBytes);
+    if (sizeError) {
+        return {errorResponse: sizeError};
+    }
 
     if (!contentType.includes("multipart/form-data")) {
-        return {
-            body: await request.json(),
+        return {            body: await request.json(),
             mediaFiles: [],
             isMultipart: false,
         };
@@ -155,16 +148,14 @@ export const saveEventMedia = async (eventId, mediaFiles = []) => {
 
         for (let index = 0; index < mediaFiles.length; index += 1) {
             const file = mediaFiles[index];
-            const extension = allowedImageTypes[file.type];
+            const {buffer, extension} = await validateImageFile(file, {maxBytes: MAX_EVENT_IMAGE_SIZE});
             const fileName = `${startIndex + index}.${extension}`;
             const filePath = path.join(eventDirectory, fileName);
-            const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-            await writeFile(filePath, fileBuffer);
+            await writeFile(filePath, buffer);
             writtenFilePaths.push(filePath);
             publicPaths.push(`/uploads/events/${eventIdString}/${fileName}`);
-        }
-    } catch (error) {
+        }    } catch (error) {
         await Promise.all(writtenFilePaths.map((filePath) => unlink(filePath).catch(() => null)));
         throw error;
     }
@@ -179,6 +170,18 @@ export const removeEventMedia = async (eventId) => {
         recursive: true,
         force: true,
     });
+};
+
+export const removeSavedEventMedia = async (mediaPaths = []) => {
+    await Promise.all((Array.isArray(mediaPaths) ? mediaPaths : []).map(async (mediaPath) => {
+        const relativePath = String(mediaPath || "").replace(/^\/+/, "");
+        const absolutePath = path.resolve(process.cwd(), "public", relativePath);
+        const uploadsRoot = path.resolve(eventUploadDirectory) + path.sep;
+        if (!absolutePath.startsWith(uploadsRoot)) return;
+        await unlink(absolutePath).catch((error) => {
+            if (error?.code !== "ENOENT") throw error;
+        });
+    }));
 };
 
 const normalizeWeekdays = (weekdays = []) => (
@@ -232,9 +235,17 @@ export const validateEventData = (event) => {
     if (!event.title?.trim()) {
         return "Event title is required.";
     }
+    if (event.title.length > 160) {
+        return "Event title must be 160 characters or fewer.";
+    }
+    if (String(event.description || "").length > 20000) {
+        return "Event description is too long.";
+    }
+    if (String(event.location || "").length > 500) {
+        return "Event location is too long.";
+    }
 
-    if (!event.start) {
-        return "Start time is required.";
+    if (!event.start) {        return "Start time is required.";
     }
 
     if (event.location && !isSupportedMapLink(event.location)) {
@@ -276,13 +287,9 @@ const serializeEventUser = (user) => {
 
 export const createEventUserMap = async (usersCollection, events = []) => {
     const userIds = [
-        ...new Set(events.flatMap((event) => ([
-            event?.userId,
-            ...(Array.isArray(event?.subscribers) ? event.subscribers : []),
-        ]))
+        ...new Set(events.map((event) => event?.userId)
             .map((userId) => String(userId || ""))
-            .filter((userId) => ObjectId.isValid(userId)))
-    ].map((userId) => new ObjectId(userId));
+            .filter((userId) => ObjectId.isValid(userId)))    ].map((userId) => new ObjectId(userId));
 
     if (!userIds.length) {
         return new Map();
@@ -323,37 +330,35 @@ export const serializeEvent = (event, tagMap = new Map(), userMap = new Map(), c
         date: event?.date || "",
         isPrivate: Boolean(event?.isPrivate),
         media: Array.isArray(event?.media) ? event.media : [],
-        subscribers,
-        subscriberUsers: subscribers.map((subscriberId) => (
-            userMap.get(subscriberId) || {id: subscriberId, _id: subscriberId, name: "Unnamed user", login: "", profilePicture: ""}
-        )),
         subscriberCount: subscribers.length,
-        isSubscribed: currentUserIdString ? subscribers.includes(currentUserIdString) : false,
-        createdAt: event?.createdAt || null,
+        isSubscribed: currentUserIdString ? subscribers.includes(currentUserIdString) : false,        createdAt: event?.createdAt || null,
         updatedAt: event?.updatedAt || null,
     };
 };
 
-export const prepareEventDocument = async (tagsCollection, body = {}, mediaFiles = []) => {
+export const prepareEventDocument = async (tagsCollection, body = {}, mediaFiles = [], session = null) => {
     const mediaValidationError = validateEventMediaFiles(mediaFiles, normalizeMedia(body.media));
 
     if (mediaValidationError) {
         return {error: mediaValidationError};
     }
 
-    const tagIds = await resolveTaskTagIds(tagsCollection, body.tags);
-    const eventData = normalizeEventData(body, tagIds);
-    const validationError = validateEventData(eventData);
+    const tagNames = normalizeTaskTagNames(body.tags);
+    if (tagNames.length > 20 || tagNames.some((tag) => tag.length > 40)) {
+        return {error: "Use at most 20 tags, each 40 characters or fewer."};
+    }
 
+    const validationCandidate = normalizeEventData(body, []);
+    const validationError = validateEventData(validationCandidate);
     if (validationError) {
         return {error: validationError};
     }
 
-    return {eventData, tagIds};
+    const tagIds = await resolveTaskTagIds(tagsCollection, body.tags, session);
+    return {eventData: normalizeEventData(body, tagIds), tagIds};
 };
 
 export const updateEventTagUsage = updateTaskTagUsage;
-
 export const getEventTaskFields = (event) => ({
     title: event.title || "",
     description: sanitizeRichText(event.description) || null,
@@ -387,37 +392,57 @@ export const createSubscribedTask = (event, userId) => {
     };
 };
 
-export const deleteEventWithSubscriptions = async ({eventsCollection, tasksCollection, usersCollection, tagsCollection, eventId}) => {
+export const deleteEventWithSubscriptions = async ({
+    client,
+    eventsCollection,
+    tasksCollection,
+    usersCollection,
+    tagsCollection,
+    eventId,
+}) => {
     const eventObjectId = toObjectId(eventId);
-
     if (!eventObjectId) {
         return {error: Response.json({error: "Invalid event id"}, {status: 400})};
     }
 
-    const event = await eventsCollection.findOne({_id: eventObjectId});
+    const result = await withMongoTransaction(client, async (session) => {
+        const event = await eventsCollection.findOne({_id: eventObjectId}, {session});
+        if (!event) return null;
 
-    if (!event) {
+        const cursor = tasksCollection
+            .find({sourceEventId: eventObjectId}, {session, projection: {_id: 1}})
+            .batchSize(500);
+        let userOperations = [];
+        let deletedTaskCount = 0;
+
+        for await (const task of cursor) {
+            userOperations.push({
+                updateOne: {
+                    filter: {tasks: task._id},
+                    update: {$pull: {tasks: task._id}},
+                },
+            });
+            deletedTaskCount += 1;
+            if (userOperations.length === 500) {
+                await usersCollection.bulkWrite(userOperations, {session, ordered: false});
+                userOperations = [];
+            }
+        }
+        if (userOperations.length) {
+            await usersCollection.bulkWrite(userOperations, {session, ordered: false});
+        }
+
+        await tasksCollection.deleteMany({sourceEventId: eventObjectId}, {session});
+        await eventsCollection.deleteOne({_id: eventObjectId}, {session});
+        await updateEventTagUsage(tagsCollection, event.tags || [], [], session);
+        return {event, deletedTaskCount};
+    });
+
+    if (!result) {
         return {error: Response.json({error: "Event not found"}, {status: 404})};
     }
 
-    const subscribedTasks = await tasksCollection
-        .find({sourceEventId: eventObjectId})
-        .project({_id: 1})
-        .toArray();
-    const subscribedTaskIds = subscribedTasks.map((task) => task._id);
-
-    await eventsCollection.deleteOne({_id: eventObjectId});
-    await removeEventMedia(eventObjectId);
-
-    if (subscribedTaskIds.length) {
-        await tasksCollection.deleteMany({_id: {$in: subscribedTaskIds}});
-        await usersCollection.updateMany(
-            {tasks: {$in: subscribedTaskIds}},
-            {$pull: {tasks: {$in: subscribedTaskIds}}}
-        );
-    }
-
-    await updateEventTagUsage(tagsCollection, event.tags || [], []);
-
-    return {event, deletedTaskCount: subscribedTaskIds.length};
+    await removeEventMedia(eventObjectId).catch((cleanupError) => {
+        logger.error("api.handler.error", {message: "Failed to remove deleted event media:", error: cleanupError});
+    });    return result;
 };

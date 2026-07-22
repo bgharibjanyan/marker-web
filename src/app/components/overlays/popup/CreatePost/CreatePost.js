@@ -115,11 +115,9 @@ export default function CreatePost({task = null, post = null, onSaved, onCancel}
 
         try {
             const formData = new FormData();
-            const token = localStorage.getItem("marker_im_token");
 
             formData.append("task", taskId);
-            formData.append("title", title.trim());
-            formData.append("description", description.trim());
+            formData.append("title", title.trim());            formData.append("description", description.trim());
 
             if (isEditing) {
                 formData.append("postId", postId);
@@ -132,11 +130,9 @@ export default function CreatePost({task = null, post = null, onSaved, onCancel}
             const response = await fetch(isEditing ? "/api/post/edit-post" : "/api/post/create-post", {
                 method: "POST",
                 headers: {
-                    ...(token ? {Authorization: token} : {}),
                 },
                 body: formData,
-            });
-            const data = await response.json();
+            });            const data = await response.json();
 
             if (!response.ok) {
                 setFormError(data?.error || t(isEditing ? "validation.updateFailed" : "validation.createFailed"));

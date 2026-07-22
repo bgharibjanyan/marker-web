@@ -62,14 +62,11 @@ export default function Schedule({currentUser, selectedUser}) {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem("marker_im_token");
             const response = await fetch(`/api/task/get-user-task?userId=${encodeURIComponent(selectedUserId)}`, {
                 headers: {
-                    ...(token ? {Authorization: token} : {}),
                 },
             });
             const data = await response.json();
-
             if (!response.ok) {
                 setError(t("states.loadFailed"));
                 return;

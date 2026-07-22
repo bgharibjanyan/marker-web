@@ -5,12 +5,8 @@ import {useLocale} from "next-intl";
 import {usePathname, useRouter} from "next/navigation";
 import styles from "./AdminShell.module.scss";
 
-const ADMIN_AUTH_KEY = "marker-admin-auth";
-const ADMIN_AUTH_VALUE = "authenticated";
-
 const navigation = [
-    {
-        label: "Dashboard",
+    {        label: "Dashboard",
         description: "Overview",
         path: "/admin"
     },
@@ -41,36 +37,44 @@ const navigation = [
     }
 ];
 
-export {ADMIN_AUTH_KEY, ADMIN_AUTH_VALUE};
-
 export default function AdminShell({children}) {
     const locale = useLocale();
     const pathname = usePathname();
     const router = useRouter();
     const [isReady, setIsReady] = useState(false);
+    const [adminUser, setAdminUser] = useState(null);
     const [openNavItems, setOpenNavItems] = useState({"/admin/events": true});
 
-    const loginPath = `/${locale}/admin/login`;
-    const isLoginPage = pathname === loginPath;
+    const loginPath = `/${locale}/admin/login`;    const isLoginPage = pathname === loginPath;
 
     useEffect(() => {
         if (isLoginPage) {
             setIsReady(true);
-            return;
+            return undefined;
         }
 
-        const isAuthenticated = window.localStorage.getItem(ADMIN_AUTH_KEY) === ADMIN_AUTH_VALUE;
+        let cancelled = false;
+        fetch("/api/auth/check")
+            .then(async (response) => ({ok: response.ok, data: await response.json()}))
+            .then(({ok, data}) => {
+                if (cancelled) return;
+                if (!ok || data.user?.role !== "admin") {
+                    router.replace(loginPath);
+                    return;
+                }
+                setAdminUser(data.user);
+                setIsReady(true);
+            })
+            .catch(() => {
+                if (!cancelled) router.replace(loginPath);
+            });
 
-        if (!isAuthenticated) {
-            router.replace(loginPath);
-            return;
-        }
-
-        setIsReady(true);
+        return () => {
+            cancelled = true;
+        };
     }, [isLoginPage, loginPath, router]);
 
-    const activePath = useMemo(() => {
-        const adminPath = `/${locale}/admin`;
+    const activePath = useMemo(() => {        const adminPath = `/${locale}/admin`;
 
         if (pathname === adminPath || pathname === `${adminPath}/`) {
             return "/admin";
@@ -96,13 +100,16 @@ export default function AdminShell({children}) {
         }));
     };
 
-    const handleLogout = () => {
-        window.localStorage.removeItem(ADMIN_AUTH_KEY);
-        router.replace(loginPath);
+    const handleLogout = async () => {
+        try {
+            await fetch("/api/auth/logout", {method: "POST"});
+        } finally {
+            setAdminUser(null);
+            router.replace(loginPath);
+        }
     };
 
-    if (!isReady) {
-        return (
+    if (!isReady) {        return (
             <div className={styles.loadingScreen}>
                 <div className={styles.loadingPanel}>
                     <span>Checking admin session</span>
@@ -126,10 +133,9 @@ export default function AdminShell({children}) {
                     <img src="/images/logo/logo.svg" alt="Marker logo"/>
                     <div>
                         <span className={styles.brandTitle}>Marker Admin</span>
-                        <span className={styles.brandMeta}>super_user</span>
+                        <span className={styles.brandMeta}>{adminUser?.login || adminUser?.email || "Administrator"}</span>
                     </div>
                 </div>
-
                 <nav className={styles.navList}>
                     {navigation.map((item) => {
                         const hasChildren = Boolean(item.children?.length);

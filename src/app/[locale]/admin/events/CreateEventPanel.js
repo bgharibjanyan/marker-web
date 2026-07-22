@@ -8,13 +8,9 @@ import EventForm from "./EventForm";
 import styles from "./page.module.scss";
 import {createEventFormData} from "./eventRequest";
 
-const adminHeaders = {
-    "x-marker-admin-auth": "authenticated"
-};
 
 export default function CreateEventPanel() {
-    const locale = useLocale();
-    const router = useRouter();
+    const locale = useLocale();    const router = useRouter();
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -29,11 +25,9 @@ export default function CreateEventPanel() {
             const response = await fetch("/api/admin/events", {
                 method: "POST",
                 headers: {
-                    ...adminHeaders
                 },
                 body: createEventFormData(payload, mediaFiles)
-            });
-            const data = await response.json();
+            });            const data = await response.json();
 
             if (!response.ok) {
                 setError(data.error || "Failed to create event.");

@@ -1,5 +1,5 @@
-import clientPromise from "@/app/lib/mongodb";
-import {ObjectId} from "mongodb";
+import {logger} from "@/server/observability/logger";
+import {withApiObservability} from "@/server/http/api-handler";import {getAuthenticatedTaskContext} from "@/app/api/task/_auth";import {ObjectId} from "mongodb";
 import {createTaskTagMap, serializeTaskTags} from "@/app/api/task/_shared";
 
 const serializeTask = (task, viewerUserId, tagMap) => {
@@ -28,32 +28,13 @@ const serializeTask = (task, viewerUserId, tagMap) => {
     };
 };
 
-export async function GET(request) {
-    try {
-        const authToken = request.headers.get('authorization');
-
-        if (!authToken) {
-            return Response.json({error: 'Unauthorized'}, {status: 401});
+async function GETHandler(request) {
+    try {        const auth = await getAuthenticatedTaskContext(request);
+        if (auth.error) {
+            return auth.error;
         }
 
-        const client = await clientPromise;
-        const db = client.db('marker');
-        const sessionsCollection = db.collection('session');
-        const usersCollection = db.collection('user');
-        const tasksCollection = db.collection('tasks');
-        const tagsCollection = db.collection('tag');
-
-        const session = await sessionsCollection.findOne({token: authToken});
-
-        if (!session?.userId) {
-            return Response.json({error: 'Unauthorized'}, {status: 401});
-        }
-
-        const user = await usersCollection.findOne({_id: session.userId});
-
-        if (!user) {
-            return Response.json({error: 'User not found'}, {status: 404});
-        }
+        const {user, usersCollection, tasksCollection, tagsCollection} = auth;
 
         const {searchParams} = new URL(request.url);
         const requestedUserId = searchParams.get("userId");
@@ -71,15 +52,29 @@ export async function GET(request) {
             return Response.json({error: 'User not found'}, {status: 404});
         }
 
-        const tasks = await tasksCollection
-            .find({userId: targetUserId})
-            .sort({start: 1})
+        const isOwner = String(targetUserId) === String(user._id);
+        const isConnection = (user.connections || []).some(
+            (connectionId) => String(connectionId) === String(targetUserId),
+        );
+        if (!isOwner && (targetUser.publicProfile === false || !isConnection)) {
+            return Response.json({error: 'User not found'}, {status: 404});
+        }
+
+        const results = await tasksCollection
+            .find({userId: targetUserId})            .sort({_id: -1})
+            .limit(1001)
             .toArray();
+        const hasMore = results.length > 1000;
+        const tasks = results.slice(0, 1000);
         const tagMap = await createTaskTagMap(tagsCollection, tasks);
 
-        return Response.json({tasks: tasks.map((task) => serializeTask(task, user._id, tagMap))}, {status: 200});
+        return Response.json({
+            tasks: tasks.map((task) => serializeTask(task, user._id, tagMap)),
+            hasMore,
+            resultLimit: 1000,
+        }, {status: 200});
     } catch (error) {
-        console.log(error);
-        return Response.json({error: 'Failed to load tasks'}, {status: 500});
-    }
-}
+        logger.error("api.handler.error", {error: error});
+        return Response.json({error: 'Failed to load tasks'}, {status: 500});    }}
+
+export const GET = withApiObservability(GETHandler, {route: "/api/task/get-user-task", method: "GET"});

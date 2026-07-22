@@ -166,17 +166,10 @@ const CommonTasksWidget = () => {
         }
 
         try {
-            const token = localStorage.getItem('marker_im_token');
-            const response = await fetch('/api/task/get-user-task', {
-                headers: {
-                    ...(token ? {Authorization: token} : {}),
-                },
-            });
+            const response = await fetch('/api/task/get-user-task');
             const data = await response.json();
-
             if (!response.ok) {
-                setError(t('errors.loadFailed'));
-                return;
+                setError(t('errors.loadFailed'));                return;
             }
 
             setError('');
@@ -219,16 +212,12 @@ const CommonTasksWidget = () => {
                 cancelText={t('delete.cancel')}
                 errorMessage={t('delete.error')}
                 onConfirm={async () => {
-                    const token = localStorage.getItem('marker_im_token');
                     const response = await fetch('/api/task/delete-task', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            ...(token ? {Authorization: token} : {}),
+                        headers: {                            'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({taskId: task._id}),
                     });
-
                     if (!response.ok) {
                         throw new Error(t('delete.error'));
                     }

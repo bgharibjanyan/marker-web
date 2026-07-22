@@ -1,85 +1,52 @@
-import {ObjectId} from "mongodb";
-import {mkdir, unlink, writeFile} from "fs/promises";
-import path from "path";
-import {getUsersCollection, isAdminRequest, serializeUser} from "../_shared";
+import {logger} from "@/server/observability/logger";
+import {withApiObservability} from "@/server/http/api-handler";import {ObjectId} from "mongodb";import {requireAdmin, serializeUser} from "../_shared";
+import {multipartRequestLimit, UploadValidationError} from "@/server/uploads/image-validation";
+import {removeProfileImage, storeProfileImage} from "@/server/uploads/profile-image-storage";
+import {rejectOversizedRequest} from "@/server/http/request-validation";
 
 export const runtime = "nodejs";
 
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
-const uploadDirectory = path.join(process.cwd(), "public", "uploads", "profiles");
-const allowedImageTypes = {
-    "image/jpeg": "jpg",
-    "image/png": "png",
-    "image/webp": "webp",
-    "image/gif": "gif"
-};
-
-const removeOldProfileImages = async (userId, nextExtension) => {
-    const extensions = [...new Set(Object.values(allowedImageTypes))];
-
-    await Promise.allSettled(
-        extensions
-            .filter((extension) => extension !== nextExtension)
-            .map((extension) => unlink(path.join(uploadDirectory, `${userId}.${extension}`)))
-    );
-};
-
-export async function POST(request) {
+async function POSTHandler(request) {
+    let storedImage = null;
     try {
-        if (!isAdminRequest(request)) {
-            return Response.json({error: "Unauthorized"}, {status: 401});
-        }
+        const auth = await requireAdmin(request);
+        if (auth.error) return auth.error;
+
+        const sizeError = rejectOversizedRequest(request, multipartRequestLimit(1, 5 * 1024 * 1024));
+        if (sizeError) return sizeError;
 
         const formData = await request.formData();
         const id = String(formData.get("id") || "");
-        const image = formData.get("image");
-
-        if (!id || !ObjectId.isValid(id)) {
+        if (!ObjectId.isValid(id)) {
             return Response.json({error: "Invalid user id"}, {status: 400});
         }
 
-        if (!image || typeof image.arrayBuffer !== "function") {
-            return Response.json({error: "Image file is required"}, {status: 400});
-        }
-
-        const extension = allowedImageTypes[image.type];
-
-        if (!extension) {
-            return Response.json({error: "Only JPG, PNG, WEBP, and GIF images are allowed"}, {status: 400});
-        }
-
-        if (image.size > MAX_IMAGE_SIZE) {
-            return Response.json({error: "Image must be smaller than 5MB"}, {status: 400});
-        }
-
-        const usersCollection = await getUsersCollection();
         const userId = new ObjectId(id);
-        const existingUser = await usersCollection.findOne({_id: userId}, {projection: {_id: 1}});
-
+        const existingUser = await auth.usersCollection.findOne({_id: userId});
         if (!existingUser) {
             return Response.json({error: "User not found"}, {status: 404});
         }
 
-        await mkdir(uploadDirectory, {recursive: true});
-        await removeOldProfileImages(id, extension);
-
-        const fileName = `${id}.${extension}`;
-        const publicImagePath = `/uploads/profiles/${fileName}`;
-        const imageBuffer = Buffer.from(await image.arrayBuffer());
-
-        await writeFile(path.join(uploadDirectory, fileName), imageBuffer);
-
-        const result = await usersCollection.findOneAndUpdate(
+        storedImage = await storeProfileImage(formData.get("image"), id);
+        const result = await auth.usersCollection.findOneAndUpdate(
             {_id: userId},
-            {$set: {profilePicture: publicImagePath}},
-            {returnDocument: "after", projection: {password: 0}}
+            {$set: {profilePicture: storedImage.publicPath}},
+            {returnDocument: "after", projection: {password: 0}},
         );
-
         const updatedUser = result?.value || result;
+        if (!updatedUser) {
+            await removeProfileImage(storedImage.publicPath);
+            return Response.json({error: "User not found"}, {status: 404});
+        }
 
+        await removeProfileImage(existingUser.profilePicture);
         return Response.json({user: serializeUser(updatedUser)}, {status: 200});
     } catch (error) {
-        console.error("Error uploading admin profile image:", error);
-        return Response.json({error: "Failed to upload profile image"}, {status: 500});
-    }
-}
+        if (storedImage) await removeProfileImage(storedImage.publicPath).catch(() => {});
+        if (error instanceof UploadValidationError) {
+            return Response.json({error: error.message}, {status: error.status});
+        }
+        logger.error("api.handler.error", {message: "Error uploading admin profile image:", error: error});
+        return Response.json({error: "Failed to upload profile image"}, {status: 500});    }}
+
+export const POST = withApiObservability(POSTHandler, {route: "/api/admin/users/profile-image", method: "POST"});

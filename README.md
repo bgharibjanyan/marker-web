@@ -20,10 +20,9 @@ The application lets a user manage private or public tasks across year, month, w
 
 This repository contains the complete product surface. The localized frontend, backend route handlers, domain rules, MongoDB access, media processing, administration interface, and interactive API documentation all live in one Next.js App Router application.
 
-> **Project stage:** portfolio-quality MVP under active development. The core workflows are implemented; the highest-value production-hardening work is documented in [Portfolio Review](./docs/PORTFOLIO_REVIEW.md).
+> **Project stage:** production-hardening in progress. Session security, role-based administration, rate limits, transactional writes, database indexes, request observability, health checks, CI, locale parity, and complete OpenAPI coverage are implemented. Durable object storage and deeper behavioral test coverage remain before multi-instance deployment.
 
 ## Why this project stands out
-
 - **A connected domain, not isolated CRUD screens.** Subscribing to an event creates a linked schedule task; event changes propagate to subscribed tasks; unsubscribing and deletion clean up related records.
 - **A real scheduling engine.** Daily, weekly, monthly, and one-time recurrence rules are rendered across four calendar scales, sorted by time, and summarized without double-counting overlapping time ranges.
 - **Privacy-aware collaboration.** Users can inspect another person's schedule, while private task content is redacted at the API boundary for non-owners.
@@ -75,10 +74,9 @@ Important architectural choices:
 | --- | --- | --- |
 | Application | Next.js 15, React 19 | App Router pages, server endpoints, client interactions |
 | Data | MongoDB Node.js driver | Users, sessions, tasks, events, posts, messages, and tags |
-| Authentication | bcryptjs, JSON Web Tokens, session collection | Password hashing, token issuance, server-side session lookup |
+| Authentication | bcryptjs, opaque cookie sessions, MongoDB | Password hashing, server-side session lifecycle, and role enforcement |
 | Localization | next-intl | Locale routing and translated interface messages |
-| UI | SCSS Modules, Sass, Swiper, clsx | Component-scoped styling, responsive layout, carousel behavior |
-| Content | TinyMCE, custom sanitizer | Rich task, event, and post descriptions |
+| UI | SCSS Modules, Sass, Swiper, clsx | Component-scoped styling, responsive layout, carousel behavior || Content | TinyMCE, custom sanitizer | Rich task, event, and post descriptions |
 | HTTP/API | Fetch, Axios, OpenAPI, Swagger UI | Client requests, documented backend surface, interactive API explorer |
 
 ## Repository map
@@ -136,33 +134,30 @@ Open these routes after the server starts:
 | `npm run build` | Create an optimized production build |
 | `npm run start` | Serve the production build |
 | `npm run lint` | Run the repository's Next.js lint command |
-| `npm run swagger:check` | Compare implemented API route handlers with the OpenAPI specification |
+| `npm run swagger:check` | Compare implemented API route handlers with the OpenAPI specification |\n| `npm run quality:check` | Run security, OpenAPI, locale-parity, and operations checks |\n| `npm run locales:check` | Ensure all locale catalogs expose the same keys |\n| `npm run operations:check` | Ensure every API route uses the observability wrapper |
 
 ## API surface
 
-The backend contains **34 HTTP handlers across 31 route modules**. They cover authentication, users, profiles, connections, messages, tasks, tags, posts, events, subscriptions, uploads, and administration.
+The backend contains authenticated product APIs plus dedicated liveness and readiness handlers across **36 route modules**. They cover authentication, users, profiles, connections, messages, tasks, tags, posts, events, subscriptions, uploads, and administration.
 
-- Source specification: [`src/app/lib/swagger/openapi.json`](./src/app/lib/swagger/openapi.json)
-- Interactive renderer: [`src/app/api-doc`](./src/app/api-doc)
+- Source specification: [`src/app/lib/swagger/openapi.json`](./src/app/lib/swagger/openapi.json)- Interactive renderer: [`src/app/api-doc`](./src/app/api-doc)
 - Consistency check: [`scripts/check-swagger.cjs`](./scripts/check-swagger.cjs)
 
-The current OpenAPI file describes 27 operations. Four newer route groups still need to be added to the specification; see the [verified audit findings](./docs/PORTFOLIO_REVIEW.md#verified-maturity-audit).
+The OpenAPI document covers every implemented route module and is enforced by the repository consistency check.
 
 ## Data and security behavior
 
 - Passwords are hashed with bcrypt before persistence.
-- Authenticated endpoints resolve tokens through the session collection.
+- Authenticated endpoints resolve hashed opaque cookie sessions through the session collection.
 - Resource identifiers are validated before conversion to MongoDB `ObjectId` values.
-- Owned tasks and posts are checked before update or deletion.
-- Private task details are stripped when another user requests a schedule.
+- Owned tasks and posts are checked before update or deletion.- Private task details are stripped when another user requests a schedule.
 - Rich HTML accepts a narrow tag/style allowlist and safe HTTP(S) links.
 - Post and event uploads accept JPG, PNG, WEBP, and GIF files, with a four-image and 5 MB-per-image limit.
 - API projections avoid returning password hashes in user-facing responses.
 
-Marker is currently an MVP, not a production security reference. Before public deployment, replace the demo admin gate and fallback secret, add authorization roles and rate limiting, move uploads to durable object storage, and add automated security tests.
+Security-critical authentication, role authorization, rate limiting, validation, migrations, and operational checks are implemented. Before horizontal or ephemeral deployment, move uploads to durable object storage and expand behavioral integration/end-to-end coverage.
 
 ## Engineering roadmap
-
 1. Replace prototype admin authentication with session-backed role-based authorization and remove all credential fallbacks.
 2. Add unit tests for recurrence, privacy redaction, sanitization, and tag accounting; add integration tests for subscription workflows.
 3. Add Playwright coverage for the sign-up → task → event subscription → shared schedule journey.

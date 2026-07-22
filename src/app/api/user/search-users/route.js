@@ -1,59 +1,39 @@
-import clientPromise from "@/app/lib/mongodb";
+import {logger} from "@/server/observability/logger";
+import {withApiObservability} from "@/server/http/api-handler";import {enforceRateLimit} from "@/server/security/rate-limiter";import {requireUser} from "@/app/api/_auth/session";
+import {serializePublicUser} from "@/app/api/profile/_shared";
 import {NextResponse} from "next/server";
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-export async function POST(request) {
-    try {
-        const client = await clientPromise;
-        const db = client.db("marker");
-        const usersCollection = db.collection("user");
-        const sessionsCollection = db.collection("session");
-        const token = request.headers.get("authorization");
 
-        if (!token) {
-            return NextResponse.json(
-                {error: "Missing authorization token"},
-                {status: 401}
-            );
-        }
+async function POSTHandler(request) {
+    try {        const auth = await requireUser(request);
+        if (auth.error) return auth.error;
 
-        const session = await sessionsCollection.findOne({token});
+        const endpointRateLimit = await enforceRateLimit({
+            db: auth.db,
+            scope: "user-search",
+            identifier: String(auth.userId),
+            limit: 60,
+            windowMs: 60000,
+        });
+        if (endpointRateLimit) return endpointRateLimit;
 
-        if (!session?.userId) {
-            return NextResponse.json(
-                {error: "Invalid or expired session"},
-                {status: 401}
-            );
-        }
-
-        const body = await request.json();
-        const query = String(body?.query || "").trim();
-
-        if (!query) {
-            return NextResponse.json({users: []}, {status: 200});
-        }
-
-        const searchPattern = new RegExp(escapeRegex(query), "i");
-        const users = await usersCollection.find(
+        const query = String((await request.json())?.query || "").trim().slice(0, 80);
+        if (!query) return NextResponse.json({users: []}, {status: 200});
+        const users = await auth.usersCollection.find(
             {
-                _id: {$ne: session.userId},
-                $or: [
-                    {firstname: searchPattern},
-                    {lastname: searchPattern},
-                    {email: searchPattern},
-                    {login: searchPattern},
-                ],
+                _id: {$ne: auth.userId},
+                publicProfile: {$ne: false},
+                $text: {$search: query},
             },
-            {projection: {password: 0}}
-        ).limit(25).toArray();
+            {projection: {score: {$meta: "textScore"}}},
+        ).sort({score: {$meta: "textScore"}}).limit(25).toArray();
 
-        return NextResponse.json({users}, {status: 200});
+        return NextResponse.json({users: users.map(serializePublicUser)}, {status: 200});
     } catch (error) {
-        console.error("Error in POST /user/search-users:", error);
-        return NextResponse.json(
-            {error: "Failed to search users"},
-            {status: 500}
-        );
-    }
+        logger.error("api.handler.error", {message: "Error in POST /user/search-users:", error: error});
+        return NextResponse.json({error: "Failed to search users"}, {status: 500});    }
 }
+
+export const POST = withApiObservability(POSTHandler, {route: "/api/user/search-users", method: "POST"});

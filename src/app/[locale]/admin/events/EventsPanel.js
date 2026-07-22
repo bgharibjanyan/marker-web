@@ -8,13 +8,9 @@ import EventForm from "./EventForm";
 import styles from "./page.module.scss";
 import {createEventFormData} from "./eventRequest";
 
-const adminHeaders = {
-    "x-marker-admin-auth": "authenticated"
-};
 const EVENTS_PAGE_SIZE = 20;
 
-const getEventSummary = (event) => {
-    if (event.repeat) {
+const getEventSummary = (event) => {    if (event.repeat) {
         return event.repeatType ? `Repeats ${event.repeatType}` : "Repeating";
     }
 
@@ -56,13 +52,10 @@ export default function EventsPanel() {
                 params.set("search", query.trim());
             }
 
-            const response = await fetch(`/api/admin/events?${params.toString()}`, {
-                headers: adminHeaders
-            });
+            const response = await fetch(`/api/admin/events?${params.toString()}`);
             const data = await response.json();
 
-            if (!response.ok) {
-                setError(data.error || "Failed to load events.");
+            if (!response.ok) {                setError(data.error || "Failed to load events.");
                 return;
             }
 
@@ -117,11 +110,9 @@ export default function EventsPanel() {
             const response = await fetch("/api/admin/events", {
                 method: "PATCH",
                 headers: {
-                    ...adminHeaders
                 },
                 body: createEventFormData(payload, mediaFiles, selectedEvent.id)
-            });
-            const data = await response.json();
+            });            const data = await response.json();
 
             if (!response.ok) {
                 setError(data.error || "Failed to save event.");
@@ -152,10 +143,8 @@ export default function EventsPanel() {
         try {
             const response = await fetch(`/api/admin/events?id=${encodeURIComponent(selectedEvent.id)}`, {
                 method: "DELETE",
-                headers: adminHeaders
             });
             const data = await response.json();
-
             if (!response.ok) {
                 setError(data.error || "Failed to delete event.");
                 return;

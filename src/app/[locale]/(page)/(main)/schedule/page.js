@@ -57,14 +57,11 @@ export default function SchedulePage() {
         }
 
         try {
-            const token = localStorage.getItem("marker_im_token");
             const response = await fetch("/api/task/get-user-task", {
                 headers: {
-                    ...(token ? {Authorization: token} : {}),
                 },
             });
             const data = await response.json();
-
             if (!response.ok) {
                 setError(t("states.loadFailed"));
                 return;
@@ -146,16 +143,13 @@ export default function SchedulePage() {
                 cancelText={taskWidgetT("delete.cancel")}
                 errorMessage={taskWidgetT("delete.error")}
                 onConfirm={async () => {
-                    const token = localStorage.getItem("marker_im_token");
                     const response = await fetch("/api/task/delete-task", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            ...(token ? {Authorization: token} : {}),
                         },
                         body: JSON.stringify({taskId: task._id}),
                     });
-
                     if (!response.ok) {
                         throw new Error(taskWidgetT("delete.error"));
                     }

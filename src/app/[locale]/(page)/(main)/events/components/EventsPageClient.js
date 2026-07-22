@@ -15,44 +15,43 @@ export default function EventsPageClient() {
     const [search, setSearch] = useState("");
     const [activeTag, setActiveTag] = useState("");
     const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [nextCursor, setNextCursor] = useState(null);
+    const [hasMore, setHasMore] = useState(false);
     const [error, setError] = useState("");
     const [savingEventId, setSavingEventId] = useState("");
 
-    const loadEvents = useCallback(async () => {
-        setIsLoading(true);
+    const loadEvents = useCallback(async ({append = false} = {}) => {
+        append ? setIsLoadingMore(true) : setIsLoading(true);
         setError("");
 
         try {
-            const token = localStorage.getItem("marker_im_token");
-            const response = await fetch("/api/event/get-user-events?feed=1", {
-                headers: {
-                    ...(token ? {Authorization: token} : {}),
-                },
-            });
+            const params = new URLSearchParams({feed: "1", limit: "20"});
+            if (append && nextCursor) params.set("cursor", nextCursor);
+            const response = await fetch(`/api/event/get-user-events?${params.toString()}`);
             const data = await response.json();
 
-            if (response.status === 401) {
-                localStorage.removeItem("marker_im_token");
-                router.replace(`/${locale}/auth/login`);
+            if (response.status === 401) {                router.replace(`/${locale}/auth/login`);
                 return;
             }
-
             if (!response.ok) {
                 setError(data.error || "Failed to load events.");
                 return;
             }
 
-            setEvents(Array.isArray(data.events) ? data.events : []);
-        } catch (err) {
+            const loadedEvents = Array.isArray(data.events) ? data.events : [];
+            setEvents((current) => append ? [...current, ...loadedEvents] : loadedEvents);
+            setNextCursor(data.nextCursor || null);
+            setHasMore(Boolean(data.hasMore));
+        } catch {
             setError("Failed to load events.");
         } finally {
-            setIsLoading(false);
+            append ? setIsLoadingMore(false) : setIsLoading(false);
         }
-    }, [locale, router]);
+    }, [locale, nextCursor, router]);
 
     useEffect(() => {
-        loadEvents();
-    }, [loadEvents]);
+        loadEvents();    }, [loadEvents]);
 
     const tags = useMemo(() => (
         [...new Set(events.flatMap((event) => (
@@ -77,23 +76,19 @@ export default function EventsPageClient() {
         setError("");
 
         try {
-            const token = localStorage.getItem("marker_im_token");
             const response = await fetch("/api/event/subscribe-event", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    ...(token ? {Authorization: token} : {}),
                 },
                 body: JSON.stringify({eventId}),
             });
             const data = await response.json();
 
             if (response.status === 401) {
-                localStorage.removeItem("marker_im_token");
                 router.replace(`/${locale}/auth/login`);
                 return;
             }
-
             if (!response.ok) {
                 setError(data.error || "Failed to subscribe to event.");
                 return;
@@ -166,6 +161,17 @@ export default function EventsPageClient() {
                     />
                 ))}
             </section>
+
+            {hasMore ? (
+                <button
+                    type="button"
+                    className={styles.loadMore}
+                    disabled={isLoadingMore}
+                    onClick={() => loadEvents({append: true})}
+                >
+                    {isLoadingMore ? "Loading events..." : "Load more events"}
+                </button>
+            ) : null}
         </main>
     );
 }

@@ -1,13 +1,12 @@
-import {
-    getAuthenticatedUser,
+import {logger} from "@/server/observability/logger";
+import {withApiObservability} from "@/server/http/api-handler";import {    getAuthenticatedUser,
     getMessageContent,
     serializeMessage,
     toObjectId,
 } from "@/app/api/message/_shared";
 
-export async function POST(request) {
-    try {
-        const auth = await getAuthenticatedUser(request);
+async function POSTHandler(request) {
+    try {        const auth = await getAuthenticatedUser(request);
 
         if (auth.error) {
             return auth.error;
@@ -41,7 +40,8 @@ export async function POST(request) {
 
         return Response.json({message: serializeMessage(updatedMessage)}, {status: 200});
     } catch (error) {
-        console.error("Error in POST /message/edit-message:", error);
-        return Response.json({error: "Failed to edit message"}, {status: 500});
-    }
+        logger.error("api.handler.error", {message: "Error in POST /message/edit-message:", error: error});
+        return Response.json({error: "Failed to edit message"}, {status: 500});    }
 }
+
+export const POST = withApiObservability(POSTHandler, {route: "/api/message/edit-message", method: "POST"});

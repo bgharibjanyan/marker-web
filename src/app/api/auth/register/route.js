@@ -1,38 +1,59 @@
-import clientPromise from "@/app/lib/mongodb";
-import { hash } from "bcryptjs";
-import jwt from "jsonwebtoken";
+import {logger} from "@/server/observability/logger";
+import {withApiObservability} from "@/server/http/api-handler";import {createSession, getAuthCollections, setSessionCookie, validateMutationOrigin} from "@/app/api/_auth/session";import {serializeSelfUser} from "@/app/api/profile/_shared";
 import User from "../../../../models/user/User";
-import Session from "../../../../models/session/Session";
+import {hash} from "bcryptjs";
+import {NextResponse} from "next/server";
+import {enforceIpRateLimit} from "@/server/security/rate-limiter";
+import {isValidEmail, normalizeBoundedString, rejectOversizedRequest} from "@/server/http/request-validation";
 
-const SECRET_KEY = process.env.JWT_SECRET || "gagooooooo";
-
-export async function POST(request) {
+async function POSTHandler(request) {
+    const originError = validateMutationOrigin(request);    if (originError) {
+        return originError;
+    }
     try {
-        const client = await clientPromise;
-        const usersCollection = client.db("marker").collection("user");
+        const sizeError = rejectOversizedRequest(request, 16 * 1024);
+        if (sizeError) return sizeError;
+        const rateLimitError = await enforceIpRateLimit(request, {
+            scope: "user-registration",
+            limit: 5,
+            windowMs: 60 * 60 * 1000,
+        });
+        if (rateLimitError) return rateLimitError;
 
         const body = await request.json();
-        const { firstname, login,email, password, age, sex, lastname, address, country, city, profilePicture } = body;
+        const firstname = normalizeBoundedString(body.firstname, {min: 1, max: 80});
+        const lastname = normalizeBoundedString(body.lastname, {max: 80});
+        const normalizedLogin = normalizeBoundedString(body.login, {min: 3, max: 40});
+        const normalizedEmail = normalizeBoundedString(body.email, {min: 3, max: 254, lowercase: true});
+        const password = normalizeBoundedString(body.password, {min: 8, max: 128, trim: false});
+        const age = Number(body.age);
+        const sex = normalizeBoundedString(body.sex, {min: 1, max: 16, lowercase: true});
+        const address = normalizeBoundedString(body.address, {max: 200});
+        const country = normalizeBoundedString(body.country, {max: 80});
+        const city = normalizeBoundedString(body.city, {max: 80});
+        const profilePicture = normalizeBoundedString(body.profilePicture, {max: 500});
 
-        if (!firstname || !login || !password || !age || !sex) {
-            return Response.json({ error: "Missing required fields" }, { status: 400 });
+        if (!firstname || !normalizedLogin || !normalizedEmail || !password || !Number.isInteger(age)
+            || age < 13 || age > 120 || !["male", "female", "other"].includes(sex)
+            || !isValidEmail(normalizedEmail) || !/^[a-zA-Z0-9._-]+$/.test(normalizedLogin)) {
+            return Response.json({error: "Invalid registration data"}, {status: 400});
         }
 
-        const existingUser = await usersCollection.findOne({ login });
+        const {usersCollection} = await getAuthCollections();
+        const existingUser = await usersCollection.findOne(
+            {$or: [{login: normalizedLogin}, {email: normalizedEmail}]},
+            {collation: {locale: "en", strength: 2}},
+        );
         if (existingUser) {
-            return Response.json({ error: "User already exists" }, { status: 400 });
+            return Response.json({error: "Login or email already exists"}, {status: 409});
         }
-
-        const hashedPassword = await hash(password, 10);
-
-        // Set default profile picture based on sex if none provided
-        const defaultProfilePicture = profilePicture || `/uploads/profiles/default/${sex === 'male' ? 'male.png' : 'female.png'}`;
-
+        const defaultProfilePicture = profilePicture
+            || `/uploads/profiles/default/${sex === "male" ? "male.png" : "female.png"}`;
         const newUser = new User({
-            firstname,
-            login,
-            email,
-            password: hashedPassword,
+            firstname: String(firstname).trim(),
+            login: normalizedLogin,
+            email: normalizedEmail,
+            password: await hash(String(password), 12),
             age,
             sex,
             lastname,
@@ -41,31 +62,21 @@ export async function POST(request) {
             city,
             profilePicture: defaultProfilePicture,
         });
-
         const result = await usersCollection.insertOne(newUser);
+        newUser._id = result.insertedId;
 
-        // Create a session and token for automatic login after registration
-        const sessionsCollection = client.db("marker").collection("session");
-        const token = jwt.sign(
-            { userId: result.insertedId, login: newUser.login },
-            SECRET_KEY,
-            { expiresIn: "7d" }
-        );
-        const newSession = new Session({ userId: result.insertedId });
-        newSession.token = token;
-        const sessionResult = await sessionsCollection.insertOne(newSession);
-
-        return Response.json(
-            { 
-                message: "User registered successfully", 
-                userId: result.insertedId,
-                token,
-                sessionId: sessionResult.insertedId 
-            },
-            { status: 201 }
-        );
+        const session = await createSession(result.insertedId);
+        const response = NextResponse.json({
+            message: "User registered successfully",
+            user: serializeSelfUser(newUser),
+        }, {status: 201});
+        return setSessionCookie(response, session.token, session.expiresAt);
     } catch (error) {
-        console.error("Error registering user:", error);
-        return Response.json({ error: "Failed to register user" }, { status: 500 });
-    }
+        if (error?.code === 11000) {
+            return Response.json({error: "Login or email already exists"}, {status: 409});
+        }
+        logger.error("api.handler.error", {message: "Error registering user:", error: error});
+        return Response.json({error: "Failed to register user"}, {status: 500});    }
 }
+
+export const POST = withApiObservability(POSTHandler, {route: "/api/auth/register", method: "POST"});

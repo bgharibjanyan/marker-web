@@ -143,20 +143,16 @@ export default function ProfileContent({
         setStatusMessage("");
 
         try {
-            const token = localStorage.getItem("marker_im_token");
             const params = new URLSearchParams();
 
-            if (profileUserId) {
-                params.set("userId", profileUserId);
+            if (profileUserId) {                params.set("userId", profileUserId);
             }
 
             const response = await fetch(`/api/profile/get-profile${params.toString() ? `?${params.toString()}` : ""}`, {
                 headers: {
-                    ...(token ? {Authorization: token} : {}),
                 },
             });
             const data = await response.json();
-
             if (!response.ok) {
                 setError(data.error || t("states.loadFailed"));
                 return;
@@ -262,19 +258,15 @@ export default function ProfileContent({
         setStatusMessage("");
 
         try {
-            const token = localStorage.getItem("marker_im_token");
             const formData = new FormData();
 
             formData.append("image", file);
-
             const response = await fetch("/api/profile/profile-image", {
                 method: "POST",
                 headers: {
-                    ...(token ? {Authorization: token} : {}),
                 },
                 body: formData,
-            });
-            const data = await response.json();
+            });            const data = await response.json();
 
             if (!response.ok) {
                 setError(data.error || t("states.imageFailed"));

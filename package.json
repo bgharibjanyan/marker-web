@@ -7,14 +7,20 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "swagger:check": "node scripts/check-swagger.cjs"
+    "swagger:check": "node scripts/check-swagger.cjs",
+    "security:check": "node scripts/check-api-security.cjs",
+    "auth:migrate": "node scripts/migrations/20260722-001-harden-auth-and-bootstrap-admin.cjs",
+    "api:p1:migrate": "node scripts/migrations/20260722-002-add-api-hardening-indexes.cjs",
+    "locales:check": "node scripts/check-locales.cjs",
+    "operations:check": "node scripts/check-api-operations.cjs",
+    "quality:check": "npm run security:check && npm run swagger:check && npm run locales:check && npm run operations:check",
+    "api:search:migrate": "node scripts/migrations/20260722-003-add-search-and-tag-indexes.cjs"
   },
   "dependencies": {
     "@tinymce/tinymce-react": "^6.3.0",
     "axios": "^1.8.4",
     "bcryptjs": "^3.0.0",
     "clsx": "^2.1.1",
-    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.13.0",
     "next": "15.5.20",
     "next-intl": "^3.26.5",

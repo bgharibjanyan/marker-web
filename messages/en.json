@@ -185,11 +185,11 @@
       "open": "Open {title}",
       "previousImage": "Previous image",
       "nextImage": "Next image",
-      "close": "Close"
+      "close": "Close",
+      "loadMore": "Load more"
     },
     "labels": {
-      "published": "Published"
-    },
+      "published": "Published"    },
     "states": {
       "loading": "Loading posts...",
       "empty": "You have not published any posts yet.",

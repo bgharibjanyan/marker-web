@@ -14,13 +14,9 @@ import {
 
 const statuses = ["Active", "Suspended", "Pending"];
 const sexes = ["male", "female", "other"];
-const adminHeaders = {
-    "x-marker-admin-auth": "authenticated"
-};
 const USERS_PAGE_SIZE = 20;
 const defaultProfileImage = "/uploads/profiles/default/image.png";
-const countryOptions = [
-    {country: "Armenia", cities: ["Yerevan", "Gyumri", "Vanadzor", "Vagharshapat", "Hrazdan"]},
+const countryOptions = [    {country: "Armenia", cities: ["Yerevan", "Gyumri", "Vanadzor", "Vagharshapat", "Hrazdan"]},
     {country: "Russia", cities: ["Moscow", "Saint Petersburg", "Novosibirsk", "Yekaterinburg", "Kazan"]},
     {country: "France", cities: ["Paris", "Marseille", "Lyon", "Toulouse", "Nice"]},
     {country: "Italy", cities: ["Rome", "Milan", "Naples", "Turin", "Florence"]},
@@ -73,13 +69,10 @@ export default function UsersPanel() {
                 params.set("search", query.trim());
             }
 
-            const response = await fetch(`/api/admin/users?${params.toString()}`, {
-                headers: adminHeaders
-            });
+            const response = await fetch(`/api/admin/users?${params.toString()}`);
             const data = await response.json();
 
-            if (!response.ok) {
-                setError(data.error || "Failed to load users.");
+            if (!response.ok) {                setError(data.error || "Failed to load users.");
                 return;
             }
 
@@ -158,11 +151,9 @@ export default function UsersPanel() {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
-                    ...adminHeaders
                 },
                 body: JSON.stringify({
-                    ...selectedUser,
-                    password
+                    ...selectedUser,                    password
                 })
             });
 
@@ -210,11 +201,9 @@ export default function UsersPanel() {
 
             const response = await fetch("/api/admin/users/profile-image", {
                 method: "POST",
-                headers: adminHeaders,
                 body: formData
             });
             const data = await response.json();
-
             if (!response.ok) {
                 setError(data.error || "Failed to upload profile image.");
                 return;

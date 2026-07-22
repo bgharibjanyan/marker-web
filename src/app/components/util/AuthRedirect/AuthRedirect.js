@@ -1,24 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import {useEffect} from "react";
+import {usePathname, useRouter} from "next/navigation";
+import UserManager from "@/app/lib/user/UserManager";
 
-export default function AuthRedirect({ locale }) {
+export default function AuthRedirect({locale}) {
     const router = useRouter();
     const pathname = usePathname();
-    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        setIsClient(true);
+        if (pathname.startsWith(`/${locale}/auth`)) return undefined;
 
-        if (typeof window !== "undefined") {
-            const token = window.localStorage.getItem("marker_im_token");
-
-            if (!token && !pathname.startsWith(`/${locale}/auth`)) {
-                router.replace(`/${locale}/auth/login`);
-            }
-        }
+        let cancelled = false;
+        UserManager.getUser().then((user) => {
+            if (!cancelled && !user) router.replace(`/${locale}/auth/login`);
+        });
+        return () => {
+            cancelled = true;
+        };
     }, [router, locale, pathname]);
 
-    return null;
-}
+    return null;}

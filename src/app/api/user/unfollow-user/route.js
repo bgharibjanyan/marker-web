@@ -1,59 +1,26 @@
-import clientPromise from "@/app/lib/mongodb";
+import {logger} from "@/server/observability/logger";
+import {withApiObservability} from "@/server/http/api-handler";import {requireUser} from "@/app/api/_auth/session";import {serializeSelfUser} from "@/app/api/profile/_shared";
 import {NextResponse} from "next/server";
 import {ObjectId} from "mongodb";
 
-export async function POST(request) {
-    try {
-        const client = await clientPromise;
-        const db = client.db("marker");
-        const usersCollection = db.collection("user");
-        const sessionsCollection = db.collection("session");
-        const token = request.headers.get("authorization");
+async function POSTHandler(request) {
+    try {        const auth = await requireUser(request);
+        if (auth.error) return auth.error;
 
-        if (!token) {
-            return NextResponse.json(
-                {error: "Missing authorization token"},
-                {status: 401}
-            );
-        }
-
-        const session = await sessionsCollection.findOne({token});
-
-        if (!session?.userId) {
-            return NextResponse.json(
-                {error: "Invalid or expired session"},
-                {status: 401}
-            );
-        }
-
-        const body = await request.json();
-        const unfollowedUserId = String(body?.userId || "").trim();
-
+        const unfollowedUserId = String((await request.json())?.userId || "").trim();
         if (!ObjectId.isValid(unfollowedUserId)) {
-            return NextResponse.json(
-                {error: "Missing or invalid userId"},
-                {status: 400}
-            );
+            return NextResponse.json({error: "Missing or invalid userId"}, {status: 400});
         }
 
-        const unfollowedObjectId = new ObjectId(unfollowedUserId);
-
-        await usersCollection.updateOne(
-            {_id: session.userId},
-            {$pull: {connections: unfollowedObjectId}}
+        await auth.usersCollection.updateOne(
+            {_id: auth.userId},
+            {$pull: {connections: new ObjectId(unfollowedUserId)}},
         );
-
-        const user = await usersCollection.findOne(
-            {_id: session.userId},
-            {projection: {password: 0}}
-        );
-
-        return NextResponse.json({user}, {status: 200});
+        const user = await auth.usersCollection.findOne({_id: auth.userId});
+        return NextResponse.json({user: serializeSelfUser(user)}, {status: 200});
     } catch (error) {
-        console.error("Error in POST /user/unfollow-user:", error);
-        return NextResponse.json(
-            {error: "Failed to unfollow user"},
-            {status: 500}
-        );
-    }
+        logger.error("api.handler.error", {message: "Error in POST /user/unfollow-user:", error: error});
+        return NextResponse.json({error: "Failed to unfollow user"}, {status: 500});    }
 }
+
+export const POST = withApiObservability(POSTHandler, {route: "/api/user/unfollow-user", method: "POST"});

@@ -1,77 +1,46 @@
-import clientPromise from "@/app/lib/mongodb";
+import {logger} from "@/server/observability/logger";
+import {withApiObservability} from "@/server/http/api-handler";import {enforceRateLimit} from "@/server/security/rate-limiter";import {requireUser} from "@/app/api/_auth/session";
+import {serializePublicUser, serializeSelfUser} from "@/app/api/profile/_shared";
 import {NextResponse} from "next/server";
 import {ObjectId} from "mongodb";
 
-export async function POST(request) {
-    try {
-        const client = await clientPromise;
-        const db = client.db("marker");
-        const usersCollection = db.collection("user");
-        const sessionsCollection = db.collection("session");
-        const token = request.headers.get("authorization");
 
-        if (!token) {
-            return NextResponse.json(
-                {error: "Missing authorization token"},
-                {status: 401}
-            );
+async function POSTHandler(request) {
+    try {        const auth = await requireUser(request);
+        if (auth.error) return auth.error;
+
+        const endpointRateLimit = await enforceRateLimit({
+            db: auth.db,
+            scope: "user-follow",
+            identifier: String(auth.userId),
+            limit: 30,
+            windowMs: 60000,
+        });
+        if (endpointRateLimit) return endpointRateLimit;
+
+        const followedUserId = String((await request.json())?.userId || "").trim();
+        if (!ObjectId.isValid(followedUserId)) {            return NextResponse.json({error: "Missing or invalid userId"}, {status: 400});
         }
-
-        const session = await sessionsCollection.findOne({token});
-
-        if (!session?.userId) {
-            return NextResponse.json(
-                {error: "Invalid or expired session"},
-                {status: 401}
-            );
-        }
-
-        const body = await request.json();
-        const followedUserId = String(body?.userId || "").trim();
-
-        if (!ObjectId.isValid(followedUserId)) {
-            return NextResponse.json(
-                {error: "Missing or invalid userId"},
-                {status: 400}
-            );
-        }
-
-        if (String(session.userId) === followedUserId) {
-            return NextResponse.json(
-                {error: "You cannot follow yourself"},
-                {status: 400}
-            );
+        if (String(auth.userId) === followedUserId) {
+            return NextResponse.json({error: "You cannot follow yourself"}, {status: 400});
         }
 
         const followedObjectId = new ObjectId(followedUserId);
-        const followedUser = await usersCollection.findOne(
-            {_id: followedObjectId},
-            {projection: {password: 0}}
-        );
+        const followedUser = await auth.usersCollection.findOne({
+            _id: followedObjectId,
+            publicProfile: {$ne: false},
+        });
+        if (!followedUser) return NextResponse.json({error: "User not found"}, {status: 404});
 
-        if (!followedUser) {
-            return NextResponse.json(
-                {error: "User not found"},
-                {status: 404}
-            );
-        }
-
-        await usersCollection.updateOne(
-            {_id: session.userId},
-            {$addToSet: {connections: followedObjectId}}
-        );
-
-        const user = await usersCollection.findOne(
-            {_id: session.userId},
-            {projection: {password: 0}}
-        );
-
-        return NextResponse.json({user, followedUser}, {status: 200});
+        await auth.usersCollection.updateOne({_id: auth.userId}, {$addToSet: {connections: followedObjectId}});
+        const user = await auth.usersCollection.findOne({_id: auth.userId});
+        return NextResponse.json({
+            user: serializeSelfUser(user),
+            followedUser: serializePublicUser(followedUser),
+        }, {status: 200});
     } catch (error) {
-        console.error("Error in POST /user/follow-user:", error);
-        return NextResponse.json(
-            {error: "Failed to follow user"},
-            {status: 500}
-        );
-    }
+        logger.error("api.handler.error", {message: "Error in POST /user/follow-user:", error: error});
+        return NextResponse.json({error: "Failed to follow user"}, {status: 500});    }
 }
+
+export const POST = withApiObservability(POSTHandler, {route: "/api/user/follow-user", method: "POST"});

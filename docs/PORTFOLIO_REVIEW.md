@@ -2,8 +2,10 @@
 
 _Repository audit performed on 22 July 2026._
 
-## Executive assessment
+> **Hardening update  22 July 2026:** The P0P2 follow-up implemented opaque hashed cookie sessions, database-backed administrator roles, privacy-safe DTOs, request and upload validation, rate limits, transactions, cursor indexes, full OpenAPI parity, locale parity, structured API logs, request IDs, health checks, CI, and a deployment runbook. The maturity tables below preserve the original audit snapshot. Durable object storage and broader behavioral tests remain open.
 
+
+## Executive assessment
 Marker Web is a strong full-stack portfolio project because it demonstrates more than framework familiarity. It models a connected product domain in which schedules, community events, subscriptions, profiles, messages, posts, privacy, media, and administration influence one another.
 
 From a recruiter's perspective, the breadth signals the ability to take a product from idea to a functioning MVP. From a technical lead's perspective, the best evidence is in the cross-feature rules: an event subscription creates a linked personal task, changes to an event are propagated to its subscriber tasks, private task data is redacted for other viewers, recurring work is resolved across multiple calendar views, and tag usage is maintained as related data changes.

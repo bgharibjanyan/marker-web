@@ -1,58 +1,32 @@
-import clientPromise from "@/app/lib/mongodb";
+import {requireUser} from "@/app/api/_auth/session";
 import {ObjectId} from "mongodb";
 import {mkdir, rm, writeFile} from "fs/promises";
 import path from "path";
+import {ALLOWED_IMAGE_TYPES, validateImageFile} from "@/server/uploads/image-validation";
 
 export const MAX_POST_IMAGES = 4;
 export const MAX_POST_IMAGE_SIZE = 5 * 1024 * 1024;
 
 const uploadDirectory = path.join(process.cwd(), "public", "uploads", "posts");
-const allowedImageTypes = {
-    "image/jpeg": "jpg",
-    "image/png": "png",
-    "image/webp": "webp",
-    "image/gif": "gif",
-};
+const allowedImageTypes = ALLOWED_IMAGE_TYPES;
 
 export const toObjectId = (id) => {
-    const stringId = String(id || "");
-    return ObjectId.isValid(stringId) ? new ObjectId(stringId) : null;
+    const stringId = String(id || "");    return ObjectId.isValid(stringId) ? new ObjectId(stringId) : null;
 };
 
 export const getAuthenticatedPostContext = async (request) => {
-    const token = request.headers.get("authorization");
-
-    if (!token) {
-        return {error: Response.json({error: "Unauthorized"}, {status: 401})};
-    }
-
-    const client = await clientPromise;
-    const db = client.db("marker");
-    const sessionsCollection = db.collection("session");
-    const usersCollection = db.collection("user");
-    const session = await sessionsCollection.findOne({token});
-    const userId = toObjectId(session?.userId);
-
-    if (!userId) {
-        return {error: Response.json({error: "Unauthorized"}, {status: 401})};
-    }
-
-    const user = await usersCollection.findOne(
-        {_id: userId},
-        {projection: {password: 0}}
-    );
-
-    if (!user) {
-        return {error: Response.json({error: "User not found"}, {status: 404})};
+    const auth = await requireUser(request);
+    if (auth.error) {
+        return auth;
     }
 
     return {
-        db,
-        user,
-        userId,
-        usersCollection,
-        postsCollection: db.collection("posts"),
-        tasksCollection: db.collection("tasks"),
+        client: auth.client,
+        db: auth.db,
+        user: auth.user,
+        userId: auth.userId,        usersCollection: auth.usersCollection,
+        postsCollection: auth.db.collection("posts"),
+        tasksCollection: auth.db.collection("tasks"),
     };
 };
 
@@ -62,7 +36,7 @@ export const getPostMediaFiles = (formData) => (
         .filter((file) => file && typeof file.arrayBuffer === "function" && file.size > 0)
 );
 
-export const validatePostInput = ({taskId, title, mediaFiles = []}) => {
+export const validatePostInput = ({taskId, title, description, mediaFiles = []}) => {
     if (!taskId) {
         return "Task id is required.";
     }
@@ -71,8 +45,15 @@ export const validatePostInput = ({taskId, title, mediaFiles = []}) => {
         return "Post title is required.";
     }
 
-    if (mediaFiles.length > MAX_POST_IMAGES) {
-        return `Posts can include up to ${MAX_POST_IMAGES} images.`;
+    if (String(title).trim().length > 160) {
+        return "Post title must be 160 characters or fewer.";
+    }
+
+    if (String(description || "").length > 20000) {
+        return "Post description is too long.";
+    }
+
+    if (mediaFiles.length > MAX_POST_IMAGES) {        return `Posts can include up to ${MAX_POST_IMAGES} images.`;
     }
 
     for (const file of mediaFiles) {
@@ -108,15 +89,13 @@ export const savePostMedia = async (postId, mediaFiles = []) => {
     try {
         for (let index = 0; index < mediaFiles.length; index += 1) {
             const file = mediaFiles[index];
-            const extension = allowedImageTypes[file.type];
+            const {buffer, extension} = await validateImageFile(file, {maxBytes: MAX_POST_IMAGE_SIZE});
             const fileName = `${index + 1}.${extension}`;
-            const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-            await writeFile(path.join(postDirectory, fileName), fileBuffer);
+            await writeFile(path.join(postDirectory, fileName), buffer);
             publicPaths.push(`/uploads/posts/${postIdString}/${fileName}`);
         }
-    } catch (error) {
-        await rm(postDirectory, {recursive: true, force: true});
+    } catch (error) {        await rm(postDirectory, {recursive: true, force: true});
         throw error;
     }
 

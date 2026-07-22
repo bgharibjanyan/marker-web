@@ -144,16 +144,12 @@ export default function CreateEvent({task = null, onSaved, onCancel, ...eventSta
         setIsSubmitting(true);
 
         try {
-            const token = localStorage.getItem('marker_im_token');
             const response = await fetch(isEditing ? '/api/task/update-task' : '/api/task/add-task', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(token ? {Authorization: token} : {}),
+                headers: {                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    ...formData,
-                    ...(isEditing ? {taskId} : {}),
+                    ...formData,                    ...(isEditing ? {taskId} : {}),
                 }),
             });
 

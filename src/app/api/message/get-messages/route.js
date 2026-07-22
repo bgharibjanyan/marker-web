@@ -1,13 +1,12 @@
-import {
-    getAuthenticatedUser,
+import {logger} from "@/server/observability/logger";
+import {withApiObservability} from "@/server/http/api-handler";import {    getAuthenticatedUser,
     MESSAGE_PAGE_SIZE,
     serializeMessage,
     toObjectId,
 } from "@/app/api/message/_shared";
 
-export async function POST(request) {
-    try {
-        const auth = await getAuthenticatedUser(request);
+async function POSTHandler(request) {
+    try {        const auth = await getAuthenticatedUser(request);
 
         if (auth.error) {
             return auth.error;
@@ -57,7 +56,8 @@ export async function POST(request) {
             {status: 200}
         );
     } catch (error) {
-        console.error("Error in POST /message/get-messages:", error);
-        return Response.json({error: "Failed to fetch messages"}, {status: 500});
-    }
+        logger.error("api.handler.error", {message: "Error in POST /message/get-messages:", error: error});
+        return Response.json({error: "Failed to fetch messages"}, {status: 500});    }
 }
+
+export const POST = withApiObservability(POSTHandler, {route: "/api/message/get-messages", method: "POST"});

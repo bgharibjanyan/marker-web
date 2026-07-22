@@ -408,3 +408,20 @@
   min-height: 52px;
   color: $g-color6;
 }
+
+.loadMore {
+  display: block;
+  margin: 24px auto 0;
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 20px;
+  background: $g-color2;
+  color: $g-color1;
+  cursor: pointer;
+  font-weight: 800;
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.65;
+  }
+}

@@ -4,12 +4,11 @@ import {AdminPageHeader, AdminPanel} from "@/app/components/admin";
 const stats = [
     {
         label: "Users",
-        value: "3",
-        meta: "Static admin records"
+        value: "Live",
+        meta: "Role-protected account management"
     },
     {
-        label: "Events",
-        value: "Live",
+        label: "Events",        value: "Live",
         meta: "List, create, and edit ready"
     },
     {
@@ -23,11 +22,10 @@ export default function AdminDashboard() {
     return (
         <section className={styles.dashboard}>
             <AdminPageHeader eyebrow="Admin panel" title="Dashboard">
-                <span className={styles.sessionBadge}>super_user</span>
+                <span className={styles.sessionBadge}>Administrator</span>
             </AdminPageHeader>
 
-            <div className={styles.statsGrid}>
-                {stats.map((item) => (
+            <div className={styles.statsGrid}>                {stats.map((item) => (
                     <article key={item.label} className={styles.statCard}>
                         <span>{item.label}</span>
                         <strong>{item.value}</strong>
@@ -47,15 +45,10 @@ export default function AdminDashboard() {
                 <AdminPanel>
                     <h2>Current access</h2>
                     <div className={styles.accessRow}>
-                        <span>Login</span>
-                        <strong>super_user</strong>
-                    </div>
-                    <div className={styles.accessRow}>
-                        <span>Password</span>
-                        <strong>barev123</strong>
+                        <span>Authentication</span>
+                        <strong>Secure administrator session</strong>
                     </div>
                 </AdminPanel>
-            </div>
-        </section>
+            </div>        </section>
     );
 }

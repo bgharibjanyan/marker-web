@@ -1,5 +1,5 @@
-import {isAdminRequest} from "@/app/api/admin/_shared";
-import {
+import {logger} from "@/server/observability/logger";
+import {withApiObservability} from "@/server/http/api-handler";import {requireAdmin} from "@/app/api/admin/_shared";import {
     createEventTagMap,
     deleteEventWithSubscriptions,
     EVENT_PAGE_SIZE,
@@ -7,38 +7,32 @@ import {
     getEventTaskFields,
     parseEventRequestBody,
     prepareEventDocument,
+    removeEventMedia,
+    removeSavedEventMedia,
     serializeEvent,
     saveEventMedia,
     toObjectId,
     updateEventTagUsage,
 } from "@/app/api/event/_shared";
 import {ObjectId} from "mongodb";
+import {UploadValidationError} from "@/server/uploads/image-validation";
+import {withMongoTransaction} from "@/server/database/with-mongo-transaction";
 
-export async function GET(request) {
-    try {
-        if (!isAdminRequest(request)) {
-            return Response.json({error: "Unauthorized"}, {status: 401});
-        }
+async function GETHandler(request) {
+    try {        const auth = await requireAdmin(request);
+        if (auth.error) return auth.error;
 
         const {searchParams} = new URL(request.url);
         const limit = Math.min(Math.max(Number(searchParams.get("limit")) || EVENT_PAGE_SIZE, 1), 50);
-        const skip = Math.max(Number(searchParams.get("skip")) || 0, 0);
-        const search = String(searchParams.get("search") || "").trim();
-        const filter = search
-            ? {
-                $or: [
-                    {title: {$regex: search, $options: "i"}},
-                    {description: {$regex: search, $options: "i"}},
-                    {location: {$regex: search, $options: "i"}},
-                ],
-            }
-            : {};
+        const skip = Math.min(Math.max(Number(searchParams.get("skip")) || 0, 0), 10000);
+        const search = String(searchParams.get("search") || "").trim().slice(0, 160);
+        const filter = search ? {$text: {$search: search}} : {};
 
         const {eventsCollection, tagsCollection} = await getEventCollections();
         const total = await eventsCollection.countDocuments(filter);
         const events = await eventsCollection
             .find(filter)
-            .sort({createdAt: -1, _id: -1})
+            .sort(search ? {score: {$meta: "textScore"}} : {createdAt: -1, _id: -1})
             .skip(skip)
             .limit(limit)
             .toArray();
@@ -51,117 +45,135 @@ export async function GET(request) {
             hasMore: skip + events.length < total,
         }, {status: 200});
     } catch (error) {
-        console.error("Error loading admin events:", error);
-        return Response.json({error: "Failed to load events"}, {status: 500});
-    }
+        logger.error("api.handler.error", {message: "Error loading admin events:", error: error});
+        return Response.json({error: "Failed to load events"}, {status: 500});    }
 }
 
-export async function POST(request) {
+async function POSTHandler(request) {
+    const eventId = new ObjectId();    let uploadedMedia = [];
+
     try {
-        if (!isAdminRequest(request)) {
-            return Response.json({error: "Unauthorized"}, {status: 401});
+        const auth = await requireAdmin(request);
+        if (auth.error) return auth.error;
+
+        const parsed = await parseEventRequestBody(request);
+        if (parsed.errorResponse) return parsed.errorResponse;
+        const {body, mediaFiles} = parsed;
+        const {client, eventsCollection, tagsCollection} = await getEventCollections();
+
+        const transactionResult = await withMongoTransaction(client, async (session) => {
+            const prepared = await prepareEventDocument(tagsCollection, body, mediaFiles, session);
+            if (prepared.error) return prepared;
+
+            uploadedMedia = await saveEventMedia(eventId, mediaFiles);
+            const now = new Date();
+            const eventDocument = {
+                _id: eventId,
+                ...prepared.eventData,
+                media: uploadedMedia.length ? uploadedMedia : prepared.eventData.media,
+                subscribers: [],
+                createdAt: now,
+                updatedAt: now,
+            };
+            await eventsCollection.insertOne(eventDocument, {session});
+            await updateEventTagUsage(tagsCollection, [], body.tags, session);
+            return {eventDocument};
+        });
+
+        if (transactionResult.error) {
+            await removeEventMedia(eventId).catch(() => {});
+            return Response.json({error: transactionResult.error}, {status: 400});
         }
 
-        const {body, mediaFiles} = await parseEventRequestBody(request);
-        const {eventsCollection, tagsCollection} = await getEventCollections();
-        const prepared = await prepareEventDocument(tagsCollection, body, mediaFiles);
-
-        if (prepared.error) {
-            return Response.json({error: prepared.error}, {status: 400});
-        }
-
-        const now = new Date();
-        const eventId = new ObjectId();
-        const uploadedMedia = await saveEventMedia(eventId, mediaFiles);
-        const eventDocument = {
-            _id: eventId,
-            ...prepared.eventData,
-            media: uploadedMedia.length ? uploadedMedia : prepared.eventData.media,
-            subscribers: [],
-            createdAt: now,
-            updatedAt: now,
-        };
-        const result = await eventsCollection.insertOne(eventDocument);
-
-        await updateEventTagUsage(tagsCollection, [], body.tags);
-
-        const event = await eventsCollection.findOne({_id: result.insertedId});
-        const tagMap = await createEventTagMap(tagsCollection, [event]);
-
-        return Response.json({event: serializeEvent(event, tagMap)}, {status: 201});
+        const tagMap = await createEventTagMap(tagsCollection, [transactionResult.eventDocument]);
+        return Response.json({
+            event: serializeEvent(transactionResult.eventDocument, tagMap),
+        }, {status: 201});
     } catch (error) {
-        console.error("Error creating admin event:", error);
-        return Response.json({error: "Failed to create event"}, {status: 500});
-    }
+        if (uploadedMedia.length) await removeEventMedia(eventId).catch(() => {});
+        if (error instanceof UploadValidationError) {
+            return Response.json({error: error.message}, {status: error.status});
+        }
+        logger.error("api.handler.error", {message: "Error creating admin event:", error: error});
+        return Response.json({error: "Failed to create event"}, {status: 500});    }
 }
 
-export async function PATCH(request) {
+async function PATCHHandler(request) {
+    let uploadedMedia = [];
     try {
-        if (!isAdminRequest(request)) {
-            return Response.json({error: "Unauthorized"}, {status: 401});
-        }
+        const auth = await requireAdmin(request);
+        if (auth.error) return auth.error;
 
-        const {body, mediaFiles} = await parseEventRequestBody(request);
+        const parsed = await parseEventRequestBody(request);
+        if (parsed.errorResponse) return parsed.errorResponse;
+        const {body, mediaFiles} = parsed;
         const eventId = toObjectId(body.id || body._id || body.eventId);
-
         if (!eventId) {
             return Response.json({error: "Invalid event id"}, {status: 400});
         }
 
-        const {eventsCollection, tagsCollection, tasksCollection} = await getEventCollections();
-        const existingEvent = await eventsCollection.findOne({_id: eventId});
+        const {client, eventsCollection, tagsCollection, tasksCollection} = await getEventCollections();
+        const transactionResult = await withMongoTransaction(client, async (session) => {
+            const existingEvent = await eventsCollection.findOne({_id: eventId}, {session});
+            if (!existingEvent) return {notFound: true};
 
-        if (!existingEvent) {
+            const prepared = await prepareEventDocument(tagsCollection, body, mediaFiles, session);
+            if (prepared.error) return prepared;
+
+            uploadedMedia = await saveEventMedia(eventId, mediaFiles);
+            const updatedAt = new Date();
+            const eventUpdate = {
+                ...prepared.eventData,
+                media: uploadedMedia.length
+                    ? [...prepared.eventData.media, ...uploadedMedia]
+                    : prepared.eventData.media,
+                subscribers: existingEvent.subscribers || [],
+                userId: existingEvent.userId || null,
+                updatedAt,
+            };
+
+            const result = await eventsCollection.findOneAndUpdate(
+                {_id: eventId},
+                {$set: eventUpdate},
+                {returnDocument: "after", session},
+            );
+            const updatedEvent = result?.value || result;
+            if (!updatedEvent) return {notFound: true};
+
+            await updateEventTagUsage(tagsCollection, existingEvent.tags || [], body.tags, session);
+            await tasksCollection.updateMany(
+                {sourceEventId: eventId},
+                {$set: {...getEventTaskFields(updatedEvent), updatedAt}},
+                {session},
+            );
+            return {updatedEvent};
+        });
+
+        if (transactionResult.notFound) {
+            await removeSavedEventMedia(uploadedMedia);
             return Response.json({error: "Event not found"}, {status: 404});
         }
-
-        const prepared = await prepareEventDocument(tagsCollection, body, mediaFiles);
-
-        if (prepared.error) {
-            return Response.json({error: prepared.error}, {status: 400});
+        if (transactionResult.error) {
+            await removeSavedEventMedia(uploadedMedia);
+            return Response.json({error: transactionResult.error}, {status: 400});
         }
 
-        const updatedAt = new Date();
-        const uploadedMedia = await saveEventMedia(eventId, mediaFiles);
-        const eventUpdate = {
-            ...prepared.eventData,
-            media: uploadedMedia.length ? [...prepared.eventData.media, ...uploadedMedia] : prepared.eventData.media,
-            subscribers: existingEvent.subscribers || [],
-            userId: existingEvent.userId || null,
-            updatedAt,
-        };
-
-        const result = await eventsCollection.findOneAndUpdate(
-            {_id: eventId},
-            {$set: eventUpdate},
-            {returnDocument: "after"}
-        );
-        const updatedEvent = result?.value || result;
-
-        if (!updatedEvent) {
-            return Response.json({error: "Event not found"}, {status: 404});
-        }
-
-        await updateEventTagUsage(tagsCollection, existingEvent.tags || [], body.tags);
-        await tasksCollection.updateMany(
-            {sourceEventId: eventId},
-            {$set: {...getEventTaskFields(updatedEvent), updatedAt}}
-        );
-
-        const tagMap = await createEventTagMap(tagsCollection, [updatedEvent]);
-
-        return Response.json({event: serializeEvent(updatedEvent, tagMap)}, {status: 200});
+        const tagMap = await createEventTagMap(tagsCollection, [transactionResult.updatedEvent]);
+        return Response.json({
+            event: serializeEvent(transactionResult.updatedEvent, tagMap),
+        }, {status: 200});
     } catch (error) {
-        console.error("Error updating admin event:", error);
-        return Response.json({error: "Failed to update event"}, {status: 500});
-    }
+        await removeSavedEventMedia(uploadedMedia).catch(() => {});
+        if (error instanceof UploadValidationError) {
+            return Response.json({error: error.message}, {status: error.status});
+        }
+        logger.error("api.handler.error", {message: "Error updating admin event:", error: error});
+        return Response.json({error: "Failed to update event"}, {status: 500});    }
 }
 
-export async function DELETE(request) {
-    try {
-        if (!isAdminRequest(request)) {
-            return Response.json({error: "Unauthorized"}, {status: 401});
-        }
+async function DELETEHandler(request) {
+    try {        const auth = await requireAdmin(request);
+        if (auth.error) return auth.error;
 
         const {searchParams} = new URL(request.url);
         const body = request.headers.get("content-type")?.includes("application/json")
@@ -171,16 +183,18 @@ export async function DELETE(request) {
         const collections = await getEventCollections();
         const result = await deleteEventWithSubscriptions({...collections, eventId});
 
-        if (result.error) {
-            return result.error;
-        }
+        if (result.error) return result.error;
 
         return Response.json({
             message: "Event deleted successfully",
             deletedTaskCount: result.deletedTaskCount,
         }, {status: 200});
     } catch (error) {
-        console.error("Error deleting admin event:", error);
-        return Response.json({error: "Failed to delete event"}, {status: 500});
-    }
+        logger.error("api.handler.error", {message: "Error deleting admin event:", error: error});
+        return Response.json({error: "Failed to delete event"}, {status: 500});    }
 }
+
+export const GET = withApiObservability(GETHandler, {route: "/api/admin/events", method: "GET"});
+export const POST = withApiObservability(POSTHandler, {route: "/api/admin/events", method: "POST"});
+export const PATCH = withApiObservability(PATCHHandler, {route: "/api/admin/events", method: "PATCH"});
+export const DELETE = withApiObservability(DELETEHandler, {route: "/api/admin/events", method: "DELETE"});

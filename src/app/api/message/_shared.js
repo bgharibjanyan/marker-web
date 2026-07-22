@@ -1,4 +1,4 @@
-import clientPromise from "@/app/lib/mongodb";
+import {requireUser} from "@/app/api/_auth/session";
 import {ObjectId} from "mongodb";
 
 export const MESSAGE_PAGE_SIZE = 20;
@@ -9,34 +9,12 @@ export const toObjectId = (id) => {
 };
 
 export const getAuthenticatedUser = async (request) => {
-    const token = request.headers.get("authorization");
-
-    if (!token) {
-        return {error: Response.json({error: "Unauthorized"}, {status: 401})};
+    const auth = await requireUser(request);
+    if (auth.error) {
+        return auth;
     }
 
-    const client = await clientPromise;
-    const db = client.db("marker");
-    const sessionsCollection = db.collection("session");
-    const usersCollection = db.collection("user");
-
-    const session = await sessionsCollection.findOne({token});
-    const userId = toObjectId(session?.userId);
-
-    if (!userId) {
-        return {error: Response.json({error: "Unauthorized"}, {status: 401})};
-    }
-
-    const user = await usersCollection.findOne(
-        {_id: userId},
-        {projection: {password: 0}}
-    );
-
-    if (!user) {
-        return {error: Response.json({error: "User not found"}, {status: 404})};
-    }
-
-    return {db, user, userId};
+    return {db: auth.db, user: auth.user, userId: auth.userId};
 };
 
 export const getMessageContent = (content) => {
@@ -54,10 +32,13 @@ export const getMessageContent = (content) => {
         return {error: "Message cannot be empty."};
     }
 
+    if (value.length > 4000) {
+        return {error: "Message must be 4000 characters or fewer."};
+    }
+
     return {
         content: {
-            type: "text",
-            value,
+            type: "text",            value,
         },
     };
 };

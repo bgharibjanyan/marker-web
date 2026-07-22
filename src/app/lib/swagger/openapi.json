@@ -2,10 +2,9 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Marker Web API",
-    "version": "0.1.0",
+    "version": "0.4.0",
     "description": "OpenAPI documentation for the Marker Web Next.js route handlers. Keep this file synchronized with src/app/api whenever endpoints change."
-  },
-  "servers": [
+  },  "servers": [
     {
       "url": "/",
       "description": "Current Next.js server"
@@ -38,21 +37,17 @@
     },
     {
       "name": "Messages"
+    },
+    {
+      "name": "Operations"
     }
-  ],
-  "components": {
+  ],  "components": {
     "securitySchemes": {
-      "UserToken": {
+      "SessionCookie": {
         "type": "apiKey",
-        "in": "header",
-        "name": "Authorization",
-        "description": "Raw marker_im_token value. Do not prefix with Bearer."
-      },
-      "AdminHeader": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "x-marker-admin-auth",
-        "description": "Static admin header. Current value: authenticated."
+        "in": "cookie",
+        "name": "marker_session",
+        "description": "Opaque HttpOnly, Secure, SameSite=Strict session cookie. Set by login and never exposed to JavaScript."
       }
     },
     "schemas": {
@@ -96,14 +91,10 @@
         "type": "object",
         "properties": {
           "message": {
-            "type": "string",
-            "example": "Login successful"
-          },
-          "token": {
             "type": "string"
           },
-          "sessionId": {
-            "$ref": "#/components/schemas/ObjectId"
+          "user": {
+            "$ref": "#/components/schemas/User"
           }
         }
       },
@@ -172,26 +163,24 @@
         }
       },
       "RegisterResponse": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/AuthLoginResponse"
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
           },
-          {
-            "type": "object",
-            "properties": {
-              "userId": {
-                "$ref": "#/components/schemas/ObjectId"
-              }
-            }
+          "user": {
+            "$ref": "#/components/schemas/User"
           }
-        ]
+        }
       },
       "AdminLoginResponse": {
         "type": "object",
         "properties": {
           "message": {
-            "type": "string",
-            "example": "Login successful"
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
           }
         }
       },
@@ -243,6 +232,13 @@
             "items": {
               "$ref": "#/components/schemas/ObjectId"
             }
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "user",
+              "admin"
+            ]
           }
         }
       },
@@ -793,6 +789,20 @@
             }
           }
         }
+      },
+      "TooManyRequests": {
+        "description": "Rate limit exceeded. Retry after the number of seconds in Retry-After.",
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds until the current rate-limit window resets.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "PayloadTooLarge": {
+        "description": "Request body exceeds the endpoint size limit."
       }
     }
   },
@@ -803,7 +813,7 @@
           "Auth"
         ],
         "summary": "Register a user",
-        "description": "Creates a user, creates a session, and returns the login token.",
+        "description": "Creates a user and sets an opaque HttpOnly session cookie.",
         "requestBody": {
           "required": true,
           "content": {
@@ -830,6 +840,12 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -840,7 +856,7 @@
           "Auth"
         ],
         "summary": "Login a user",
-        "description": "Authenticates a login/password pair and stores a session token in MongoDB.",
+        "description": "Authenticates credentials and sets an opaque HttpOnly session cookie.",
         "requestBody": {
           "required": true,
           "content": {
@@ -867,21 +883,59 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
     },
     "/api/auth/check": {
-      "summary": "Auth check placeholder",
-      "description": "Route file exists but no HTTP method handler is currently implemented."
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Check the current session",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authenticated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "authenticated": {
+                      "type": "boolean"
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
     },
     "/api/admin/auth/login": {
       "post": {
         "tags": [
           "Admin"
         ],
-        "summary": "Login to the static admin shell",
-        "description": "Validates the static admin credentials. The client stores marker-admin-auth locally after success.",
+        "summary": "Login as an administrator",
+        "description": "Authenticates a database user whose role is admin and sets the same opaque session cookie.",
         "requestBody": {
           "required": true,
           "content": {
@@ -911,6 +965,12 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -924,7 +984,7 @@
         "description": "Admin-protected user listing with pagination and optional search.",
         "security": [
           {
-            "AdminHeader": []
+            "SessionCookie": []
           }
         ],
         "parameters": [
@@ -999,7 +1059,7 @@
         "description": "Updates editable user fields and optionally hashes a new password.",
         "security": [
           {
-            "AdminHeader": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -1049,6 +1109,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -1061,7 +1124,7 @@
         "summary": "Upload a user profile image as admin",
         "security": [
           {
-            "AdminHeader": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -1115,6 +1178,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -1128,7 +1194,7 @@
         "description": "Loads the requested profile. Authorization is optional for a target userId, but required when loading the current user.",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "parameters": [
@@ -1187,7 +1253,7 @@
         "summary": "Update current profile",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -1234,6 +1300,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -1246,7 +1315,7 @@
         "summary": "Upload current user's profile image",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -1293,6 +1362,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -1305,7 +1377,7 @@
         "summary": "Get current user",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "responses": {
@@ -1388,6 +1460,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -1400,7 +1475,7 @@
         "summary": "Search users",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -1442,6 +1517,12 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -1454,7 +1535,7 @@
         "summary": "Follow a user",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -1505,6 +1586,12 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -1517,7 +1604,7 @@
         "summary": "Unfollow a user",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -1562,6 +1649,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -1624,7 +1714,7 @@
         "summary": "Get tasks for current or target user",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "parameters": [
@@ -1678,7 +1768,7 @@
         "summary": "Create a task",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -1721,6 +1811,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -1733,7 +1826,7 @@
         "summary": "Update a task",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -1768,6 +1861,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -1780,7 +1876,7 @@
         "summary": "Delete a task",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -1823,6 +1919,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -1836,7 +1935,7 @@
         "description": "Legacy event endpoint. Current scheduling UI uses task endpoints.",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -1865,6 +1964,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -1877,7 +1979,7 @@
         "summary": "Get legacy events",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "parameters": [
@@ -1886,6 +1988,25 @@
             "in": "query",
             "schema": {
               "$ref": "#/components/schemas/ObjectId"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "ObjectId cursor returned as nextCursor by the previous page.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
             }
           }
         ],
@@ -1932,7 +2053,7 @@
         "summary": "List the authenticated user's posts",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "responses": {
@@ -1960,7 +2081,28 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "ObjectId cursor returned as nextCursor by the previous page.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        ]
       }
     },
     "/api/post/create-post": {
@@ -1971,7 +2113,7 @@
         "summary": "Create a task post",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -2037,6 +2179,12 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -2049,7 +2197,7 @@
         "summary": "Edit a task post",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -2123,6 +2271,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -2135,7 +2286,7 @@
         "summary": "Delete a task post",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -2170,6 +2321,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -2182,7 +2336,7 @@
         "summary": "Get chat messages",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -2233,6 +2387,9 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -2245,7 +2402,7 @@
         "summary": "Send a chat message",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -2285,6 +2442,12 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
           }
         }
       }
@@ -2297,7 +2460,7 @@
         "summary": "Edit a sent message",
         "security": [
           {
-            "UserToken": []
+            "SessionCookie": []
           }
         ],
         "requestBody": {
@@ -2337,9 +2500,395 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Revoke the current session",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          }
+        }
+      }
+    },
+    "/api/auth/revoke-sessions": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Revoke all sessions for the current user",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          }
+        }
+      }
+    },
+    "/api/admin/events": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List events for admin",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Create an event as admin",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update an event as admin",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Delete an event as admin",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/api/event/delete-event": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Delete an event as administrator",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "eventId"
+                ],
+                "properties": {
+                  "eventId": {
+                    "$ref": "#/components/schemas/ObjectId"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          }
+        }
+      }
+    },
+    "/api/event/subscribe-event": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Subscribe to a public event",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "eventId"
+                ],
+                "properties": {
+                  "eventId": {
+                    "$ref": "#/components/schemas/ObjectId"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          }
+        }
+      }
+    },
+    "/api/event/unsubscribe-event": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Unsubscribe from an event",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "eventId"
+                ],
+                "properties": {
+                  "eventId": {
+                    "$ref": "#/components/schemas/ObjectId"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          }
+        }
+      }
+    },
+    "/api/health/live": {
+      "get": {
+        "tags": [
+          "Operations"
+        ],
+        "summary": "Liveness probe",
+        "operationId": "getLiveness",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Application process is alive"
+          },
+          "500": {
+            "description": "Unexpected server error"
+          }
+        }
+      }
+    },
+    "/api/health/ready": {
+      "get": {
+        "tags": [
+          "Operations"
+        ],
+        "summary": "Readiness probe",
+        "operationId": "getReadiness",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Configuration and MongoDB are ready"
+          },
+          "503": {
+            "description": "Configuration or MongoDB is not ready"
+          },
+          "500": {
+            "description": "Unexpected server error"
           }
         }
       }
     }
-  }
-}
+  }}

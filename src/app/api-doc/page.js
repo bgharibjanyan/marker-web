@@ -1,10 +1,15 @@
 import {getApiDocs} from "@/app/lib/swagger";
 import ReactSwagger from "./react-swagger";
 import styles from "./page.module.scss";
+import {notFound} from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function ApiDocPage() {
+    if (process.env.NODE_ENV === "production" && process.env.ENABLE_API_DOCS !== "true") {
+        notFound();
+    }
+
     const spec = await getApiDocs();
 
     return (

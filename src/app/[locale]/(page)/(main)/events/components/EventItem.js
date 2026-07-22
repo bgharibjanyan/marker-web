@@ -118,19 +118,17 @@ export default function EventItem({event, isSaving = false, onSubscribe}) {
                 <div className={styles.subscribersBlock}>
                     <span>{event.subscriberCount || 0} subscriber{event.subscriberCount === 1 ? "" : "s"}</span>
                     <div className={styles.subscribersList}>
-                        {subscribers.length ? subscribers.map((subscriber) => (
+                        {subscribers.map((subscriber) => (
                             <div key={subscriber.id} className={styles.subscriberItem} title={subscriber.name}>
-                                {subscriber.profilePicture ? (
-                                    <img src={subscriber.profilePicture} alt={subscriber.name}/>
+                                {subscriber.profilePicture ? (                                    <img src={subscriber.profilePicture} alt={subscriber.name}/>
                                 ) : (
                                     <span>{getInitials(subscriber.name)}</span>
                                 )}
                                 <strong>{subscriber.name}</strong>
                             </div>
-                        )) : <p>No subscribers yet.</p>}
+                        ))}
                     </div>
                 </div>
-
                 <SubscribeButton event={event} isSaving={isSaving} onSubscribe={onSubscribe} variant="secondary"/>
             </footer>
         </article>
