@@ -8,6 +8,7 @@ import TagSelect from "@/app/components/util/form/TagSelect/TagSelect";
 import {ColorSelector} from "@/app/scripts/HelperFunctions/colorSelector";
 import useApiCall from "@/app/lib/api/call";
 import UserManager from "@/app/lib/user/UserManager";
+import {useRouter} from "@/i18n/navigation";
 
 const defaultProfilePicture = "/uploads/profiles/default/image.png";
 const sexes = ["male", "female", "other"];
@@ -104,10 +105,17 @@ function CheckboxField({label, checked, onChange}) {
     );
 }
 
-export default function ProfileContent({userId = "", embedded = false, user = null, currentUser = null}) {
+export default function ProfileContent({
+    userId = "",
+    embedded = false,
+    user = null,
+    currentUser = null,
+    mode = "view",
+}) {
     const t = useTranslations("ProfilePage");
     const locale = useLocale();
     const apiCall = useApiCall();
+    const router = useRouter();
     const [profileUser, setProfileUser] = useState(user);
     const [viewerUser, setViewerUser] = useState(currentUser);
     const [draft, setDraft] = useState(() => getDraftFromUser(user));
@@ -120,6 +128,7 @@ export default function ProfileContent({userId = "", embedded = false, user = nu
     const [isFollowingBusy, setIsFollowingBusy] = useState(false);
     const [statusMessage, setStatusMessage] = useState("");
     const [error, setError] = useState("");
+    const isSettingsMode = mode === "settings";
     const profileUserId = userId || getUserId(user);
     const selectedCountry = countryOptions.find((item) => item.country === draft.country);
     const cityOptions = selectedCountry?.cities || [];
@@ -352,7 +361,7 @@ export default function ProfileContent({userId = "", embedded = false, user = nu
                             event.currentTarget.src = defaultProfilePicture;
                         }}
                     />
-                    {isOwner ? (
+                    {isOwner && isSettingsMode ? (
                         <label className={styles.uploadButton}>
                             {isUploadingImage ? t("actions.uploading") : t("actions.uploadImage")}
                             <input
@@ -373,35 +382,57 @@ export default function ProfileContent({userId = "", embedded = false, user = nu
                         <span>{profileUser.email || "-"}</span>
                     </div>
                     <div className={styles.actions}>
-                        <Button
-                            text={t("actions.share")}
-                            size="M"
-                            padding="8px 16px"
-                            bgColor={ColorSelector("--g-color2")}
-                            textColor={ColorSelector("--g-color1")}
-                            onClick={handleShare}
-                        />
+                        {isOwner && !isSettingsMode ? (
+                            <>
+                                <Button
+                                    text={t("actions.settings")}
+                                    size="M"
+                                    padding="8px 16px"
+                                    bgColor={ColorSelector("--g-color2")}
+                                    textColor={ColorSelector("--g-color1")}
+                                    onClick={() => router.push("/profile/settings")}
+                                />
+                                <Button
+                                    text={t("actions.archive")}
+                                    size="M"
+                                    padding="8px 16px"
+                                    bgColor={ColorSelector("--g-color5")}
+                                    textColor={ColorSelector("--g-color1")}
+                                    onClick={() => router.push("/profile/archive")}
+                                />
+                            </>
+                        ) : null}
                         {!isOwner ? (
-                            <Button
-                                text={isFollowing ? t("actions.unfollow") : t("actions.follow")}
-                                size="M"
-                                padding="8px 16px"
-                                bgColor={isFollowing ? ColorSelector("--g-color8") : ColorSelector("--g-color5")}
-                                textColor={ColorSelector("--g-color1")}
-                                onClick={handleFollowToggle}
-                                disabled={isFollowingBusy}
-                            />
+                            <>
+                                <Button
+                                    text={t("actions.share")}
+                                    size="M"
+                                    padding="8px 16px"
+                                    bgColor={ColorSelector("--g-color2")}
+                                    textColor={ColorSelector("--g-color1")}
+                                    onClick={handleShare}
+                                />
+                                <Button
+                                    text={isFollowing ? t("actions.unfollow") : t("actions.follow")}
+                                    size="M"
+                                    padding="8px 16px"
+                                    bgColor={isFollowing ? ColorSelector("--g-color8") : ColorSelector("--g-color5")}
+                                    textColor={ColorSelector("--g-color1")}
+                                    onClick={handleFollowToggle}
+                                    disabled={isFollowingBusy}
+                                />
+                            </>
                         ) : null}
                     </div>
 
                     <div className={styles.heroTags}>
                         <TagSelect
                             label={t("fields.favoriteTags")}
-                            selectedTags={isOwner ? draft.favoriteTags : profileUser.favoriteTags}
-                            popularTags={isOwner ? popularTags : []}
+                            selectedTags={isOwner && isSettingsMode ? draft.favoriteTags : profileUser.favoriteTags}
+                            popularTags={isOwner && isSettingsMode ? popularTags : []}
                             onChange={(tags) => updateDraft("favoriteTags", tags)}
                             placeholder={t("fields.tagPlaceholder")}
-                            disabled={!isOwner}
+                            disabled={!isOwner || !isSettingsMode}
                         />
                     </div>
                 </div>
@@ -410,7 +441,7 @@ export default function ProfileContent({userId = "", embedded = false, user = nu
             {statusMessage ? <div className={styles.statusMessage}>{statusMessage}</div> : null}
             {error ? <div className={styles.errorMessage}>{error}</div> : null}
 
-            {isOwner ? (
+            {isOwner && isSettingsMode ? (
                 <div className={styles.profileEditor}>
                     <div className={styles.formGrid}>
                         <TextField label={t("fields.firstname")} value={draft.firstname} onChange={(value) => updateDraft("firstname", value)}/>

@@ -1924,6 +1924,45 @@
         }
       }
     },
+    "/api/post/get-user-posts": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "List the authenticated user's posts",
+        "security": [
+          {
+            "UserToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Posts returned newest first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "posts": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Post"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
     "/api/post/create-post": {
       "post": {
         "tags": [

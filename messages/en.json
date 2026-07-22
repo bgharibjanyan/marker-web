@@ -156,6 +156,8 @@
       "share": "Share",
       "follow": "Follow",
       "unfollow": "Unfollow",
+      "settings": "Settings",
+      "archive": "Archive",
       "save": "Save profile",
       "saving": "Saving...",
       "uploadImage": "Upload image",
@@ -172,6 +174,28 @@
       "imageSaved": "Profile image saved.",
       "imageFailed": "Failed to upload profile image.",
       "imageTypeError": "Please upload an image file."
+    }
+  },
+  "PostArchive": {
+    "eyebrow": "My posts",
+    "title": "Post archive",
+    "subtitle": "All your posts in one place.",
+    "actions": {
+      "backToProfile": "Back to profile",
+      "open": "Open {title}",
+      "previousImage": "Previous image",
+      "nextImage": "Next image",
+      "close": "Close"
+    },
+    "labels": {
+      "published": "Published"
+    },
+    "states": {
+      "loading": "Loading posts...",
+      "empty": "You have not published any posts yet.",
+      "error": "Failed to load posts.",
+      "noImage": "No image",
+      "noDescription": "No description."
     }
   },
   "Pages": {

@@ -1,0 +1,152 @@
+@import "../../../../../../../styles/variables";
+
+.review {
+  position: relative;
+  display: flex;
+  width: min(1000px, calc(100vw - 88px));
+  max-width: 100%;
+  flex-direction: column;
+  gap: 16px;
+
+  @media (max-width: $mobileLarge) {
+    width: calc(100vw - 64px);
+  }
+}
+
+.closeButton {
+  position: absolute;
+  z-index: 3;
+  top: -14px;
+  right: -14px;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  border: 2px solid $g-color1;
+  border-radius: 50%;
+  padding: 0;
+  place-items: center;
+  background-color: $g-color2;
+  color: $g-color1;
+  cursor: pointer;
+  font-size: 25px;
+  line-height: 1;
+}
+
+.mediaStage {
+  position: relative;
+  display: grid;
+  min-height: min(58vh, 620px);
+  overflow: hidden;
+  border-radius: 10px;
+  place-items: center;
+  background-color: $g-color2;
+
+  img {
+    display: block;
+    width: 100%;
+    height: min(58vh, 620px);
+    object-fit: contain;
+  }
+
+  @media (max-width: $mobileLarge) {
+    min-height: 46vh;
+
+    img {
+      height: 46vh;
+    }
+  }
+}
+
+.noImage {
+  color: rgba($g-color1, 0.78);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  place-items: center;
+  background-color: rgba($g-color1, 0.86);
+  color: $g-color2;
+  cursor: pointer;
+  font-size: 32px;
+  line-height: 1;
+  transform: translateY(-50%);
+
+  &:focus-visible {
+    outline: 3px solid $g-color4;
+  }
+}
+
+.previous {
+  left: 12px;
+}
+
+.next {
+  right: 12px;
+}
+
+.counter {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background-color: rgba($g-color2, 0.72);
+  color: $g-color1;
+  font-size: 11px;
+  font-weight: 900;
+  transform: translateX(-50%);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: $g-color2;
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  h2 {
+    margin: 0;
+    font-size: 22px;
+    overflow-wrap: anywhere;
+  }
+
+  time {
+    flex: none;
+    color: $g-color3;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  @media (max-width: $mobileLarge) {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+.description {
+  color: $g-color3;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.emptyDescription {
+  margin: 0;
+  color: $g-color7;
+  font-size: 13px;
+  font-style: italic;
+}
